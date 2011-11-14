@@ -1,6 +1,7 @@
 class ScheduleRulesController < BusinessesController
 
   sidebar :schedule_rules
+  before_filter :set_sidebar
 
   def index
     @schedule_rules = ScheduleRule.all
@@ -53,6 +54,10 @@ class ScheduleRulesController < BusinessesController
   end
 
   private
+
+  def set_sidebar
+    set_current_sidebar :schedule_rules
+  end
 
   def schedule_rule_params
     params.require(:schedule_rule)

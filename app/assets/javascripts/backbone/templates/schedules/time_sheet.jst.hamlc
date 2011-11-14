@@ -1,38 +1,56 @@
-.col-lg-12
-  .time-sheet-destroy.destroy
+.col-lg-12.time-sheet-container
+  .time-sheet-destroy.destroy{ data: { toggle: 'tooltip' }, title: 'Delete Timesheet'}
     %i.fa.fa-remove
 
   .validity.pull-right.closed
-    .edit-validity
+    .edit-validity.noselect
       %i.fa.fa-edit
 
-    .save-validity
+    .save-validity.noselect
       %i.fa.fa-save
 
-    .filter-screen
+    .filter-screen.noselect
 
     .from
-      .label.label-default Valid From:
+      .label.label-default.noselect Valid From
       .input-group#valid-from
-        %input.date.form-control{placeholder: 'Yesterday. ', :type => "text", value: "#{moment().month()}/#{moment().date()}/#{moment().year()}"}
+        %input.date.form-control{placeholder: 'Now', :type => "text", value: 'Now'}
 
     .until
-      .label.label-default Valid Until:
+      .label.label-default.noselect Valid Until
       .input-group#valid-until
-        %input.date.form-control{:type => "text", placeholder: '- Until Forever. ', }
+        %input.date.form-control{:type => "text", placeholder: 'Forever', value: 'Forever' }
+  - if @services.length > 1
+    .time-sheet-services.closed
+      .label.label-default For:
+      .input-group#time-sheet-service-selector
+        .message.noselect
+          All Services
+          %span.edit-services.btn
+            %i.fa.fa-edit
+
+        .selection
+          %select{multiple: true, 'total' => @services.models.length, 'label-count' => 'Services', 'button-width' => '200', class: 'form-input services-selection', label: 'All Services' }
+            - for service in @services.models
+              %option{value: service.id}= service.get('name')
+
+          %span.save-services.btn
+            %i.fa.fa-save
 
   %br/
   %br/
   .row
 
-    .col-lg-9.col-md-9.time-sheet-entries
+    .col-lg-12.col-md-12.time-sheet-entries
       %h4.header.entries.muted Time Entries
 
       %table.entries.table.table-horizontal
         %thead
           / %th
           /   %input{type: 'checkbox'}
-          %th Office Location
+          - if @offices.length > 1
+            %th Office Location
+
           %th Day
           %th Start
           %th End
@@ -44,27 +62,6 @@
               %span.muted
                 Please add a few Time Entries
 
-    .col-lg-3.col-md-3.time-sheet-services
-      %h4.header.services Time Sheet Services
-
-      %table.services.table.table-horizontal
-        %thead
-          %th Service Name
-
-        %tbody
-          %tr
-            %td.service-list{colspan: 100}
-              %span.muted No Services added yet.
-          %tr
-            %td{colspan: 100}
-              %select.services.bootstrap-select
-                - context.services.each (service)->
-                  %option{value: service.id}= service.get('name')
-
-              %br/
-              .btn.btn-default.btn-add-service.btn-xs
-                %i.fa.fa-plus
-                Add Service
   %hr/
 
   .actions.well.row
@@ -82,16 +79,16 @@
               %option{ value: 'saturday', lbl: 'SAT' }  Saturday
               %option{ value: 'sunday', lbl: 'SUN' }    Sunday
 
-
-        .col-lg-3.col-md-6
-          %h5 Office / Location
-          .group.group-office
-            %select.bootstrap-select.office
-              - context.offices.each (office)->
-                %option{ value: office.id }
-                  = office.get('name')
-                  \-
-                  = office.get('location')
+        - if @offices.length > 1
+          .col-lg-3.col-md-6
+            %h5 Office / Location
+            .group.group-office
+              %select.bootstrap-select.office
+                - context.offices.each (office)->
+                  %option{ value: office.id }
+                    = office.get('name')
+                    \-
+                    = office.get('location')
       %hr/
 
 

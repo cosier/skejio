@@ -48,6 +48,11 @@ class Scplanner.Models.Break extends Backbone.Model
     else if mins > 60
       "#{@hourize(mins)} hours"
 
+  valid_dates: ->
+    "- -"
+
+  services: ->
+    []
 
   hourize: (mins)->
     return mins if not mins

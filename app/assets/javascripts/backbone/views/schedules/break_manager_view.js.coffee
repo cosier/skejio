@@ -11,12 +11,22 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     "click .configure-service-specification .close":  "disable_service_specification"
     "click .configure-rule-expiration .open":  "enable_rule_expiration"
     "click .configure-rule-expiration .close":  "disable_rule_expiration"
+    "focus .valid_dates input":  "show_picker"
 
   breaks: new Scplanner.Collections.BreaksCollection()
 
   view_vars:
     enable_date_validity: false
     enable_service_specification: false
+
+  show_picker: (e)->
+    el  = $(e.target)
+    val = el.val().toLowerCase()
+
+    if val.indexOf('forever') or val.indexOf('now')
+      el.val('')
+
+    console.debug 'show_picker', e
 
   constructor: (options) ->
     super(options)
@@ -31,8 +41,14 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       $('tr.pregame').addClass 'hidden'
       self.add_break(brk)
 
+    setInterval ->
+      $('#valid_until').datetimepicker({pickTime: false})
+      $('#valid_from').datetimepicker({pickTime: false})
+    , 1000
+
   enable_rule_expiration: =>
     console.debug 'enable_rule_expiration'
+    $('.date').datetimepicker pickTime: false
     @$('.configure-rule-expiration.state-view').removeClass('closed')
     @$('.configure-rule-expiration.state-view').addClass('open')
     @hooks()
@@ -43,6 +59,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     @$('.configure-rule-expiration.state-view').addClass('closed')
 
   enable_service_specification: =>
+    $('.date').datetimepicker pickTime: false
     console.debug 'enable_service_specification'
     @$('.configure-service-specification.state-view').removeClass('closed')
     @$('.configure-service-specification.state-view').addClass('open')
@@ -183,6 +200,5 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
               return
 
             labels.join(", ") + " "
-    , 500
 
 

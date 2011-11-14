@@ -10,10 +10,10 @@
     padding:10px;
     margin-bottom:0;
   }
+
   .break-manager {
     border:1px solid $blue;
     border-top:none;
-
 
     .state-view {
       .state-open,
@@ -174,9 +174,56 @@
       }
     }
 
+    .time-sheet-services.closed {
+      .message { display:block; }
+      .selection { display:none; }
+    }
+
+    .time-sheet-services.open {
+      .message { display:none; }
+      .selection { display:block; }
+    }
+
     .time-sheet-services {
-      min-height: 150px;
-      border-right:1px solid #e1e1e1;
+      position:absolute;
+      right:40px;
+      top:20px;
+      z-index:9999999;
+      padding:5px;
+      
+      .edit-services {
+        color:$dark-red;
+      }
+
+      .save-services {
+        color:$green;
+      }
+
+      > .label {
+        display:inline-block;
+        background:none;
+        color:#555;
+        font-size:14px;
+        padding-right:20px;
+      }
+
+      > .input-group {
+        display: inline-block;
+        .message {
+          font-size:14px;
+          color:#999;
+          margin-right:20px;
+          .edit:hover {
+            cursor:pointer;
+            color:$green;
+          }
+          .edit {
+            color:#000;
+            margin-left:10px;
+            margin-right:10px;
+          }
+        }
+      }
     }
 
     .time-sheet {
@@ -215,11 +262,7 @@
           opacity:0.8;
         }
         .label {
-          display:none !important;
-        }
-
-        .from,.until {
-          padding-top:25px;
+          opacity:0.4;
         }
       }
 
@@ -282,7 +325,7 @@
           }
           input {
             border-radius:0 0 3px 3px;
-            padding-left:14px;
+            padding-left:5px;
             border:1px solid #e1e1e1;
             max-width:100px;
           }
@@ -355,11 +398,10 @@
       max-width:250px;
     }
 
-    form {
-      label {
-        font-size:18px;
-        font-weight:normal;
-      }
+
+    label {
+      // font-size:18px;
+      font-weight:normal;
     }
 
     .btn-add-time-sheet {

@@ -7,6 +7,11 @@
         %th Start
         %th End
         %th Summary
+        %th Valid From/Until
+        - if @services.length > 1
+          %th Service
+        - if @offices.length > 1
+          %th Office
         %th
     %tbody
       %tr.pregame
@@ -55,34 +60,35 @@
                   .col-lg-4
                     %label{for: '1234'} Valid From:
                   .col-lg-8
-                    %input.date{id: 'valid_from', name: 'valid_from', value: "#{moment().date()}/#{moment().month()}/#{moment().year()}"}
+                    %input.date{id: 'valid_from', name: 'valid_from', value: "Now" }
                 .row
                   .col-lg-4
                     %label{for: '123'} Valid Until:
                   .col-lg-8
-                    %input.date{id: 'valid_until', name: 'valid_until', value: "#{moment().date()}/#{moment().month()}/#{parseInt(moment().year()) + 1}", placeholder: "Forever."}
+                    %input.date{id: 'valid_until', name: 'valid_until', value: "Forever", placeholder: "Forever."}
 
             .state-closed
               .btn.btn-link.open
                 %i.fa.fa-calendar
                 Configure Rule Expiration
-        .col-lg-6
-          .configure-service-specification.state-view.closed
-            .state-open
-              .close
-                %i.fa.fa-remove
-              %h5 Configure which Services apply for your Break
-              %select.choose-break-service{ multiple: true, data: { normal: true, empty: 'All Services Apply', 'select-all': 'false' } }
-                - for service in context.services.models
-                  %option{value: service.id }= service.get('name')
+        - if @services.length > 1
+          .col-lg-6
+            .configure-service-specification.state-view.closed
+              .state-open
+                .close
+                  %i.fa.fa-remove
+                %h5 Configure which Services apply for your Break
+                %select.choose-break-service{ multiple: true, data: { normal: true, empty: 'All Services Apply', 'select-all': 'false' } }
+                  - for service in context.services.models
+                    %option{value: service.id }= service.get('name')
 
-              %p.muted
-                By default, your Break will be available for all Services.
+                %p.muted
+                  By default, your Break will be available for all Services.
 
-            .state-closed
-              .btn.btn-link.open
-                %i.fa.fa-list-alt
-                Which Service: All Services
+              .state-closed
+                .btn.btn-link.open
+                  %i.fa.fa-list-alt
+                  Which Service: All Services
 
       %hr/
       .group.group-day

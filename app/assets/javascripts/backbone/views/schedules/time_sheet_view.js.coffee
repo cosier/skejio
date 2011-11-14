@@ -5,13 +5,16 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
   className: "time-sheet row"
 
   events:
-    "click .btn-add-service": "add_service"
-    "click .btn-add-entry":   "add_entry"
-    "click .destroy":         "destroy"
-    "click .edit-validity":   "edit_validity"
-    "click .save-validity":   "save_validity"
+    "click .destroy" :         "destroy"
+    "focus input.date" :       "show_picker"
+    "click .edit-time-sheet-service" : "edit_service"
+    "click .btn-add-service" : "add_service"
+    "click .btn-add-entry" :   "add_entry"
+    "click .edit-validity" :   "edit_validity"
+    "click .save-validity" :   "save_validity"
 
-
+    "click .save-services" :   "save_services"
+    "click .edit-services" :   "edit_services"
 
   constructor: (options) ->
     super(options)
@@ -28,6 +31,23 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @entries.bind 'add', (entry)=>
       console.debug 'bind:add', entry
       @render_entry(entry)
+
+  show_picker: (e)->
+    el  = $(e.target)
+    val = el.val().toLowerCase()
+
+    if val.indexOf('forever') or val.indexOf('now')
+      el.val('')
+
+    console.debug 'show_picker', e
+
+  edit_services: =>
+    @$('.time-sheet-services').removeClass('closed')
+    @$('.time-sheet-services').addClass('open')
+
+  save_services: =>
+    @$('.time-sheet-services').removeClass('open')
+    @$('.time-sheet-services').addClass('closed')
 
   edit_validity: =>
     @$('.validity').removeClass('closed')
@@ -158,12 +178,12 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @$('select[multiple]').each (i, select)->
       select = $(select)
       select.multiselect
-        buttonWidth: 350
+        buttonWidth: select.attr('button-width') || 350
         includeSelectAllOption: true
         selectAllText: 'Select All'
 
         buttonText: (options, select) ->
-          return 'Select Work Days' if options.length == 0
+          return (select.attr('label') || 'Select Work Days') if options.length == 0
 
           days = []
           options.map ->
@@ -185,9 +205,14 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
             else
               labels.push $(this).html()
             return
-
-          labels.join(", ") + " "
+          if select.attr('label-count')
+            if parseInt(select.attr('total')) <= labels.length
+              "All #{select.attr('label-count')}"
+            else
+              "#{labels.length} #{select.attr('label-count')}"
+          else
+            labels.join(", ") + " "
 
     $(this).data('view', @)
-
+    @$('*[data-toggle="tooltip"]').tooltip()
     return this

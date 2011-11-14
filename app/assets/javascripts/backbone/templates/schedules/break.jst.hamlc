@@ -31,6 +31,19 @@
 %td.c-duration
   != this.model.duration()
 
+%td.c-valid-dates
+  != this.model.valid_dates()
+
+%td.c-valid-services
+  - services = this.model.services()
+  - if services.length == 0
+    All Services
+  - else
+    - for service in services
+      .service-label
+        = service.get('name')
+
+%td.c-offices
 %td.c-actions{style: 'width:100px'}
   - if context.state == 'edit'
     .btn.save

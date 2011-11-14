@@ -21,8 +21,8 @@ class BusinessesController < SecureController
     @@sidebar = (target and target.to_s.downcase.to_sym)
   end
 
-  def set_current_sidebar
-    @current_sidebar = @@sidebar
+  def set_current_sidebar(target = false)
+    @current_sidebar = target || @@sidebar
   end
   # sidebar  :dashboard
 

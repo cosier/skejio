@@ -85,6 +85,9 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.1.3'
 gem 'bootstrap-multiselect-rails'
 gem 'devise-bootstrap-views'
 
+# Natural language processing
+gem 'chronic'
+
 
 # Use evented thin server
 gem 'thin'
@@ -100,12 +103,13 @@ group :development, :test do
   # gem 'better_errors'
   # gem 'binding_of_caller'
   gem 'erb2haml'
-
+  gem 'web-console', '2.0.0.beta3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
 
 gem 'pry'
+
 
 group :test do
   gem 'twilio-test-toolkit'
