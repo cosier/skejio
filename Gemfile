@@ -44,3 +44,41 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+
+# UI elements we use bootstrap 3
+gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails', branch: 'bootstrap3'
+
+# Server
+gem 'puma', '~> 2.9.0'
+
+#For authentication
+gem 'devise'
+
+# For forms
+gem 'simple_form'
+gem 'country_select'
+
+
+# For test support
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'ffaker', '~> 1.24.0'
+  gem 'pry'
+  gem 'database_cleaner'
+  gem "turnip"
+  gem "json_spec"
+
+  gem "rack-test", require: "rack/test"
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-rails'
+  gem 'guard-livereload'
+  gem 'guard-rspec'
+  gem 'guard-sunspot'
+  gem 'factory_girl'
+  gem 'factory_girl_rails'
+end
+
+
+
