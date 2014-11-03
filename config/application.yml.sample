@@ -1,0 +1,32 @@
+# Template file for Application Environment Vars.
+# This is powered by the fiagro gem, check that out for the full details.
+#
+# Copy this file over as config/application.yml and then enter your
+# own personal credentials
+#
+# When you add an ENV VAR to config/application.yml, then also add it here as well.
+# So other developers will have a template for all the required ENV VARs
+
+
+# Generate your own from rake (optional, just use this one in dev)
+secret_key_base: 870ac4b914b9d3b7838bb721dae1d28751bf04049560fbb347638fcea0ee1ec12d26aa0888ed0e106909eb613836f999bd4f14958bae44fdfff879f2df211999
+
+
+# Set this to whatever your host is for your environment.
+# ngrok is recommended for when testing external services in local dev.
+# (ie. testing Twilio)
+#
+# Running on port 80
+# eg. schedule-planner.dev
+# eg. sp-planer-dev.ngrok.com
+host: "localhost"
+
+
+# AWS Credentials
+AWS_ACCESS_KEY: ""
+AWS_SECRET: ""
+S3_BUCKET: ""
+
+# Twilio Account Tokens
+TWILIO_ACCOUNT_SID: ""
+TWILIO_AUTH_TOKEN: ""
