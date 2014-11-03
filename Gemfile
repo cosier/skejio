@@ -61,6 +61,9 @@ gem 'country_select'
 #for haml
 gem 'haml-rails'
 
+# for autherization
+gem 'cancancan'
+
 
 # For test support
 
