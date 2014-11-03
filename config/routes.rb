@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :twillio_tests
+
   #get 'home/index'
 
   # The priority is based upon order of creation: first created -> highest priority.

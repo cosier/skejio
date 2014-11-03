@@ -64,6 +64,9 @@ gem 'haml-rails'
 # for autherization
 gem 'cancancan'
 
+# twillio
+gem 'twilio-ruby'
+
 
 # For test support
 

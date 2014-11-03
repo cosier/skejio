@@ -1,0 +1,11 @@
+= simple_form_for(@twillio_test) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :to_number ,:hint => 'include + when you entered a number'
+    = f.input :body 
+
+  .form-actions
+    = f.button :submit , class: 'btn btn-sm btn-primary'
+    = link_to 'Back', twillio_tests_path, class: 'btn btn-sm btn-default'
+
