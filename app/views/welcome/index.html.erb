@@ -1,0 +1,5 @@
+<h1>Welcome to Schedule Planner app landing page.</h1>
+<hr/>
+<% if current_user and current_user.business.present? %>
+<%= link_to 'Business Control Panel', business_path(current_user.business) %>
+<% end %>

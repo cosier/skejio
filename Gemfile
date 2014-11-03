@@ -73,6 +73,7 @@ gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) support
 
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.1.3'
+gem 'devise-bootstrap-views'
 
 group :development, :test do
   # Enable pry and
