@@ -58,6 +58,9 @@ gem 'devise'
 gem 'simple_form'
 gem 'country_select'
 
+#for haml
+gem 'haml-rails'
+
 
 # For test support
 
