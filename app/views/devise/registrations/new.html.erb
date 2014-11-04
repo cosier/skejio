@@ -8,7 +8,12 @@
 
       <div class="form-group">
         <label class="string optional" for="user_business_name">Business name</label>
-        <input class="form-control" id="user_business_name" name="user[business_name]" required="required" type="text">
+        <input class="form-control"
+          id="user_business_name"
+          name="user[business_name]"
+          required="required"
+          type="text"
+          value="<%= params[:user] and params[:user][:business_name] %>">
       </div>
 
       <hr/>

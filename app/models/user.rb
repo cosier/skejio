@@ -33,6 +33,9 @@ class User < ActiveRecord::Base
 
   belongs_to :business
 
+  validates_presence_of :first_name
+  validates_presence_of :last_name
+
   # Check the roles bitmask like this:
   # user.roles?(:admin)
   #
