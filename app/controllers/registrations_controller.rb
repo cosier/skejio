@@ -21,6 +21,9 @@ class RegistrationsController < Devise::RegistrationsController
       # Create the business and associate the user
       business = Business.create(name: business_name, slug: slug, is_active: false)
 
+      # Assign user admin role
+      user.roles << :admin
+
       # Save the association
       business.users << user
     end
