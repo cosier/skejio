@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
+
+
   devise_for :users, controllers: {
     registrations: 'registrations'
   }
+
+  scope :manage do
+    resources :manage_businesses, path: 'businesses'
+    get '/', to: 'manage#dashboard', as: :manage_dashboard
+  end
 
   scope :business do
     get '/:slug/pending', to: 'businesses#pending', as: :business_pending

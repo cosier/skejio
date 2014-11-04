@@ -21,10 +21,12 @@ class Business < ActiveRecord::Base
   has_many :users,
     dependent: :destroy
 
+  has_many :offices,
+    dependent: :destroy,
+    class_name: 'BusinessOffice'
+
   validates_uniqueness_of :slug
   validates_presence_of :slug
-
-  accepts_nested_attributes_for :users, :reject_if => :all_blank
 
   before_validation :ensure_unique_slug
 
@@ -39,7 +41,8 @@ class Business < ActiveRecord::Base
     name and name.downcase.capitalize
   end
 
-
+  # Welcome emails are sent at registration,
+  # which means there is usually only 1 user available.
   def send_welcome_email
     users.each do |user|
       message = BusinessMailer.welcome_introduction(user)
@@ -53,7 +56,7 @@ class Business < ActiveRecord::Base
     # Don't mess with the slug if it's already defined manually.
     return true if slug.present?
 
-    # slugify the name into something neat.
+    # slugify the name into something neat and tidy.
     s = name.parameterize
 
     # Check for a previous entry,

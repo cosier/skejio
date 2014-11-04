@@ -56,13 +56,14 @@
   $(function(){
     $('form').submit(function(evt){
       if ($('#user_business_name').val().length < 1){
+        evt.preventDefault()
+        
         msg = $('<p class="error-text">Please provide a valid Business name.</p>')
         $('form .business-name .errors').html(msg)
         msg.jrumble({ speed: 3 })
         msg.trigger('startRumble');
         setTimeout(function(){msg.trigger('stopRumble');}, 600)
 
-        evt.preventDefault()
       }
     });
   })

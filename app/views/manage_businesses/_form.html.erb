@@ -1,0 +1,57 @@
+<%= simple_form_for(@business) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+  </div>
+  <!-- Text input-->
+  <div class="form-group">
+    <%= f.label :name, label: "Business Name" %>
+    <%= f.input_field :name, class: 'form-control' %>
+  </div>
+
+  <fieldset class='well'>
+    <!-- Text input-->
+    <div class="form-group">
+      <%= f.label :billing_name %>
+      <%= f.input_field :billing_name, class: 'form-control' %>
+    </div>
+
+    <!-- Text input-->
+    <div class="form-group">
+      <%= f.label :billing_phone %>
+      <%= f.input_field :billing_phone, class: 'form-control' %>
+    </div>
+
+    <!-- Text input-->
+    <div class="form-group">
+      <%= f.label :billing_email %>
+      <%= f.input_field :billing_email, class: 'form-control' %>
+    </div>
+
+    <!-- Text input-->
+    <div class="form-group">
+      <%= f.label :billing_address %>
+      <%= f.input_field :billing_address, class: 'form-control' %>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <!-- Text input-->
+    <div class="row">
+      <div class='col-lg-2'><%= f.label :is_listed %></div>
+      <div class='col-lg-2'><%= f.input_field :is_listed, as: :boolean, class: 'form-radio' %></div>
+    </div>
+    <br/>
+    <br/>
+    <!-- Text input-->
+    <div class="row">
+      <div class='col-lg-2'><%= f.label :is_active, label: "Is Approved" %></div>
+      <div class='col-lg-3'><%= f.input_field :is_active, as: :boolean, class: 'form-radio' %></div>
+    </div>
+  </fieldset>
+
+  <hr/>
+  <div class="form-actions">
+    <%= f.submit "Update Business", class: 'btn btn-success' %>
+  </div>
+<% end %>

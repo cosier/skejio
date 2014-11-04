@@ -42,15 +42,17 @@ class User < ActiveRecord::Base
   #
   # Only append keys to the list,
   # other wise users will need to be updated / cleaned.
-  bitmask :roles, :as => [
+  ROLES = [
     :super_admin,
     :admin,
     :service_provider,
     :schedule_manager,
     :schedule_viewer,
-    :appointment_viewer,
-    :appointment_manager
+    :appointment_manager,
+    :appointment_viewer
   ]
+
+  bitmask :roles, :as => ROLES
 
   # Similar to the roles bitmask, query with user.status?(:suspended)
   #
@@ -70,6 +72,10 @@ class User < ActiveRecord::Base
 
     # put it together
     "#{f} #{l}"
+  end
+
+  def user_type
+    roles.first.upcase || "Staff"
   end
 
 end

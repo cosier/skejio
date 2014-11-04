@@ -7,7 +7,9 @@ class Ability
     user ||= User.new # guest user (not logged in)
 
     # Check the roles bitmask for inclusion of :admin integer
-    if user.roles? :admin
+    if user.roles? :super_admin
+      can :manage, :all
+    elsif user.roles? :admin
       can :manage, :all
     else
       # Nothing at the moment

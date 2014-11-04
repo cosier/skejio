@@ -12,13 +12,24 @@
 #
 #= require jquery
 #= require jquery_ujs
+#= require vendor/jquery.rumble
 #= require twitter/bootstrap
 #= require turbolinks
 #= require_tree .
 #= require_self
 
-$(document).on "ready", ->
-  $("#menu-toggle").click (e) ->
-    e.preventDefault()
-    $("#wrapper").toggleClass "toggled"
+ready = ()->
+  console.debug 'app:ready()'
+  wrapper = $("#wrapper")
 
+  $("#menu-toggle").unbind('click').click (e) ->
+    e.preventDefault()
+    wrapper.toggleClass "toggled"
+    console.debug 'menu-toggle click'
+
+$ ->
+  $(document).on "ready", ->
+    ready()
+
+  $(document).on "page:load", ->
+    ready()

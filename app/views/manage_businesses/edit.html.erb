@@ -1,0 +1,17 @@
+<ol class="breadcrumb">
+  <li><a href="<%= manage_businesses_path %>">Businesses</a></li>
+  <li><a href="<%= manage_business_path(@business) %>"><%= @business.name %></a></li>
+  <li class='active'>Editing</li>
+</ol>
+
+<hr/>
+<%= render 'form' %>
+<hr/>
+
+
+<%= link_to 'Show', @business, class: 'btn btn-link' %> |
+<%= link_to 'Back', manage_businesses_path, class: 'btn btn-link' %>
+
+<% content_for :stylesheets do %>
+  <%= stylesheet_link_tag "super/manage_businesses", :media => "all" %>
+<% end %>
