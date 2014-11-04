@@ -14,3 +14,12 @@ h1,h2,h3 {
 .block {
   display:block;
 }
+
+form .control-label abbr {
+  display:none;
+}
+
+form p.error-text {
+  color:red;
+  font-weight: bold;
+}
