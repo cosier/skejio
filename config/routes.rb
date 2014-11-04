@@ -3,7 +3,10 @@ Rails.application.routes.draw do
     registrations: 'registrations'
   }
 
-  resources :businesses
+  scope :business do
+    get '/:slug/pending', to: 'businesses#pending', as: :business_pending
+    get '/:slug', to: 'businesses#dashboard', as: :business_dashboard
+  end
 
   devise_scope :user do
     # tmp devise fix until we hook our links with javascript for :delete requests

@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include DeviseHelper
 
   def bootstrap_devise_error_messages!
     return '' if resource.errors.empty?

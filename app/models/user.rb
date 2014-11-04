@@ -35,24 +35,36 @@ class User < ActiveRecord::Base
 
   # Check the roles bitmask like this:
   # user.roles?(:admin)
+  #
+  # Only append keys to the list,
+  # other wise users will need to be updated / cleaned.
   bitmask :roles, :as => [
+    :super_admin,
     :admin,
     :service_provider,
-
     :schedule_manager,
     :schedule_viewer,
-
     :appointment_viewer,
     :appointment_manager
   ]
 
   # Similar to the roles bitmask, query with user.status?(:suspended)
-  bitmask :status, :as => [:active, :suspended, :pending]
+  #
+  # Only append keys to the list,
+  # other wise users will need to be updated / cleaned.
+  bitmask :status, :as => [
+    :active,
+    :suspended,
+    :pending
+  ]
 
-
+  # Returns a formal name for the user.
   def display_name
-    f = first_name.downcase.capitalize
-    l = last_name.downcase.capitalize
+    # Format the name components
+    f = first_name and first_name.downcase.capitalize || ""
+    l = last_name and last_name.downcase.capitalize || ""
+
+    # put it together
     "#{f} #{l}"
   end
 

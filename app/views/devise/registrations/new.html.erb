@@ -39,3 +39,17 @@
   </div>
 </div>
 <%= render "devise/shared/links" %>
+
+<%= content_for :javascript do %>
+<script type="text/javascript">
+
+  $(function(){
+    $('form').submit(function(evt){
+      if ($('#user_business_name').val().length < 1){
+        alert('Please enter your Business Name')
+        evt.preventDefault()
+      }
+    });
+  })
+</script>
+<% end %>

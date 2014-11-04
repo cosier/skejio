@@ -21,3 +21,8 @@
 
 en:
   hello: "Hello world"
+
+  business_mailer:
+    welcome_introduction:
+      subject: "Welcome to Schedule Planner!"
+
