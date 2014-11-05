@@ -11,9 +11,9 @@
       <%= link_to 'Dashboard', manage_dashboard_path, class: manage_sidebar_active(:dashboard) %>
     </li>
 
-    <li>
-      <%= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses) %>
-    </li>
+    <% if can? :read, ManageBusiness %>
+      <li><%= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses) %></li>
+    <% end %>
 
 
   </ul>

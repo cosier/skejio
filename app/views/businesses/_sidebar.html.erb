@@ -5,7 +5,7 @@
 
       <%= link_to(business_slug_path(@business)) do %>
           <!-- <i class='fa fa-circle' style=\"display:inline-block;\"></i> -->
-          <%= @business.display_name %>
+          <%= @business.display_name.titleize %>
           <br/>
           <span class='tagline'>Call Center</span>
       <% end %>

@@ -20,11 +20,10 @@
 
 ready = ()->
   console.debug 'app:ready()'
-  wrapper = $("#wrapper")
 
   $("#menu-toggle").unbind('click').click (e) ->
     e.preventDefault()
-    wrapper.toggleClass "toggled"
+    $("#wrapper").toggleClass "toggled"
     console.debug 'menu-toggle click'
 
 $ ->

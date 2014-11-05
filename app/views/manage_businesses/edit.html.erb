@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<%= manage_businesses_path %>">Businesses</a></li>
-  <li><a href="<%= manage_business_path(@business) %>"><%= @business.name %></a></li>
+  <li><a href="<%= manage_business_path(@manage_business) %>"><%= @manage_business.name %></a></li>
   <li class='active'>Editing</li>
 </ol>
 
@@ -9,7 +9,7 @@
 <hr/>
 
 
-<%= link_to 'Show', @business, class: 'btn btn-link' %> |
+<%= link_to 'Show', @manage_business, class: 'btn btn-link' %> |
 <%= link_to 'Back', manage_businesses_path, class: 'btn btn-link' %>
 
 <% content_for :stylesheets do %>

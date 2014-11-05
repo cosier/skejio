@@ -1,4 +1,4 @@
-class BusinessesController < ApplicationController
+class BusinessesController < SecureController
 
   before_action :authenticate_user!
 
@@ -10,10 +10,11 @@ class BusinessesController < ApplicationController
   include BusinessHelper
 
   def dashboard
-    @current_sidebar = :dasbhoard
+    @current_sidebar = :dashboard
   end
 
   def pending
+    @current_sidebar = :pending
     redirect_to business_slug_path(@business) if @business.is_active?
   end
 

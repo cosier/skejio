@@ -13,5 +13,5 @@
 <% if current_user and current_user.roles? :super_admin %>
   <%= link_to 'Super Console',
     manage_dashboard_path(current_user.business),
-    class: 'btn btn-success btn-lg' %>
+    class: 'btn btn-warning btn-lg' %>
 <% end %>

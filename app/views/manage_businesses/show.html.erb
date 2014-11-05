@@ -1,11 +1,11 @@
 <p id="notice"><%= notice %></p>
 <ol class="breadcrumb">
   <li><a href="<%= manage_businesses_path %>">Businesses</a></li>
-  <li class='active'><%= @business.name %></li>
+  <li class='active'><%= @manage_business.name.titleize %></li>
 </ol>
 
 <hr/>
-<h1><%= @business.name %></h1>
+<h1><%= @manage_business.name.titleize%></h1>
 <hr/>
 
 <div class='row'>
@@ -22,10 +22,10 @@
       </thead>
       <tbody>
         <tr>
-          <td><%= @business.billing_name %></td>
-          <td><%= @business.billing_email || 'n/a' %></td>
-          <td><%= @business.billing_phone || 'n/a' %></td>
-          <td><%= @business.billing_address || 'n/a' %></td>
+          <td><%= @manage_business.billing_name %></td>
+          <td><%= @manage_business.billing_email || 'n/a' %></td>
+          <td><%= @manage_business.billing_phone || 'n/a' %></td>
+          <td><%= @manage_business.billing_address || 'n/a' %></td>
         </tr>
       </tbody>
     </table>
@@ -36,7 +36,7 @@
 
 <div class='row'>
   <div class='col-lg-12 field-name'>Approved:</div>
-  <div class='col-lg-12'><%= (@business.is_active?).to_s.upcase %></div>
+  <div class='col-lg-12'><%= (@manage_business.is_active?).to_s.upcase %></div>
 </div>
 
 <hr/>
@@ -44,11 +44,11 @@
 <div class='row'>
   <div class='col-lg-12 field-name'>Offices and Locations:</div>
   <div class='col-lg-12'>
-    <% if @business.offices.length == 0 %>
+    <% if @manage_business.offices.length == 0 %>
     <span class='muted'>No Offices Found</span>
     <% end %>
 
-    <% @business.offices.each do |office| %>
+    <% @manage_business.offices.each do |office| %>
       <%= render partial: "office_details", locals: { user: user } %>
     <% end %>
   </div>
@@ -60,7 +60,7 @@
 <div class='row'>
   <div class='col-lg-12 field-name'>User Staff:</div>
   <div class='col-lg-12'>
-    <% @business.users.each do |user| %>
+    <% @manage_business.users.each do |user| %>
       <%= render partial: "user_staff_details", locals: { user: user } %>
     <% end %>
   </div>
@@ -70,7 +70,7 @@
 
 <hr/>
 <%= link_to 'Back', manage_businesses_path, class: 'btn btn-link' %> |
-<%= link_to 'Edit', edit_manage_business_path(@business), class: 'btn btn-link' %>
+<%= link_to 'Edit', edit_manage_business_path(@manage_business), class: 'btn btn-link' %>
 
 <% content_for :stylesheets do %>
   <%= stylesheet_link_tag "super/manage_businesses", :media => "all" %>

@@ -43,13 +43,19 @@ class User < ActiveRecord::Base
   # Only append keys to the list,
   # other wise users will need to be updated / cleaned.
   ROLES = [
-    :super_admin,
+
+    # Roles for business staff
     :admin,
     :service_provider,
     :schedule_manager,
     :schedule_viewer,
     :appointment_manager,
-    :appointment_viewer
+    :appointment_viewer,
+
+    # Roles for super console permission
+    :super_admin,
+    :super_business_editor,
+    :super_business_viewer,
   ]
 
   bitmask :roles, :as => ROLES

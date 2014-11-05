@@ -41,7 +41,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <%= render "business/sidebar" %>
+        <%= render "businesses/sidebar" %>
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
@@ -55,6 +55,7 @@
                 </div>
             </a>
             <div class="container-fluid">
+                <%= bootstrap_flash %>
                 <%= yield %>
             </div>
         </div>
