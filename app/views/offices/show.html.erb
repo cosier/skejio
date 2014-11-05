@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Business:</strong>
+  <%= @office.business.name.titleize %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @office.name %>
+</p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @office.location %>
+</p>
+<hr/>
+<%= link_to 'Edit', edit_business_office_path(@business, @office) %> |
+<%= link_to 'Back', business_offices_path %>

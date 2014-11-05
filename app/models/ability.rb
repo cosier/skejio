@@ -6,20 +6,16 @@ class Ability
 
     ###########################################
     # Super Admin Rules
-    if user.roles? :super_admin
-      can :dashboard, Manage
-      can :manage, ManageBusiness if user.roles? :super_business_editor
-      can :read,   ManageBusiness if user.roles? :super_business_viewer
-    end
-
+    can :manage, Business if user.roles? :super_business_editor
+    can :read,   Business if user.roles? :super_business_viewer
 
 
     ###########################################
     # Business Admin Rules
-
     if user.roles? :admin
       # Admins can only edit active/approved businesses
-      can :manage, Business, is_active: true
+      can :manage, Business, { is_active: true, id: user.business_id }
+      can :manage, Office, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_manager
@@ -27,6 +23,15 @@ class Ability
 
     if user.roles? :schedule_viewer
     end
+
+    if user.roles? :appointment_manager
+    end
+
+    if user.roles? :appointment_viewer
+    end
+
+    # Users can all read their own Business
+    can :read, Business, { id: user.business_id }
 
   end
 end

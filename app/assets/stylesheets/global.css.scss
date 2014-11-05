@@ -42,3 +42,12 @@ i.fa.green {
 table.boxed {
   border:1px solid #e1e1e1;
 }
+
+.user-sidebar-panel {
+  padding:20px;
+  font-size:12px;
+
+  a.sign-out {
+    color:$dark-red;
+  }
+}

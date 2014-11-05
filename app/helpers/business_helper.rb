@@ -17,7 +17,8 @@ module BusinessHelper
     return default_path unless @business.is_active?
 
     case link
-    when :pass
+    when :offices
+      business_offices_path(@business)
     else
       default_path
     end

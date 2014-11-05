@@ -1,7 +1,10 @@
-class ManageController < SecureController
+class ManageController < ApplicationController
 
+  before_filter :authenticate_user!
   before_filter :ensure_super_powers!
   layout 'super_console'
+
+  skip_load_resource
 
   def dashboard
     @current_sidebar = :dashboard
@@ -11,8 +14,7 @@ class ManageController < SecureController
 
   def ensure_super_powers!
     unless current_user.roles? :super_admin
-      sign_out current_user
-      binding.pry
+      # sign_out current_user
       redirect_to root_path,
         alert: "Sorry you do not have the required privileges for that area."
     end

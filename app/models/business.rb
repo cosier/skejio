@@ -22,8 +22,7 @@ class Business < ActiveRecord::Base
     dependent: :destroy
 
   has_many :offices,
-    dependent: :destroy,
-    class_name: 'BusinessOffice'
+    dependent: :destroy
 
   validates_uniqueness_of :slug
   validates_presence_of :slug

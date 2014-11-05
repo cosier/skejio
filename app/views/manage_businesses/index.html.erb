@@ -16,7 +16,11 @@
   </thead>
 
   <tbody>
-    <% @manage_businesses.each do |business| %>
+    <% if @businesses.empty? %>
+      <tr><td colspan="100">No Businesses found in the system.</td></tr>
+    <% end %>
+
+    <% @businesses.each do |business| %>
       <tr>
         <td><%= business.name %></td>
         <td><%= business.billing_name %></td>
@@ -26,7 +30,7 @@
         <td>
           <%= link_to 'Show', manage_business_path(business), class: 'btn btn-link' %>
           <%= link_to 'Edit', edit_manage_business_path(business), class: 'btn btn-link' %>
-          <%= link_to 'Destroy', business, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link' %>
+          <%= link_to 'Destroy', url_for(controller: :manage_businesses, action: :destroy, id: business.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link' %>
         </td>
       </tr>
     <% end %>
@@ -34,8 +38,3 @@
 </table>
 
 <br>
-
-
-<% content_for :stylesheets do %>
-  <%= stylesheet_link_tag "super/manage_businesses", :media => "all" %>
-<% end %>

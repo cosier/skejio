@@ -6,8 +6,16 @@ class SecureController < ApplicationController
   skip_load_resource :only => :dashboard
 
   rescue_from CanCan::AccessDenied do |exception|
-    binding.pry
-    redirect_to manage_dashboard_path, :alert => exception.message
+    path = root_path
+
+    if current_user and current_user.roles? :super_admin
+      path = manage_dashboard_path
+
+    elsif current_user
+      path = business_dashboard_path(slug: current_user.business.slug)
+    end
+
+    redirect_to path, :alert => exception.message
   end
 
 end

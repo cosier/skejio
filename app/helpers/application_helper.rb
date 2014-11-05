@@ -20,4 +20,20 @@ module ApplicationHelper
     html.html_safe
   end
 
+
+  def form_error_messages(resource)
+    return '' if resource.errors.empty? or not resource
+
+    messages = resource.errors.full_messages.map { |msg| content_tag(:li, msg) }.join
+    html = <<-HTML
+    <div class="alert alert-danger alert-block">
+      <button type="button" class="close" data-dismiss="alert">x</button>
+      #{messages}
+    </div>
+    <hr/>
+    HTML
+
+    html.html_safe
+  end
+
 end

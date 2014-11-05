@@ -11,10 +11,10 @@
       <%= link_to 'Dashboard', manage_dashboard_path, class: manage_sidebar_active(:dashboard) %>
     </li>
 
-    <% if can? :read, ManageBusiness %>
+    <% if can? :read, Business %>
       <li><%= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses) %></li>
     <% end %>
 
-
+    <%= render 'shared/sidebar_user' %>
   </ul>
 </div>

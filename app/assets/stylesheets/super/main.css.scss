@@ -1,7 +1,11 @@
 @import "../colors";
-
+@import "manage_businesses";
 
 .checkbox input[type="checkbox"] {
   margin-left:0;
   margin-top:-7px;
+}
+
+#sidebar-wrapper .sidebar-nav > .sidebar-brand {
+  min-height: 0px;
 }

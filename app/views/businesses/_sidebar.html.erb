@@ -16,7 +16,7 @@
     </li>
 
     <li class='first'>
-      <%= link_to 'Dashboard', business_sidebar_url(:dasbhoard), class: business_sidebar_active(:dasbhoard) %>
+      <%= link_to 'Dashboard', business_sidebar_url(:dashboard), class: business_sidebar_active(:dashboard) %>
     </li>
 
     <li class='disabled'>
@@ -24,24 +24,24 @@
     </li>
 
     <li class='disabled'>
-      <a href="<%= business_sidebar_url :offices %>">Offices / Locations</a>
+      <%= link_to 'Offices / Locations', business_sidebar_url(:offices), class: business_sidebar_active(:offices) %>
     </li>
 
     <li class='disabled'>
-      <a href="<%= business_sidebar_url :users %>">User Staff</a>
+      <%= link_to 'User Staff', business_sidebar_url(:users), class: business_sidebar_active(:users) %>
     </li>
 
     <li class='disabled'>
-      <a href="<%= business_sidebar_url :schedule_rules %>">Scheduling Rules</a>
+      <%= link_to 'Scheduling Rules', business_sidebar_url(:schedule_rules), class: business_sidebar_active(:schedule_rules) %>
     </li>
 
     <li class='disabled'>
-      <a href="<%= business_sidebar_url :recordings %>">Recordings</a>
+      <%= link_to 'Recordings', business_sidebar_url(:recordings), class: business_sidebar_active(:recordings) %>
     </li>
 
     <li class='disabled'>
-      <a href="<%= business_sidebar_url :setup %>">Setup</a>
+      <%= link_to 'Setup', business_sidebar_url(:setup), class: business_sidebar_active(:setup) %>
     </li>
-
+    <%= render 'shared/sidebar_user' %>
   </ul>
 </div>

@@ -1,0 +1,11 @@
+<div class='user-sidebar-panel'>
+  Signed in as <strong><%= current_user.display_name %></strong>.
+  <br/>
+  <br/>
+  <a href='#'>Edit your Profile</a><br/>
+  <a href='#'>Change your Password</a>
+  <hr/>
+  <%= link_to destroy_user_session_path, class: 'sign-out' do %>
+    Sign Out
+  <% end %>
+</div>

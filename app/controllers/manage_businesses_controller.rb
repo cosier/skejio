@@ -1,53 +1,52 @@
 class ManageBusinessesController < ManageController
-  respond_to :html, :xml, :js
-
   before_action :set_current_navigation
+
+  load_and_authorize_resource :business, parent: false
 
   layout 'super_console'
 
   def index
-    @manage_businesses = ManageBusiness.all
-    respond_with(@manage_businesses)
+    respond_with(@businesses)
   end
 
   def show
-    respond_with(@manage_business)
+    respond_with(@business)
   end
 
   def new
-    @manage_business = ManageBusiness.new
-    respond_with(@manage_business)
+    respond_with(@business)
   end
 
   def edit
   end
 
   def create
-    @manage_business = ManageBusiness.new(business_params)
-    @manage_business.save
-    respond_with(@manage_business)
+    @business.save
+    respond_with(@business, location: manage_business_path(@business))
   end
 
   def update
-    @manage_business.update(business_params.permit!)
-    respond_with(@manage_business)
+    @business.update(business_params.permit!)
+    respond_with(@business, location: manage_business_path(@business))
   end
 
   def destroy
-    @manage_business.destroy
-    respond_with(@manage_business)
+    @business.destroy
+    respond_with(@business, location: manage_business_path(@business))
   end
 
   private
-    # def set_business
-    #   @business = ManageBusiness.find(params[:id])
-    # end
 
-    def set_current_navigation
-      @current_sidebar = :businesses
-    end
+  # def set_business
+  #   @business = ManageBusiness.find(params[:id])
+  # end
 
-    def business_params
-      params[:manage_business]
-    end
+  def set_current_navigation
+    @current_sidebar = :businesses
+  end
+
+  def business_params
+    params[:business]
+  end
+
 end
