@@ -1,0 +1,32 @@
+<h1>Listing Sub Accounts</h1>
+
+<table class="table table-stripped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone Number </th>
+      <th colspan="3"></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr> 
+      <%= render :partial => 'sub_account' , :locals => {:business => @business ,:sa => @sub_account} unless @sub_account.nil?%>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Sub account', new_subaccount_path(@business.slug)  if @sub_account.nil? %>
+
+
+<div id="loading" style="display:none">
+  <%= image_tag 'loading.gif' %>
+</div>
+
+
+

@@ -24,15 +24,23 @@ class Business < ActiveRecord::Base
   has_many :offices,
     dependent: :destroy
 
+  has_many :phones, :as => :phonable
+
   validates_uniqueness_of :slug
   validates_presence_of :slug
 
   before_validation :ensure_unique_slug
 
-  # Checks whether the given user is a member of this Businesses staffing.
-  # Of course, a super_admin will pass as well.
-  def valid_staff? (current_user)
-    users.where({id: current_user.id}).first || current_user.roles?(:super_admin)
+  # Create a subaccount with the business name
+  after_create do
+    subaccount = create_tw_subaccount
+    phones.create(subaccount)
+  end
+
+  # Creating a subaccount at twillio
+  def create_tw_subaccount
+    sub_ac = TwillioClient.accounts.create({:FriendlyName => name })
+    {:subaccount => sub_ac.friendly_name , :sid => sub_ac.sid , :sauth_token => sub_ac.auth_token }
   end
 
   # Formal display name for this entity

@@ -14,7 +14,6 @@ class ManageController < ApplicationController
 
   def ensure_super_powers!
     unless current_user.roles? :super_admin
-      # sign_out current_user
       redirect_to root_path,
         alert: "Sorry you do not have the required privileges for that area."
     end
