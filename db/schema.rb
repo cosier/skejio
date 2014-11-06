@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141105084711) do
+ActiveRecord::Schema.define(version: 20141106073129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,29 @@ ActiveRecord::Schema.define(version: 20141105084711) do
     t.text     "billing_address"
     t.boolean  "is_listed",       default: true
     t.boolean  "is_active",       default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "phones", force: true do |t|
+    t.string   "subaccount"
+    t.string   "number"
+    t.integer  "phonable_id"
+    t.string   "phonable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sid"
+    t.string   "sauth_token"
+  end
+
+  add_index "phones", ["phonable_id", "phonable_type"], name: "index_phones_on_phonable_id_and_phonable_type", using: :btree
+
+  create_table "sub_accounts", force: true do |t|
+    t.string   "name"
+    t.string   "sid"
+    t.string   "sauth_token"
+    t.string   "phone_number"
+    t.integer  "business_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

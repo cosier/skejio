@@ -18,6 +18,84 @@ class BusinessesController < SecureController
     redirect_to business_slug_path(@business) if @business.is_active?
   end
 
+
+  def subaccounts
+    @sub_account = @business.phones[0]
+    respond_to do |format|
+      format.html {}
+    end
+  end
+
+
+  def new_subaccount
+    @sub_account = @business.phones.new
+    respond_to do |format|
+      format.html {}
+    end
+  end
+
+  def create_subaccount
+    sub_account = @business.create_tw_subaccount
+    @sub_account = @business.phones.new(sub_account)
+    @sub_account.save
+    respond_to do |format|
+      format.html { redirect_to business_subaccounts_path(@business.slug) }
+    end
+  end
+
+  def search_number
+    @sub_account = @business.phones[0]
+    respond_to do |format|
+      format.html {}
+    end
+  end
+
+  def search_numbers
+    @sub_account = @business.phones[0]
+    search_params = {}
+    %w[in_postal_code near_number contains].each do |p|
+      search_params[p] = params[:search][p] unless params[:search][p].nil? || params[:search][p].empty?
+    end
+    @numbers = @sub_account.search_numbers(search_params)
+    respond_to do |format|
+      format.js {}
+    end
+  end
+
+
+  def buy_phone_number
+    @sub_account = @business.phones[0]
+    phone_number = @sub_account.buy_phone_number(params[:num])
+    @sub_account.number = phone_number
+    @sub_account.save
+    respond_to do |format|
+      format.html { redirect_to business_subaccounts_path(@business.slug) , :notice => "You successfully puchased #{phone_number}"}
+    end
+  end
+
+
+  def send_sms 
+    @sub_account = @business.phones[0]
+    @sub_account.send_sms(params[:message])
+
+    respond_to do |format|
+      format.html {redirect_to business_subaccounts_path(@business.slug), :notice => "Message has been sent successfully #{params[:message][:to]}"}
+    end
+
+  end
+
+  def make_a_call
+    @sub_account = @business.phones[0]
+    @sub_account.make_a_call(params[:info])
+    
+    respond_to do |format|
+      format.html {redirect_to business_subaccounts_path(@business.slug), :notice => "Call will be made in few secs to #{params[:info][:to]}"}
+    end
+  end
+
+
+
+
   private
 
   def get_business

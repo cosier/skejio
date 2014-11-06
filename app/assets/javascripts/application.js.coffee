@@ -14,7 +14,6 @@
 #= require jquery_ujs
 #= require vendor/jquery.rumble
 #= require twitter/bootstrap
-#= require turbolinks
 #= require_tree .
 #= require_self
 
@@ -27,6 +26,11 @@ ready = ()->
     console.debug 'menu-toggle click'
 
 $ ->
+
+  $(".get-phonenumbers").bind "ajax:beforeSend", ->
+    $("#loading").css "display", "block"
+    return
+
   $(document).on "ready", ->
     ready()
 

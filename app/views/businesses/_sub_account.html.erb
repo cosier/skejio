@@ -1,0 +1,15 @@
+<td><%= sa.subaccount %></td>
+<td><%= sa.number  %></td>
+<td>
+	<%= link_to 'Buy New Number', search_number_path, class: 'btn btn-xs btn-primary' if @sub_account.number.nil?%>
+    <% unless @sub_account.number.blank? %>
+		<%= link_to 'Send SMS' ,'#',"data-toggle" => "modal" , "data-target" => "#msgModal",  class: 'btn btn-xs btn-warning get-phonenumbers'%>
+		
+		<%= link_to 'Make a Call' ,'#',"data-toggle" => "modal" , "data-target" => "#callModal",  class: 'btn btn-xs btn-success get-phonenumbers'%>
+	<% end %>
+
+</td>
+
+<%= render :partial => 'msgModal' , :locals => {:business => business, :sc => sa } %>
+<%= render :partial => 'callModal' , :locals => {:business => business, :sc => sa } %>
+
