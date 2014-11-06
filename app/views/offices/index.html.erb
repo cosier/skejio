@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li><a href="<%= business_offices_path(@business) %>">Offices</a></li>
+  <li class='active'>Directory</li>
+</ol>
+
 <h1>Business Offices and Locations</h1>
 <hr/>
 <table class='table'>
@@ -10,6 +15,10 @@
   </thead>
 
   <tbody>
+    <% if @offices.empty? %>
+    <tr><td colspan="100">No Offices found for this Business.</td></tr>
+    <% end %>
+
     <% @offices.each do |business_office| %>
       <tr>
         <td><%= business_office.name.titleize %></td>
@@ -23,7 +32,5 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
-
+<hr/>
 <%= link_to 'New Business office', new_business_office_path, class: 'btn btn-success' %>

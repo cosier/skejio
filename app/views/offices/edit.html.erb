@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+  <li><a href="<%= business_offices_path(@business) %>">Offices</a></li>
+  <li><a href="<%= business_office_path(@business, @office) %>"><%= @office.name.titleize %></a></li>
+  <li class='active'>Edit</li>
+</ol>
+
 <h1>Editing business_office</h1>
 
 <%= render 'form' %>
