@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  subaccount: MyString
+  number: MyString
+  phonable_id: 
+  phonable_type: Phonable
+
+two:
+  subaccount: MyString
+  number: MyString
+  phonable_id: 
+  phonable_type: Phonable
