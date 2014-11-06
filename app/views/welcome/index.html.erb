@@ -2,7 +2,7 @@
 <hr/>
 <% if current_user and current_user.business.present? %>
   <%= link_to 'Business Console',
-    business_slug_path(current_user.business),
+    business_path(current_user.business),
     class: 'btn btn-success btn-lg' %>
 <% elsif not current_user %>
   Please <%= link_to 'Log In', new_user_session_path %> or

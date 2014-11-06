@@ -5,4 +5,4 @@
 </p>
 <br/>
 <p>You may access your Business Console here (once your account is approved):</p>
-<%= link_to('Business Console', url_for(controller: 'businesses', action: 'dashboard', slug: @business.slug, only_path: false)) %>
+<%= link_to('Business Console', url_for(controller: 'businesses', action: 'dashboard', id: @business.id, only_path: false)) %>

@@ -13,8 +13,7 @@ class Ability
     ###########################################
     # Business Admin Rules
     if user.roles? :admin
-      # Admins can only edit active/approved businesses
-      can :manage, Business, { is_active: true, id: user.business_id }
+      can :manage, Business, { id: user.business_id }
       can :manage, Office, { business_id: user.business_id }
     end
 

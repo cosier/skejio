@@ -12,9 +12,9 @@ class SecureController < ApplicationController
       path = manage_dashboard_path
 
     elsif current_user
-      path = business_dashboard_path(slug: current_user.business.slug)
+      path = business_dashboard_path(current_user.business)
     end
-
+    binding.pry
     redirect_to path, :alert => exception.message
   end
 

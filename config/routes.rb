@@ -12,12 +12,12 @@ Rails.application.routes.draw do
     get '/', to: 'manage#dashboard', as: :manage_dashboard
   end
 
+
+  get '/businesses/:id/pending', to: 'businesses#pending', as: :business_pending
+  get '/businesses/:id/dashboard', to: 'businesses#dashboard', as: :business_dashboard
   resources :businesses do
     resources :offices, path: 'offices', as: :offices
   end
-
-  get '/business/:slug/pending', to: 'businesses#pending', as: :business_pending
-  get '/business/:slug', to: 'businesses#dashboard', as: :business_dashboard
 
   devise_scope :user do
     # tmp devise fix until we hook our links with javascript for :delete requests
