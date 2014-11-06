@@ -1,0 +1,20 @@
+<div id="sidebar-wrapper">
+
+  <ul class="sidebar-nav">
+    <li class="sidebar-brand">
+      <%= link_to manage_dashboard_path do %>
+          Super Console
+      <% end %>
+    </li>
+
+    <li>
+      <%= link_to 'Dashboard', manage_dashboard_path, class: manage_sidebar_active(:dashboard) %>
+    </li>
+
+    <% if can? :read, ManageBusiness %>
+      <li><%= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses) %></li>
+    <% end %>
+
+
+  </ul>
+</div>

@@ -1,0 +1,44 @@
+@import "colors";
+
+p.user-info {
+  padding:14px;
+}
+
+// Skinny headers
+h1,h2,h3 {
+  font-weight:100;
+}
+
+* {
+  position: relative;
+}
+
+.block {
+  display:block;
+}
+
+form .control-label abbr {
+  display:none;
+}
+
+form p.error-text {
+  color:$dark-red;
+  font-weight: bold;
+}
+
+
+i.fa.red {
+  color:$dark-red;
+}
+
+i.fa.green {
+  color:$green;
+}
+
+.muted {
+  color:#999;
+}
+
+table.boxed {
+  border:1px solid #e1e1e1;
+}

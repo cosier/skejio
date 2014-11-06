@@ -1,0 +1,38 @@
+# Template file for Application Environment Vars.
+# This is powered by the fiagro gem, check that out for the full details.
+#
+# Copy this file over as config/application.yml and then enter your
+# own personal credentials
+#
+# When you add an ENV VAR to config/application.yml, then also add it here as well.
+# So other developers will have a template for all the required ENV VARs
+
+mailer_sender: "support@schedule-planner.mailgun.org"
+
+# SMTP Credentials.
+# Feel free to use the following mailgun credentials for dev
+MAILGUN_SMTP_SERVER: "smtp.mailgun.org"
+MAILGUN_SMTP_PORT: "587"
+MAILGUN_SMTP_LOGIN: "postmaster@schedule-planner.mailgun.org"
+MAILGUN_SMTP_PASSWORD: "d3cb735bfade295b85f385399870516f"
+SMTP_DOMAIN: "schedule-planner.mailgun.org"
+
+# AWS Credentials
+AWS_ACCESS_KEY: ""
+AWS_SECRET: ""
+S3_BUCKET: ""
+
+# Twilio Account Tokens
+TWILIO_ACCOUNT_SID: ""
+TWILIO_AUTH_TOKEN: ""
+
+
+# Set this to whatever your host is for your environment.
+# ngrok is recommended for when testing external services in local dev.
+# (ie. testing Twilio)
+#
+# Running on port 80
+# eg. schedule-planner.dev
+# eg. sp-planer-dev.ngrok.com
+host: "localhost"
+

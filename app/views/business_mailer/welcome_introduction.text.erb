@@ -1,0 +1,6 @@
+Business#welcome_introduction
+
+<%= @greeting %> <%= @user.display_name %>, Welcome to Schedule Planner
+
+You may access your Business Console here (once your account is approved):
+<%= url_for controller: 'businesses', action: 'dashboard', slug: @business.slug, only_path: false %>
