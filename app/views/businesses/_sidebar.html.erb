@@ -3,7 +3,7 @@
   <ul class="sidebar-nav <%= @business.is_active? ? 'enabled' : 'disabled' %>">
     <li class="sidebar-brand">
 
-      <%= link_to(business_slug_path(@business)) do %>
+      <%= link_to(business_path(@business)) do %>
           <!-- <i class='fa fa-circle' style=\"display:inline-block;\"></i> -->
           <%= @business.display_name.titleize %>
           <br/>

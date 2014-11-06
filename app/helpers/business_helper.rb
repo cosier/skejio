@@ -12,7 +12,7 @@ module BusinessHelper
   end
 
   def business_sidebar_url(link)
-    default_path = business_slug_path(@business)
+    default_path = business_path(@business)
 
     return default_path unless @business.is_active?
 
