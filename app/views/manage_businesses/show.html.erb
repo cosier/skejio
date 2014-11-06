@@ -49,7 +49,7 @@
     <% end %>
 
     <% @business.offices.each do |office| %>
-      <%= render partial: "office_details", locals: { user: user } %>
+      <%= render partial: "office_details", locals: { office: office } %>
     <% end %>
   </div>
 </div>

@@ -2,8 +2,10 @@ class BusinessesController < SecureController
 
   before_action :authenticate_user!
 
-  before_action :get_business
+  # before_action :get_business
   before_action :validate_business_permissions
+
+  load_and_authorize_resource :business
 
   layout 'business_console'
 
