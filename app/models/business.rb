@@ -24,7 +24,7 @@ class Business < ActiveRecord::Base
   has_many :offices,
     dependent: :destroy
 
-  has_many :phones, :as => :phonable
+  has_many :sub_accounts
 
   validates_uniqueness_of :slug
   validates_presence_of :slug
@@ -55,6 +55,9 @@ class Business < ActiveRecord::Base
       message = BusinessMailer.welcome_introduction(user)
       message.deliver
     end
+  end
+
+  def sub_account
   end
 
   private

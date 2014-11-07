@@ -14,6 +14,7 @@ class Ability
     # Business Admin Rules
     if user.roles? :admin
       can :manage, Business, { id: user.business_id }
+      can :manage, Number, { business_id: user.business_id }
       can :manage, Office, { business_id: user.business_id }
     end
 

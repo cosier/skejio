@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sub account:</strong>
+  <%= @number.sub_account %>
+</p>
+
+<p>
+  <strong>Number:</strong>
+  <%= @number.number %>
+</p>
+
+<p>
+  <strong>Sid:</strong>
+  <%= @number.sid %>
+</p>
+
+<p>
+  <strong>Sauth token:</strong>
+  <%= @number.sauth_token %>
+</p>
+
+<%= link_to 'Edit', edit_business_number_path(@business, @number) %> |
+<%= link_to 'Back', business_numbers_path(@business) %>

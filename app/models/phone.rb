@@ -1,9 +1,24 @@
+# == Schema Information
+#
+# Table name: phones
+#
+#  id            :integer          not null, primary key
+#  subaccount    :string(255)
+#  number        :string(255)
+#  phonable_id   :integer
+#  phonable_type :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
+#  sid           :string(255)
+#  sauth_token   :string(255)
+#
+
 class Phone < ActiveRecord::Base
   belongs_to :phonable, polymorphic: true
 
 
     # Getting all subaccount from twillio
-  
+
   def self.all_subaccounts
   	TwillioClient.accounts.list
   end
@@ -25,7 +40,7 @@ class Phone < ActiveRecord::Base
   	subaccount = create_client_for_subaccount
     # buy the first one
   	subaccount.incoming_phone_numbers.create(:phone_number => number)
-	  number 
+	  number
   end
 
   def search_numbers(search_params)
@@ -41,7 +56,7 @@ class Phone < ActiveRecord::Base
         :to => message[:to], # To any number
         :body => message[:body]
        )
-    rescue Twilio::REST::RequestError => e 
+    rescue Twilio::REST::RequestError => e
       e.message
     end
 
@@ -60,7 +75,7 @@ class Phone < ActiveRecord::Base
 
   def call_charges
     subaccount = create_client_for_subaccount
-    # print a list of calls 
+    # print a list of calls
     time_to_bill=0
     start_time = Time.now - ( 30 * 24 * 60 * 60) #30 days
     subaccount.calls.list({:page => 0, :page_size => 1000, :start_time => ">#{start_time.strftime("%Y-%m-%d")}"}).each do |call|
@@ -70,9 +85,9 @@ class Phone < ActiveRecord::Base
   end
 
 
-  def message_charges    
+  def message_charges
     subaccount = create_client_for_subaccount
-    total_charge = 0 
+    total_charge = 0
     start_time = Time.now - ( 30 * 24 * 60 * 60) #30 days
     subaccount.messages.list({:page => 0, :page_size => 1000, :start_time => ">#{start_time.strftime("%Y-%m-%d")}"}).each do |msg|
       total_charge += msg.price.to_f

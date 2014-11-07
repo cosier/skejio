@@ -8,13 +8,8 @@
 #  encrypted_password     :string(255)      default(""), not null
 #  first_name             :string(255)
 #  last_name              :string(255)
-<<<<<<< HEAD
 #  roles                  :integer
 #  status                 :integer
-=======
-#  roles_mask             :integer
-#  status_mask            :integer
->>>>>>> origin/ratnakar
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -28,10 +23,7 @@
 #  locked_at              :datetime
 #  created_at             :datetime
 #  updated_at             :datetime
-<<<<<<< HEAD
 #  phone                  :string(255)
-=======
->>>>>>> origin/ratnakar
 #
 
 class User < ActiveRecord::Base
