@@ -1,15 +1,18 @@
-class NumbersController < ApplicationController
+class NumbersController < SecureController
 
+  # Load Business via CanCan factory
   load_and_authorize_resource :business,
     id_param: :business_id
 
-  # Load Numbers
+  before_action :validate_business
+  before_action :set_current_sidebar
+
+  # Load Numbers via CanCan factory
   load_and_authorize_resource
 
   layout 'business_console'
 
   def index
-    @current_sidebar = :numbers
     @numbers = Number.all
     respond_with(@numbers)
   end
@@ -19,8 +22,10 @@ class NumbersController < ApplicationController
   end
 
   def new
-    @number = Number.new
-    respond_with(@number)
+    @sub_account = @business.sub_account
+    respond_to do |format|
+      format.html {}
+    end
   end
 
   def edit
@@ -42,15 +47,7 @@ class NumbersController < ApplicationController
     respond_with(@number)
   end
 
-
-  def search_number
-    @sub_account = @business.sub_account
-    respond_to do |format|
-      format.html {}
-    end
-  end
-
-  def search_numbers
+  def search
     @sub_account = @business.sub_account
 
     search_params = {}
@@ -66,14 +63,17 @@ class NumbersController < ApplicationController
     end
   end
 
-  def buy_phone_number
-    @sub_account = @business.sub_account
-    phone_number = @sub_account.buy_phone_number(params[:num])
-    @sub_account.number = phone_number
-    @sub_account.save
+  def buy_number
+    begin
+      @business.sub_account.buy_number(params[:number])
+    rescue Twilio::REST::RequestError => e
+      logger.error(e.message)
+      return redirect_to new_business_number_path(@business),
+        :alert => "Sorry, the Number #{params[:number]} is no longer available."
+    end
 
     respond_to do |format|
-      format.html { redirect_to business_subaccounts_path(@business) , :notice => "You successfully puchased #{phone_number}"}
+      format.html { redirect_to business_numbers_path(@business) , :notice => "You successfully puchased #{params[:number]}"}
     end
   end
 
@@ -97,11 +97,15 @@ class NumbersController < ApplicationController
   end
 
   private
-    def set_number
-      @number = Number.find(params[:id])
-    end
+  def set_number
+    @number = Number.find(params[:id])
+  end
 
-    def number_params
-      params.require(:number).permit(:sub_account_id, :number, :sid, :sauth_token)
-    end
+  def set_current_sidebar
+    @current_sidebar = :numbers
+  end
+
+  def number_params
+    params.require(:number).permit(:sub_account_id, :number, :sid, :sauth_token)
+  end
 end

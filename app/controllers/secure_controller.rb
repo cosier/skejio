@@ -18,4 +18,20 @@ class SecureController < ApplicationController
     redirect_to path, :alert => exception.message
   end
 
+  private
+
+  def validate_business
+
+    # Check for invalid businesses
+    if @business.nil?
+      binding.pry
+      return redirect_to "/", alert: "Business not found"
+    end
+
+    # Check that the business has been approved (is_active)
+    if not @business.is_active? and params[:action] != "pending"
+      return redirect_to business_pending_path(@business)
+    end
+  end
+
 end

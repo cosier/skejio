@@ -31,21 +31,11 @@ class Business < ActiveRecord::Base
 
   before_validation :ensure_unique_slug
 
-  # Create a subaccount with the business name
-  after_create do
-    subaccount = create_tw_subaccount
-    phones.create(subaccount)
-  end
-
-  # Creating a subaccount at twillio
-  def create_tw_subaccount
-    sub_ac = TwillioClient.accounts.create({:FriendlyName => name })
-    {:subaccount => sub_ac.friendly_name , :sid => sub_ac.sid , :sauth_token => sub_ac.auth_token }
-  end
+  after_save :check_for_approval_processing
 
   # Formal display name for this entity
   def display_name
-    name and name.downcase.capitalize
+    name and name.downcase.titleize
   end
 
   # Welcome emails are sent at registration,
@@ -57,10 +47,24 @@ class Business < ActiveRecord::Base
     end
   end
 
+  # At this moment we will only have one sub account per business.
   def sub_account
+    sub_accounts.first
   end
 
   private
+
+  def check_for_approval_processing
+    if is_active? and sub_accounts.empty?
+      response = Skej::Twilio.create_sub_account(self)
+      sub_accounts.create(
+        :business_id   => self.id,
+        :sid           => response.sid,
+        :auth_token    => response.auth_token,
+        :friendly_name => response.friendly_name)
+    end
+  end
+
 
   def ensure_unique_slug
     # Don't mess with the slug if it's already defined manually.

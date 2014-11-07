@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20141107164507) do
 
   create_table "sub_accounts", force: true do |t|
     t.integer  "business_id"
+    t.string   "friendly_name"
     t.string   "auth_token"
     t.string   "sid"
     t.datetime "created_at"

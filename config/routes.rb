@@ -15,14 +15,10 @@ Rails.application.routes.draw do
   get '/businesses/:id/dashboard', to: 'businesses#dashboard', as: :business_dashboard
 
   resources :businesses do
-    get  '/subaccounts', to: 'businesses#subaccounts', as: :subaccounts
-    get  '/search_number', to: 'businesses#search_number', as: :search_number
-    post '/subaccount_number_search', to: 'businesses#search_numbers', as: :search_numbers
-    get  '/buy_phone_number_path', to: 'businesses#buy_phone_number', as: :buy_phone_number
+    get  '/buy/:number', to: 'numbers#buy_number', as: :buy_number
+    post '/search', to: 'numbers#search', as: :search
     post '/send_sms', to: 'businesses#send_sms', as: :send_sms
     post '/make_a_call', to: 'businesses#make_a_call', as: :make_a_call
-    get  '/new_subaccount', to: 'businesses#new_subaccount', as: :new_subaccount
-    post '/create_subaccount', to: 'businesses#create_subaccount', as: :create_subaccount
 
     resources :offices
     resources :numbers

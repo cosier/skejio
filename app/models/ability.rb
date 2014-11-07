@@ -13,9 +13,14 @@ class Ability
     ###########################################
     # Business Admin Rules
     if user.roles? :admin
+      # Can manage their own Business
       can :manage, Business, { id: user.business_id }
-      can :manage, Number, { business_id: user.business_id }
+
+      # Can manage their own Offices for their associated Business
       can :manage, Office, { business_id: user.business_id }
+
+      # Can manage Numbers belonging to the subaccount which that user has access to.
+      can :manage, Number, { sub_account_id: user.business.sub_account.id }
     end
 
     if user.roles? :schedule_manager

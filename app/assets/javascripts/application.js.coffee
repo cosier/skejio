@@ -14,25 +14,24 @@
 #= require jquery_ujs
 #= require vendor/jquery.rumble
 #= require twitter/bootstrap
-#= require_tree .
 #= require_self
+#= require_tree .
+window['ready'] ||= []
 
-ready = ()->
-  console.debug 'app:ready()'
-
+ready_func = ()->
+  console.debug 'app:ready()', ready
   $("#menu-toggle").unbind('click').click (e) ->
     e.preventDefault()
     $("#wrapper").toggleClass "toggled"
     console.debug 'menu-toggle click'
 
+  for func in ready
+    func()
+
 $ ->
 
-  $(".get-phonenumbers").bind "ajax:beforeSend", ->
-    $("#loading").css "display", "block"
-    return
-
   $(document).on "ready", ->
-    ready()
+    ready_func()
 
   $(document).on "page:load", ->
-    ready()
+    ready_func()

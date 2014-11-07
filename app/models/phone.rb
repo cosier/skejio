@@ -17,35 +17,30 @@ class Phone < ActiveRecord::Base
   belongs_to :phonable, polymorphic: true
 
 
-    # Getting all subaccount from twillio
+  # Getting all subaccount from twillio
 
   def self.all_subaccounts
-  	TwillioClient.accounts.list
+    TwillioClient.accounts.list
   end
 
   def create_client_for_subaccount
-  	# Creating new client for sub account
-  	sa_client = Twilio::REST::Client.new(sid, sauth_token)
-	  subaccount = sa_client.account
+    # Creating new client for sub account
+    sa_client = Twilio::REST::Client.new(sid, sauth_token)
+    subaccount = sa_client.account
   end
 
   def get_phone_numbers
-  	subaccount = create_client_for_subaccount
-	  # get a list of available numbers
-	  numbers = subaccount.available_phone_numbers.get('US').local.list({:area_code => '410'})
+    subaccount = create_client_for_subaccount
+    # get a list of available numbers
+    numbers = subaccount.available_phone_numbers.get('US').local.list({:area_code => '410'})
 
   end
 
   def buy_phone_number(number)
-  	subaccount = create_client_for_subaccount
-    # buy the first one
-  	subaccount.incoming_phone_numbers.create(:phone_number => number)
-	  number
-  end
-
-  def search_numbers(search_params)
     subaccount = create_client_for_subaccount
-    numbers = subaccount.available_phone_numbers.get('US').local.list(search_params)
+    # buy the first one
+    subaccount.incoming_phone_numbers.create(:phone_number => number)
+    number
   end
 
   def send_sms(message)
@@ -55,7 +50,7 @@ class Phone < ActiveRecord::Base
         :from => number , # From our Twilio number
         :to => message[:to], # To any number
         :body => message[:body]
-       )
+      )
     rescue Twilio::REST::RequestError => e
       e.message
     end
@@ -66,10 +61,10 @@ class Phone < ActiveRecord::Base
   def make_a_call(info)
     subaccount = create_client_for_subaccount
     call = subaccount.calls.create(
-     :from => number,   # From our Twilio number
-     :to => info[:to],     # To any number
-     # Fetch instructions from this URL when the call connects
-     :url => 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
+      :from => number,   # From our Twilio number
+      :to => info[:to],     # To any number
+      # Fetch instructions from this URL when the call connects
+      :url => 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
     )
   end
 
