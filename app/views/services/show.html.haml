@@ -1,10 +1,16 @@
 %p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Services', business_services_path
+  %li.active
+    = @service.name
 
+%h2
+  Service for
+  = @business.name
+%hr/
 %p
-  %b Business:
-  = @service.business
-%p
-  %b Name:
+  %b Service Name:
   = @service.name
 %p
   %b Description:
@@ -16,6 +22,6 @@
   %b Duration:
   = @service.duration
 
-= link_to 'Edit', edit_service_path(@service)
+= link_to 'Edit', edit_business_service_path(@business, @service)
 \|
-= link_to 'Back', services_path
+= link_to 'Back', business_services_path

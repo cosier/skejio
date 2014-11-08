@@ -1,7 +1,16 @@
-%h1 Editing service
 
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Services', business_services_path
+  %li.active
+    = @service.name
+
+%h2 Editing Service
+%hr/
 = render 'form'
 
-= link_to 'Show', @service
+%hr/
+= link_to 'Show', [@business, @service]
 \|
-= link_to 'Back', services_path
+= link_to 'Back', business_services_path

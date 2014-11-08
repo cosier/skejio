@@ -1,7 +1,13 @@
+
 %p#notice= notice
+%ol.breadcrumb
+  %li
+    %a{:href => business_offices_path(@business)} Offices
+  %li.active= @office.name
+
 %p
   %strong Business:
-  = @office.business.name.titleize
+  = @office.business.name
 %p
   %strong Name:
   = @office.name

@@ -1,4 +1,5 @@
-= form_for @service do |f|
+= simple_form_for([@business, @service], class: 'form form-horizontal') do |f|
+
   - if @service.errors.any?
     #error_explanation
       %h2= "#{pluralize(@service.errors.count, "error")} prohibited this service from being saved:"
@@ -6,20 +7,28 @@
         - @service.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :business
-    = f.text_field :business
-  .field
-    = f.label :name
-    = f.text_field :name
-  .field
-    = f.label :description
-    = f.text_area :description
-  .field
-    = f.label :priority
-    = f.number_field :priority
-  .field
-    = f.label :duration
-    = f.number_field :duration
-  .actions
-    = f.submit 'Save'
+  .form-inputs
+    = f.hidden_field :business_id
+    / Text input
+    .form-group
+      = f.label :name
+      .controls
+        = f.text_field :name, class: 'form-control'
+
+    .form-group
+      = f.label :description
+      .controls
+        = f.text_area :description, class: 'form-control'
+
+    .form-group
+      = f.label :priority
+      .controls
+        = f.number_field :priority, class: 'form-control'
+
+    .form-group
+      = f.label :duration
+      .controls
+        = f.number_field :duration, class: 'form-control'
+    %hr/
+    .actions
+      = f.submit 'Save Service', class: 'btn btn-success'

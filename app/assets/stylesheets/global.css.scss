@@ -55,3 +55,19 @@ table.boxed {
     color:$dark-red;
   }
 }
+.form-group .controls {
+  margin-left: 140px;
+  margin-top: -30px;
+}
+
+form textarea {
+  // width:100%;
+  // max-width:400px;
+  min-height:100px;
+}
+
+#sidebar-wrapper {
+  li.disabled {
+    opacity:0.5;
+  }
+}

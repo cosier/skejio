@@ -1,9 +1,18 @@
-%h1 Listing services
+
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Services', business_services_path
+  %li.active Directory
+
+%h1
+  Services for
+  = @business.name
+
 %hr/
 
-%table
+%table.table.table-striped
   %tr
-    %th Business
     %th Name
     %th Description
     %th Priority
@@ -12,17 +21,23 @@
     %th
     %th
 
+  - if @services.empty?
+    %tr
+      %td{:colspan => "100"}
+        %br/
+        %strong No Services found for this Business.
+        %p Please click the button below to add a Service for your Business.
   - @services.each do |service|
     %tr
-      %td= service.business
       %td= service.name
       %td= service.description
       %td= service.priority
       %td= service.duration
-      %td= link_to 'Show', service
-      %td= link_to 'Edit', edit_service_path(service)
-      %td= link_to 'Destroy', service, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %td= link_to 'Show', [@business, service]
+      %td= link_to 'Edit', edit_business_service_path(@business, service)
+      %td= link_to 'Destroy', [@business, service], :method => :delete, :data => { :confirm => 'Are you sure?' }
 
-%br
+%br/
+%hr/
 
-= link_to 'New Service', new_business_service_path(@business)
+= link_to 'New Service', new_business_service_path(@business), class: 'btn btn-success'

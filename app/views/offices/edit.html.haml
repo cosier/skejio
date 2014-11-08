@@ -2,8 +2,9 @@
   %li
     %a{:href => business_offices_path(@business)} Offices
   %li
-    %a{:href => business_office_path(@business, @office)}= @office.name.titleize
+    %a{:href => business_office_path(@business, @office)}= @office.name
   %li.active Edit
+
 %h1 Editing business_office
 = render 'form'
 = link_to 'Show', [@business, @office]

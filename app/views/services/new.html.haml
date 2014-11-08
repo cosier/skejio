@@ -1,5 +1,15 @@
-%h1 New service
+
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Services', business_services_path
+  %li.active New Service
+
+%h2
+  New Service for
+  = @business.name
+%hr/
 
 = render 'form'
-
-= link_to 'Back', services_path
+%hr/
+= link_to 'Back', business_services_path, class: 'btn btn-link'
