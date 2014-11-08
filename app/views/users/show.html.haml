@@ -1,0 +1,72 @@
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Users', business_users_path
+  %li.active
+    = link_to @user.id, business_user_path(@business, @user)
+%p#notice= notice
+%hr/
+%h2
+  %span.muted Business User Member:
+  = @user.display_name
+
+%hr/
+
+.row.form-group
+  .col-lg-2.field
+    First Name
+  .col-lg-2
+    = @user.first_name
+
+.row.form-group
+  .col-lg-2.field
+    Last Name
+  .col-lg-2
+    = @user.last_name
+
+.row.form-group
+  .col-lg-2.field
+    Email Address
+  .col-lg-2
+    = @user.email
+%hr/
+.row.form-group
+  .col-lg-2.field
+    Created At
+  .col-lg-2
+    = @user.created_at
+.row.form-group
+  .col-lg-2.field
+    Last Sign In At
+  .col-lg-2
+    = @user.last_sign_in_at
+.row.form-group
+  .col-lg-2.field
+    Last Sign In IP
+  .col-lg-2
+    = @user.last_sign_in_ip
+%hr/
+.row.form-group
+  .col-lg-2.field
+    Roles
+  .col-lg-2
+    - @user.roles.each do |r|
+      .label.label-default
+        = r.upcase
+
+.row.form-group
+  .col-lg-2.field
+    Status
+  .col-lg-2
+    - @user.status.each do |s|
+      .label.label-default
+        = s.upcase
+
+
+
+%hr/
+= link_to 'Edit', edit_business_user_path(@business, @user), class: 'btn btn-warning'
+&nbsp;
+%span.muted
+  \|
+= link_to 'Back', business_users_path, class: 'btn btn-link'

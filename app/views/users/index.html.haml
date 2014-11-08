@@ -1,0 +1,45 @@
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Users', business_users_path
+  %li.active Directory
+
+%h2
+  User Staff for
+  = @business.name
+
+%hr/
+
+%table.table.table-horizontal
+  %thead
+    %tr
+      %th Display Name
+      %th Email Address
+      %th Roles
+      %th.actions Actions
+  %tbody
+    - if @users.empty?
+      %tr
+        %td{:colspan => "100"}
+          %br/
+          %strong No Users found for this Business.
+          %p Please click the button below to add a User for your Business.
+
+    - @users.each do |user|
+      %tr
+        %td
+          = user.display_name
+        %td
+          = user.email
+        %td
+          - user.roles.each do |r|
+            .label.label-default
+              = r.upcase
+        %td
+          = link_to 'Show', business_user_path(@business, user)
+          = link_to 'Edit', edit_business_user_path(@business, user)
+          = link_to 'Destroy', [@business, user], :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+%hr/
+= link_to 'Add New User', new_business_user_path, class: 'btn btn-success'

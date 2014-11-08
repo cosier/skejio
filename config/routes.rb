@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
 
 
-
-
   devise_for :users, controllers: {
     registrations: 'registrations'
   }
@@ -25,6 +23,7 @@ Rails.application.routes.draw do
     resources :services
     resources :offices
     resources :numbers
+    resources :users
   end
 
 

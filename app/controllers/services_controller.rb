@@ -21,6 +21,8 @@ class ServicesController < BusinessesController
   end
 
   def create
+    authorize! :create, Service
+
     @service = Service.new(service_params)
     @service.save
     respond_with(@business, @service)

@@ -27,6 +27,8 @@ class OfficesController < SecureController
   end
 
   def create
+    authorize! :create, Office
+
     @office.save
 
     if @office.persisted?
@@ -48,21 +50,21 @@ class OfficesController < SecureController
 
   private
 
-    def preload_business_office
-      @office = Office.new(office_params)
-    end
+  def preload_business_office
+    @office = Office.new(office_params)
+  end
 
-    def set_current_sidebar
-      @current_sidebar = :offices
-    end
+  def set_current_sidebar
+    @current_sidebar = :offices
+  end
 
-    def set_business_office
-      @office = Office.find(params[:id])
-    end
+  def set_business_office
+    @office = Office.find(params[:id])
+  end
 
-    def office_params
-      p = params.require(:office).permit(:name, :location).dup
-      p[:business_id] = params[:business_id]
-      p
-    end
+  def office_params
+    p = params.require(:office).permit(:name, :location).dup
+    p[:business_id] = params[:business_id]
+    p
+  end
 end

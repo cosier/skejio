@@ -22,8 +22,11 @@ class Ability
       # Can manage Numbers belonging to the subaccount which that user has access to.
       can :manage, Number, { sub_account_id: user.business.sub_account.id }
 
-      # Can manage Numbers belonging to the subaccount which that user has access to.
+      # Can manage Service belonging to the same business
       can :manage, Service, { business_id: user.business_id }
+
+      # Can manage Users belonging to the same Business
+      can :manage, User, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_manager

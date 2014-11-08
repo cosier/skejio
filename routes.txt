@@ -1,0 +1,74 @@
+                  Prefix Verb   URI Pattern                                          Controller#Action
+        new_user_session GET    /users/sign_in(.:format)                             devise/sessions#new
+            user_session POST   /users/sign_in(.:format)                             devise/sessions#create
+    destroy_user_session DELETE /users/sign_out(.:format)                            devise/sessions#destroy
+           user_password POST   /users/password(.:format)                            devise/passwords#create
+       new_user_password GET    /users/password/new(.:format)                        devise/passwords#new
+      edit_user_password GET    /users/password/edit(.:format)                       devise/passwords#edit
+                         PATCH  /users/password(.:format)                            devise/passwords#update
+                         PUT    /users/password(.:format)                            devise/passwords#update
+cancel_user_registration GET    /users/cancel(.:format)                              registrations#cancel
+       user_registration POST   /users(.:format)                                     registrations#create
+   new_user_registration GET    /users/sign_up(.:format)                             registrations#new
+  edit_user_registration GET    /users/edit(.:format)                                registrations#edit
+                         PATCH  /users(.:format)                                     registrations#update
+                         PUT    /users(.:format)                                     registrations#update
+                         DELETE /users(.:format)                                     registrations#destroy
+       manage_businesses GET    /manage/businesses(.:format)                         manage_businesses#index
+                         POST   /manage/businesses(.:format)                         manage_businesses#create
+     new_manage_business GET    /manage/businesses/new(.:format)                     manage_businesses#new
+    edit_manage_business GET    /manage/businesses/:id/edit(.:format)                manage_businesses#edit
+         manage_business GET    /manage/businesses/:id(.:format)                     manage_businesses#show
+                         PATCH  /manage/businesses/:id(.:format)                     manage_businesses#update
+                         PUT    /manage/businesses/:id(.:format)                     manage_businesses#update
+                         DELETE /manage/businesses/:id(.:format)                     manage_businesses#destroy
+              businesses GET    /manage/businesses(.:format)                         manage_businesses#index
+        manage_dashboard GET    /manage(.:format)                                    manage#dashboard
+        business_pending GET    /businesses/:id/pending(.:format)                    businesses#pending
+      business_dashboard GET    /businesses/:id/dashboard(.:format)                  businesses#dashboard
+     business_buy_number GET    /businesses/:business_id/buy/:number(.:format)       numbers#buy_number
+         business_search POST   /businesses/:business_id/search(.:format)            numbers#search
+       business_send_sms POST   /businesses/:business_id/send_sms(.:format)          businesses#send_sms
+    business_make_a_call POST   /businesses/:business_id/make_a_call(.:format)       businesses#make_a_call
+       business_services GET    /businesses/:business_id/services(.:format)          services#index
+                         POST   /businesses/:business_id/services(.:format)          services#create
+    new_business_service GET    /businesses/:business_id/services/new(.:format)      services#new
+   edit_business_service GET    /businesses/:business_id/services/:id/edit(.:format) services#edit
+        business_service GET    /businesses/:business_id/services/:id(.:format)      services#show
+                         PATCH  /businesses/:business_id/services/:id(.:format)      services#update
+                         PUT    /businesses/:business_id/services/:id(.:format)      services#update
+                         DELETE /businesses/:business_id/services/:id(.:format)      services#destroy
+        business_offices GET    /businesses/:business_id/offices(.:format)           offices#index
+                         POST   /businesses/:business_id/offices(.:format)           offices#create
+     new_business_office GET    /businesses/:business_id/offices/new(.:format)       offices#new
+    edit_business_office GET    /businesses/:business_id/offices/:id/edit(.:format)  offices#edit
+         business_office GET    /businesses/:business_id/offices/:id(.:format)       offices#show
+                         PATCH  /businesses/:business_id/offices/:id(.:format)       offices#update
+                         PUT    /businesses/:business_id/offices/:id(.:format)       offices#update
+                         DELETE /businesses/:business_id/offices/:id(.:format)       offices#destroy
+        business_numbers GET    /businesses/:business_id/numbers(.:format)           numbers#index
+                         POST   /businesses/:business_id/numbers(.:format)           numbers#create
+     new_business_number GET    /businesses/:business_id/numbers/new(.:format)       numbers#new
+    edit_business_number GET    /businesses/:business_id/numbers/:id/edit(.:format)  numbers#edit
+         business_number GET    /businesses/:business_id/numbers/:id(.:format)       numbers#show
+                         PATCH  /businesses/:business_id/numbers/:id(.:format)       numbers#update
+                         PUT    /businesses/:business_id/numbers/:id(.:format)       numbers#update
+                         DELETE /businesses/:business_id/numbers/:id(.:format)       numbers#destroy
+          business_users GET    /businesses/:business_id/users(.:format)             users#index
+                         POST   /businesses/:business_id/users(.:format)             users#create
+       new_business_user GET    /businesses/:business_id/users/new(.:format)         users#new
+      edit_business_user GET    /businesses/:business_id/users/:id/edit(.:format)    users#edit
+           business_user GET    /businesses/:business_id/users/:id(.:format)         users#show
+                         PATCH  /businesses/:business_id/users/:id(.:format)         users#update
+                         PUT    /businesses/:business_id/users/:id(.:format)         users#update
+                         DELETE /businesses/:business_id/users/:id(.:format)         users#destroy
+                         GET    /businesses(.:format)                                businesses#index
+                         POST   /businesses(.:format)                                businesses#create
+            new_business GET    /businesses/new(.:format)                            businesses#new
+           edit_business GET    /businesses/:id/edit(.:format)                       businesses#edit
+                business GET    /businesses/:id(.:format)                            businesses#show
+                         PATCH  /businesses/:id(.:format)                            businesses#update
+                         PUT    /businesses/:id(.:format)                            businesses#update
+                         DELETE /businesses/:id(.:format)                            businesses#destroy
+          users_sign_out GET    /users/sign_out(.:format)                            devise/sessions#destroy
+                    root GET    /                                                    welcome#index

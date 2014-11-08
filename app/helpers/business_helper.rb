@@ -11,12 +11,22 @@ module BusinessHelper
     end
   end
 
+  def business_user_roles
+    User::ROLES.select do |role|
+      not role.to_s.include? "super_"
+    end.map do |role|
+      [role.to_s.titleize, role]
+    end
+  end
+
   def business_sidebar_url(link)
     default_path = business_path(@business)
 
     return default_path unless @business.is_active?
 
     case link
+    when :users
+      business_users_path(@business)
     when :services
       business_services_path(@business)
     when :numbers

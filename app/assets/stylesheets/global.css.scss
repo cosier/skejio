@@ -66,8 +66,25 @@ form textarea {
   min-height:100px;
 }
 
+.form-group .error {
+  color: $dark-red;
+  font-size:12px;
+  padding:5px 0;
+  margin-top:10px;
+  margin-bottom:30px;
+}
+
 #sidebar-wrapper {
   li.disabled {
     opacity:0.5;
+    cursor: default;
+    a:hover,
+    a {
+      color:#777;
+      cursor:default;
+    }
   }
+}
+#error_explanation {
+  color:$dark-red;
 }

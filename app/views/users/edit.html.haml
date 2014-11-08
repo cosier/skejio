@@ -1,0 +1,17 @@
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Users', business_users_path
+  %li
+    = link_to @user.id, business_user_path(@business, @user)
+  %li.active
+    Editing
+
+%h2 Editing user
+%hr/
+= render 'form'
+
+%hr/
+= link_to 'Show', [@business, @user], class: 'btn btn-default'
+\|
+= link_to 'Back', business_users_path(@business), class: 'btn btn-default'
