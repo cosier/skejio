@@ -1,0 +1,12 @@
+.user-staff
+  = user.display_name
+  %br/
+  = user.email
+  %br/
+  %hr/
+  %strong Roles:
+  - user.roles.each do |role|
+    .label.label-warning= role.to_s.upcase
+  %a.pull-right
+    %i.fa.fa-user>
+    \&nbsp; View User

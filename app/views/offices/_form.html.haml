@@ -1,0 +1,17 @@
+= simple_form_for([@business, @office], class: 'form') do |f|
+  %hr/
+  = form_error_messages(@office)
+  .form-inputs
+    / Text input
+    .form-group
+      = f.label :name
+      = f.input_field :name, class: 'form-control'
+    %br/
+    / Text input
+    .form-group
+      = f.label :location
+      = f.input_field :location, class: 'form-control'
+  %br/
+  .form-actions
+    = f.submit "Save Office", class: 'btn btn-success'
+  %br/

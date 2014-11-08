@@ -1,0 +1,46 @@
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    %a{:href => manage_businesses_path} Businesses
+  %li.active= @business.name.titleize
+%hr/
+%h1= @business.name.titleize
+%hr/
+.row
+  .col-lg-12.field-name Billing Details:
+  .col-lg-12
+    %table.table.table-striped.boxed
+      %thead
+        %tr
+          %th Billing Contact
+          %th Billing Email Address
+          %th Billing Phone
+          %th Billing Address
+      %tbody
+        %tr
+          %td= @business.billing_name
+          %td= @business.billing_email || 'n/a'
+          %td= @business.billing_phone || 'n/a'
+          %td= @business.billing_address || 'n/a'
+%hr/
+.row
+  .col-lg-12.field-name Approved:
+  .col-lg-12= (@business.is_active?).to_s.upcase
+%hr/
+.row
+  .col-lg-12.field-name Offices and Locations:
+  .col-lg-12
+    - if @business.offices.length == 0
+      %span.muted No Offices Found
+    - @business.offices.each do |office|
+      = render partial: "office_details", locals: { office: office }
+%hr/
+.row
+  .col-lg-12.field-name User Staff:
+  .col-lg-12
+    - @business.users.each do |user|
+      = render partial: "user_staff_details", locals: { user: user }
+%hr/
+= link_to 'Back', manage_businesses_path, class: 'btn btn-link'
+|
+\#{link_to 'Edit', edit_manage_business_path(@business), class: 'btn btn-link'}

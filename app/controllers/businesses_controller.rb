@@ -10,6 +10,9 @@ class BusinessesController < SecureController
   include BusinessHelper
 
   def dashboard
+  end
+
+  def show
     @current_sidebar = :dashboard
   end
 

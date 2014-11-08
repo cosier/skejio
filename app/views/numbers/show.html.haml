@@ -1,0 +1,16 @@
+%p#notice= notice
+%p
+  %strong Sub account:
+  = @number.sub_account
+%p
+  %strong Number:
+  = @number.number
+%p
+  %strong Sid:
+  = @number.sid
+%p
+  %strong Sauth token:
+  = @number.sauth_token
+= link_to 'Edit', edit_business_number_path(@business, @number)
+|
+\#{link_to 'Back', business_numbers_path(@business)}

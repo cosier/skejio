@@ -1,8 +1,0 @@
-<h1>Business#welcome_introduction</h1>
-
-<p>
-  <%= @greeting %> <%= @user.display_name %>, Welcome to Schedule Planner.
-</p>
-<br/>
-<p>You may access your Business Console here (once your account is approved):</p>
-<%= link_to('Business Console', url_for(controller: 'businesses', action: 'dashboard', id: @business.id, only_path: false)) %>

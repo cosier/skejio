@@ -13,6 +13,10 @@ h1,h2,h3 {
   position: relative;
 }
 
+#page-content-wrapper > .container-fluid > .container {
+  margin-left:0;
+}
+
 .block {
   display:block;
 }

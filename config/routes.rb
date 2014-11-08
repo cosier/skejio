@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
 
+
+
   devise_for :users, controllers: {
     registrations: 'registrations'
   }
@@ -20,6 +22,7 @@ Rails.application.routes.draw do
     post '/send_sms', to: 'businesses#send_sms', as: :send_sms
     post '/make_a_call', to: 'businesses#make_a_call', as: :make_a_call
 
+    resources :services
     resources :offices
     resources :numbers
   end

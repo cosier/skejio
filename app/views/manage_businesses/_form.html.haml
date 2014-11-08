@@ -1,0 +1,38 @@
+= simple_form_for(@business, url: manage_business_path(@business)) do |f|
+  = f.error_notification
+  .form-inputs
+  / Text input
+  .form-group
+    = f.label :name, label: "Business Name"
+    = f.input_field :name, class: 'form-control'
+  %fieldset.well
+    / Text input
+    .form-group
+      = f.label :billing_name
+      = f.input_field :billing_name, class: 'form-control'
+    / Text input
+    .form-group
+      = f.label :billing_phone
+      = f.input_field :billing_phone, class: 'form-control'
+    / Text input
+    .form-group
+      = f.label :billing_email
+      = f.input_field :billing_email, class: 'form-control'
+    / Text input
+    .form-group
+      = f.label :billing_address
+      = f.input_field :billing_address, class: 'form-control'
+  %fieldset
+    / Text input
+    .row
+      .col-lg-2= f.label :is_listed
+      .col-lg-2= f.input_field :is_listed, as: :boolean, class: 'form-radio'
+    %br/
+    %br/
+    / Text input
+    .row
+      .col-lg-2= f.label :is_active, label: "Is Approved"
+      .col-lg-3= f.input_field :is_active, as: :boolean, class: 'form-radio'
+  %hr/
+  .form-actions
+    = f.submit "Update Business", class: 'btn btn-success'

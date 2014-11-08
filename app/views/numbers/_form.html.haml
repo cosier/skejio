@@ -1,0 +1,7 @@
+= simple_form_for([@business,@number]) do |f|
+  = f.error_notification
+  .form-inputs
+    = f.association :sub_account
+    = f.input :number
+  .form-actions
+    = f.button :submit

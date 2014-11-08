@@ -1,0 +1,13 @@
+#msgModal.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title Send Message
+      = simple_form_for :message , :url => send_sms_path(business.slug)  do |f|
+        .modal-body
+          = f.input :to
+          = f.input :body , :as => :text
+        .modal-footer
+          %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Cancel
+          = f.submit "Send SMS" , class: "btn btn-primary"

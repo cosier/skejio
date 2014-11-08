@@ -1,0 +1,14 @@
+%p#notice= notice
+%p
+  %strong Business:
+  = @office.business.name.titleize
+%p
+  %strong Name:
+  = @office.name
+%p
+  %strong Location:
+  = @office.location
+%hr/
+= link_to 'Edit', edit_business_office_path(@business, @office)
+|
+\#{link_to 'Back', business_offices_path}

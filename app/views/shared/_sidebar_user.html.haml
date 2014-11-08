@@ -1,0 +1,12 @@
+.user-sidebar-panel
+  Signed in as
+  = succeed "." do
+    %strong= current_user.display_name
+  %br/
+  %br/
+  %a{:href => "#"} Edit your Profile
+  %br/
+  %a{:href => "#"} Change your Password
+  %hr/
+  = link_to destroy_user_session_path, class: 'sign-out' do
+    Sign Out

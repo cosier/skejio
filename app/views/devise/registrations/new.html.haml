@@ -1,0 +1,50 @@
+= bootstrap_devise_error_messages!
+.panel.panel-default
+  .panel-heading
+    %h4= t('.sign_up', :default => "Business Registration")
+  .panel-body
+    = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: { role: "form" }) do |f|
+      .form-group.business-name
+        .errors
+        %label.string.optional{:for => "user_business_name"} Business name
+        %input#user_business_name.form-control{:name => "user[business_name]", :required => "required", :type => "text", :value => params[:user] and params[:user][:business_name]}/
+      %hr/
+      .form-group
+        = f.label :first_name
+        = f.text_field :first_name, class: "form-control", required: true
+      .form-group
+        = f.label :last_name
+        = f.text_field :last_name, class: "form-control", required: true
+      .form-group
+        = f.label :phone, label: "Phone Number"
+        = f.text_field :phone, class: "form-control", required: true
+      %hr/
+      .form-group
+        = f.label :email
+        = f.email_field :email, class: "form-control", required: true
+      %hr/
+      .form-group
+        = f.label :password
+        %br/
+        = f.password_field :password, class: "form-control", required: true
+      .form-group
+        = f.label :password_confirmation
+        = f.password_field :password_confirmation, class: "form-control", required: true
+      = f.submit t('.sign_up', :default => "Sign up"), class: "btn btn-primary"
+= render "devise/shared/links"
+= content_for :javascript do
+  :javascript
+    $(function(){
+      $('form').submit(function(evt){
+        if ($('#user_business_name').val().length < 1){
+          evt.preventDefault()
+          
+          msg = $('<p class="error-text">Please provide a valid Business name.</p>')
+          $('form .business-name .errors').html(msg)
+          msg.jrumble({ speed: 3 })
+          msg.trigger('startRumble');
+          setTimeout(function(){msg.trigger('stopRumble');}, 600)
+
+        }
+      });
+    })

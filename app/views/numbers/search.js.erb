@@ -1,7 +1,0 @@
-$("#loading").css("display","none")
-$("#number-search-results").addClass("well")
-$("#number-search-results").html("<%= j(render(
-  :partial => 'numbers',
-  :locals => {
-    :numbers => @numbers,
-		:business => @business }))%>")

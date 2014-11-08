@@ -1,0 +1,12 @@
+%table.table.table-stripped
+  %thead
+    %tr
+      %th Phone Number
+      %th.actions Actions
+  %tbody
+    - numbers.each do |num|
+      %tr
+        %td
+          = num.phone_number
+        %td
+          = link_to 'Buy' , business_buy_number_path(business, :number => num.phone_number) , class: 'btn btn-success btn-xs'

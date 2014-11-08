@@ -1,0 +1,26 @@
+%ol.breadcrumb
+  %li
+    %a{:href => business_offices_path(@business)} Offices
+  %li.active Directory
+%h1 Business Offices and Locations
+%hr/
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Location
+      %th.actions{:colspan => "3"} Actions
+  %tbody
+    - if @offices.empty?
+      %tr
+        %td{:colspan => "100"} No Offices found for this Business.
+    - @offices.each do |business_office|
+      %tr
+        %td= business_office.name
+        %td= business_office.location
+        %td
+          = link_to 'Show', business_office_path(business_id: business_office.business_id, id: business_office.id), class: 'btn btn-link'
+          = link_to 'Edit', edit_business_office_path(business_id: business_office.business_id, id: business_office.id), class: 'btn btn-link'
+          = link_to 'Destroy', [business_office.business, business_office], method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link'
+%hr/
+= link_to 'New Business office', new_business_office_path, class: 'btn btn-success'

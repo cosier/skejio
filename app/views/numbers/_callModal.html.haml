@@ -1,0 +1,12 @@
+#callModal.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title Make a Call
+      = simple_form_for :info , :url => make_a_call_path(business.slug)  do |f|
+        .modal-body
+          = f.input :to
+        .modal-footer
+          %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Cancel
+          = f.submit "Call" , class: "btn btn-primary"
