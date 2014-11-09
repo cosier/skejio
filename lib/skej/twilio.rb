@@ -13,6 +13,9 @@ module Skej
       # Return a list of Available Incoming Numbers,
       # based on the search params given
       def search_available_numbers(business, search_params)
+        # Process and format the contains field
+        search_params['contains'] = format_containment(search_params['contains'])
+
         sub_account(business.sub_account)
         .available_phone_numbers
         .get('US')
@@ -31,7 +34,8 @@ module Skej
       def client
         @client ||= ::Twilio::REST::Client.new(
           ENV['TWILIO_ACCOUNT_SID'],
-        ENV['TWILIO_AUTH_TOKEN'])
+          ENV['TWILIO_AUTH_TOKEN']
+        )
       end
 
       # Fetch a Twilio::REST::Account for a Business
@@ -40,7 +44,22 @@ module Skej
         client.accounts.get(sub_account.sid)
       end
 
-    end
+      # Pad up the contains field
+      def format_containment(contains)
+        if contains and contains.length < 11
+          pad = ""
 
+          # Max length is Ten
+          (10 - contains.length).times.each do
+            pad << "*"
+          end
+
+          contains = "1#{pad}#{contains}"
+        end
+
+        contains
+      end
+
+    end
   end
 end
