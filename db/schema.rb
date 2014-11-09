@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141108010450) do
+ActiveRecord::Schema.define(version: 20141109150758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,11 +43,13 @@ ActiveRecord::Schema.define(version: 20141108010450) do
   add_index "numbers", ["sub_account_id"], name: "index_numbers_on_sub_account_id", using: :btree
 
   create_table "offices", force: true do |t|
-    t.integer  "business_id", null: false
+    t.integer  "business_id",                       null: false
     t.string   "name"
     t.string   "location"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_schedule_public", default: true
+    t.string   "time_zone"
   end
 
   create_table "phones", force: true do |t|

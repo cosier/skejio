@@ -15,6 +15,19 @@
   %strong Location:
   = @office.location
 %hr/
+%p
+  %strong Time Zone:
+  %br/
+  = @office.time_zone
+  .span.muted
+    Local Time:
+    = DateTime.now.in_time_zone(@office.time_zone)
+%hr/
+%p
+  %strong Public Schedule:
+  = @office.is_schedule_public?
+
+%hr/
 = link_to 'Edit', edit_business_office_path(@business, @office)
 |
 \#{link_to 'Back', business_offices_path}

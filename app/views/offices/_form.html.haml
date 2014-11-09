@@ -1,5 +1,6 @@
 = simple_form_for([@business, @office], class: 'form') do |f|
   %hr/
+  .clear
   = form_error_messages(@office)
   .form-inputs
     / Text input
@@ -11,7 +12,23 @@
     .form-group
       = f.label :location
       = f.input_field :location, class: 'form-control'
+
+    %br/
+    .clear
+    / Text input
+    .form-group.with-check-box
+      = f.label :timezone, 'Office Local Timezone'
+      %br/
+      = f.time_zone_select(:time_zone, ActiveSupport::TimeZone.us_zones, {}, class: 'form-control')
+
+    %br/
+    / Text input
+    .form-group
+      = f.label :is_schedule_public, 'Is the Schedule Public?'
+      = f.input_field :is_schedule_public, class: 'form-control'
+      .clear
   %br/
+  %hr/
   .form-actions
     = f.submit "Save Office", class: 'btn btn-success'
-  %br/
+
