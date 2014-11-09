@@ -27,12 +27,17 @@ class Ability
 
       # Can manage Users belonging to the same Business
       can :manage, User, { business_id: user.business_id }
+
+      # Can manage Users belonging to the same Business
+      can :manage, ScheduleRule, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_manager
+      can :manage, ScheduleRule, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_viewer
+      can :read, ScheduleRule, { business_id: user.business_id }
     end
 
     if user.roles? :appointment_manager
