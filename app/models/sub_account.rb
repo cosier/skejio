@@ -2,12 +2,13 @@
 #
 # Table name: sub_accounts
 #
-#  id          :integer          not null, primary key
-#  business_id :integer
-#  auth_token  :string(255)
-#  sid         :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id            :integer          not null, primary key
+#  business_id   :integer
+#  friendly_name :string(255)
+#  auth_token    :string(255)
+#  sid           :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
 #
 
 class SubAccount < ActiveRecord::Base

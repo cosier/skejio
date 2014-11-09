@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141109150758) do
+ActiveRecord::Schema.define(version: 20141109231319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,22 @@ ActiveRecord::Schema.define(version: 20141109150758) do
 
   add_index "phones", ["phonable_id", "phonable_type"], name: "index_phones_on_phonable_id_and_phonable_type", using: :btree
 
+  create_table "rule_services", force: true do |t|
+    t.integer  "business_id",      null: false
+    t.integer  "service_id",       null: false
+    t.integer  "schedule_rule_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "schedule_rules", force: true do |t|
+    t.integer  "service_provider_id",                null: false
+    t.integer  "business_id",                        null: false
+    t.boolean  "is_active",           default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "services", force: true do |t|
     t.integer  "business_id",              null: false
     t.string   "name",                     null: false
@@ -80,6 +96,22 @@ ActiveRecord::Schema.define(version: 20141109150758) do
     t.string   "friendly_name"
     t.string   "auth_token"
     t.string   "sid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "time_entries", force: true do |t|
+    t.integer  "business_id",                    null: false
+    t.integer  "office_id",                      null: false
+    t.integer  "rule_service_id",                null: false
+    t.integer  "day",                            null: false
+    t.integer  "start_hour",                     null: false
+    t.integer  "start_minute",                   null: false
+    t.integer  "end_hour",                       null: false
+    t.integer  "end_minute",                     null: false
+    t.boolean  "is_enabled",      default: true
+    t.datetime "valid_from_at",                  null: false
+    t.datetime "valid_until_at",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
