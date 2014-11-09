@@ -1,0 +1,29 @@
+%h1 Listing Schedule Rules
+.view-archived
+
+%table.table.table-striped
+  %tr
+    %th Service provider
+    %th Summary
+    %th Last Updated
+    %th
+    %th
+    %th
+  - if @schedule_rules.empty?
+    %tr
+      %td{colspan: 100}
+        %p
+          %h3 No Schedule Rules were found for your Business.
+          %p Click the button below to easily add a new Schedule Rule.
+  - @schedule_rules.each do |schedule_rule|
+    %tr
+      %td= schedule_rule.service_provider_id
+      %td= schedule_rule.last_updated_at
+      %td= link_to 'Show', business_schedule_rule(schedule_rule)
+      %td= link_to 'Edit', edit_business_schedule_rule_path(schedule_rule)
+      %td= link_to 'Destroy', business_schedule_rule, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+%hr
+
+= link_to 'New Schedule rule', new_business_schedule_rule_path

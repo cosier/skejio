@@ -3,7 +3,7 @@ class UsersController < BusinessesController
   load_and_authorize_resource
   skip_load_resource only: [:create]
 
-  before_filter :set_current_sidebar
+  @@sidebar = :users
 
   def index
     respond_with(@users)
@@ -45,10 +45,6 @@ class UsersController < BusinessesController
   end
 
   private
-
-  def set_current_sidebar
-    @current_sidebar = :users
-  end
 
   def user_params
     params[:user].permit!

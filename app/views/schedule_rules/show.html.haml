@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Service provider:
+  = @schedule_rule.service_provider_id
+%p
+  %b Business:
+  = @schedule_rule.business_id
+
+= link_to 'Edit', edit_schedule_rule_path(@schedule_rule)
+\|
+= link_to 'Back', schedule_rules_path

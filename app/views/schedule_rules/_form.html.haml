@@ -1,0 +1,16 @@
+= form_for @schedule_rule do |f|
+  - if @schedule_rule.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@schedule_rule.errors.count, "error")} prohibited this schedule_rule from being saved:"
+      %ul
+        - @schedule_rule.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :service_provider_id
+    = f.number_field :service_provider_id
+  .field
+    = f.label :business_id
+    = f.number_field :business_id
+  .actions
+    = f.submit 'Save'

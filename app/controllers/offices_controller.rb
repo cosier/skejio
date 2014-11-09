@@ -1,6 +1,5 @@
 class OfficesController < SecureController
   before_action :set_business_office, only: [:show, :edit, :update, :destroy]
-  before_action :set_current_sidebar
 
   before_action :preload_business_office, only: [:create]
 
@@ -10,6 +9,7 @@ class OfficesController < SecureController
   skip_load_resource :only => :create
 
   layout 'business_console'
+  @@sidebar = :offices
 
   def index
     respond_with(@offices)
@@ -52,10 +52,6 @@ class OfficesController < SecureController
 
   def preload_business_office
     @office = Office.new(office_params)
-  end
-
-  def set_current_sidebar
-    @current_sidebar = :offices
   end
 
   def set_business_office

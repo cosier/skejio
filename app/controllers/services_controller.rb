@@ -3,7 +3,7 @@ class ServicesController < BusinessesController
   load_and_authorize_resource :service, parent: false, except: [:create]
   skip_load_resource only: [:create]
 
-  before_filter :set_current_sidebar
+  @@sidebar = :services
 
   def index
     respond_with(@services)
@@ -42,10 +42,6 @@ class ServicesController < BusinessesController
 
   def service_params
     params.require(:service).permit(:business_id, :name, :description, :priority, :duration)
-  end
-
-  def set_current_sidebar
-    @current_sidebar = :services
   end
 
 end

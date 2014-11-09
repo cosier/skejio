@@ -1,16 +1,11 @@
-class NumbersController < SecureController
-
-  # Load Business via CanCan factory
-  load_and_authorize_resource :business,
-    id_param: :business_id
-
-  before_action :validate_business
-  before_action :set_current_sidebar
+class NumbersController < BusinessController
 
   # Load Numbers via CanCan factory
   load_and_authorize_resource
 
   layout 'business_console'
+
+  @@sidebar = :numbers
 
   def index
     @numbers = Number.all
@@ -97,13 +92,6 @@ class NumbersController < SecureController
   end
 
   private
-  def set_number
-    @number = Number.find(params[:id])
-  end
-
-  def set_current_sidebar
-    @current_sidebar = :numbers
-  end
 
   def number_params
     params.require(:number).permit(:sub_account_id, :number, :sid, :sauth_token)

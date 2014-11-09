@@ -6,20 +6,23 @@ module ApplicationHelper
 
     messages = resource.errors.full_messages.map { |msg| content_tag(:li, msg) }.join
     sentence = I18n.t('errors.messages.not_saved',
-      count: resource.errors.count,
-      resource: resource.class.model_name.human.downcase)
+                      count: resource.errors.count,
+                      resource: resource.class.model_name.human.downcase)
 
     html = <<-HTML
     <div class="alert alert-danger alert-block">
-      <button type="button" class="close" data-dismiss="alert">x</button>
-      <h5>#{sentence}</h4>
-      #{messages}
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <h5>#{sentence}</h4>
+    #{messages}
     </div>
     HTML
 
     html.html_safe
   end
 
+  def body_tag
+    "#{params[:controller]} #{params[:action]}"
+  end
 
   def form_error_messages(resource)
     return '' if resource.errors.empty? or not resource
@@ -27,8 +30,8 @@ module ApplicationHelper
     messages = resource.errors.full_messages.map { |msg| content_tag(:li, msg) }.join
     html = <<-HTML
     <div class="alert alert-danger alert-block">
-      <button type="button" class="close" data-dismiss="alert">x</button>
-      #{messages}
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    #{messages}
     </div>
     <hr/>
     HTML
