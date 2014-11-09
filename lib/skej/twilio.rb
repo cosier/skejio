@@ -1,6 +1,5 @@
 require 'twilio-ruby'
 require 'figaro'
-require 'pry'
 
 module Skej
   module Twilio

@@ -12,33 +12,22 @@
       %th Approved
       %th.actions Actions
   %tbody
-    <<<<<<< HEAD
+
     - if @businesses.empty?
       %tr
         %td{:colspan => "100"} No Businesses found in the system.
     - @businesses.each do |business|
-      \=======
-      - @manage_businesses.each do |business|
-        >>>>>>> origin/ratnakar
-        %tr
-          %td= business.name
-          %td= business.billing_name
-          %td= business.users.length
-          %td= business.created_at
-          %td
-            %i{:class => "fa #{business.is_active? ? 'fa-check green' : 'fa-remove red'}"}
-          %td
-            = link_to 'Show', manage_business_path(business), class: 'btn btn-link'
-            = link_to 'Edit', edit_manage_business_path(business), class: 'btn btn-link'
-            <<<<<<< HEAD
-            \#{link_to 'Destroy', url_for(controller: :manage_businesses, action: :destroy, id: business.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link'}
-            \=======
-            \#{link_to 'Destroy', business, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link'}
-            >>>>>>> origin/ratnakar
-<<<<<<< HEAD
+      %tr
+        %td= business.name
+        %td= business.billing_name
+        %td= business.users.length
+        %td= business.created_at
+        %td
+          %i{:class => "fa #{business.is_active? ? 'fa-check green' : 'fa-remove red'}"}
+        %td
+          = link_to 'Show', manage_business_path(business), class: 'btn btn-link'
+          = link_to 'Edit', edit_manage_business_path(business), class: 'btn btn-link'
+
+          = link_to 'Destroy', manage_business_path(id: business), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-link'
+
 %br/
-\=======
-%br/
-- content_for :stylesheets do
-  = stylesheet_link_tag "super/manage_businesses", :media => "all"
->>>>>>> origin/ratnakar

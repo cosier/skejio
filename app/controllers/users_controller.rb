@@ -29,7 +29,13 @@ class UsersController < BusinessesController
   end
 
   def update
-    @user.update(user_params)
+    user_data = user_params.dup
+    if user_data[:password].blank? and user_data[:password_confirmation].blank?
+      user_data.delete :password
+      user_data.delete :password_confirmation
+    end
+
+    @user.update(user_data)
     respond_with(@business, @user)
   end
 

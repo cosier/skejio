@@ -7,7 +7,7 @@
       .form-group.business-name
         .errors
         %label.string.optional{:for => "user_business_name"} Business name
-        %input#user_business_name.form-control{:name => "user[business_name]", :required => "required", :type => "text", :value => params[:user] and params[:user][:business_name]}/
+        %input#user_business_name.form-control{:name => "user[business_name]", :required => "required", :type => "text", :value => (params[:user] and params[:user][:business_name])}/
       %hr/
       .form-group
         = f.label :first_name
@@ -38,7 +38,7 @@
       $('form').submit(function(evt){
         if ($('#user_business_name').val().length < 1){
           evt.preventDefault()
-          
+
           msg = $('<p class="error-text">Please provide a valid Business name.</p>')
           $('form .business-name .errors').html(msg)
           msg.jrumble({ speed: 3 })

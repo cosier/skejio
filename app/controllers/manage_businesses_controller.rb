@@ -2,8 +2,14 @@ class ManageBusinessesController < ManageController
   before_action :set_current_navigation
 
   load_and_authorize_resource :business, parent: false
+  skip_load_resource only: [:destroy]
 
   layout 'super_console'
+
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    Rails.logger.error(exception.message)
+    redirect_to manage_businesses_path
+  end
 
   def index
     respond_with(@businesses)
@@ -31,8 +37,14 @@ class ManageBusinessesController < ManageController
   end
 
   def destroy
-    @business.destroy
-    respond_with(@business, location: manage_business_path(@business))
+    @business = Business.where(id: params[:id]).first
+    authorize! :destroy, @business
+    if @business.present?
+      @business.destroy
+      respond_with(@business, location: manage_businesses_path(@business))
+    else
+      redirect_to :index
+    end
   end
 
   private

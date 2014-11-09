@@ -20,7 +20,7 @@ class Ability
       can :manage, Office, { business_id: user.business_id }
 
       # Can manage Numbers belonging to the subaccount which that user has access to.
-      can :manage, Number, { sub_account_id: user.business.sub_account.id }
+      can :manage, Number, { sub_account_id: (user.business.sub_account and user.business.sub_account.id) }
 
       # Can manage Service belonging to the same business
       can :manage, Service, { business_id: user.business_id }

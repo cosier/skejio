@@ -234,8 +234,6 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
-    turbolinks (2.5.1)
-      coffee-rails
     twilio-ruby (3.13.1)
       builder (>= 2.1.2)
       jwt (~> 1.0.0)
@@ -296,7 +294,6 @@ DEPENDENCIES
   sqlite3
   therubyracer
   thin
-  turbolinks
   twilio-ruby (~> 3.12)
   twilio-test-toolkit
   twitter-bootstrap-rails!
