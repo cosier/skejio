@@ -32,6 +32,12 @@
 #= require select2
 #
 #= require_self
+#
+#= require underscore
+#= require backbone
+#= require backbone_rails_sync
+#= require backbone_datalink
+#= require backbone/scplanner
 #= require_tree .
 #
 

@@ -1,34 +1,49 @@
-= simple_form_for([@business, @schedule_rule], class: 'form') do |f|
-  = f.hidden_field :business_id
-  = f.hidden_field :service_provider_id
+#schedule-container
+  = simple_form_for([@business, @schedule_rule], class: 'form') do |f|
+    = f.hidden_field :business_id
+    = f.hidden_field :service_provider_id
 
-  - if @schedule_rule.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@schedule_rule.errors.count, "error")} prohibited this schedule_rule from being saved:"
-      %ul
-        - @schedule_rule.errors.full_messages.each do |msg|
-          %li= msg
+    - if @schedule_rule.errors.any?
+      #error_explanation
+        %h2= "#{pluralize(@schedule_rule.errors.count, "error")} prohibited this schedule_rule from being saved:"
+        %ul
+          - @schedule_rule.errors.full_messages.each do |msg|
+            %li= msg
 
-  = form_error_messages(@schedule_rule)
+    = form_error_messages(@schedule_rule)
 
-  .form-inputs
-    / Text input
-    .form-group.row.service-providers
-      .col-lg-3.left
-        = f.label :is_schedule_public, 'Service Provider'
-      .col-lg-4.right
-        = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select'
+    .form-inputs
+      / Text input
+      .form-group.row.service-providers
+        .col-lg-3.left
+          = f.label :is_schedule_public, 'Service Provider'
+        .col-lg-4.right
+          = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select'
+      %hr
+      / Text input
+      .form-group.row.service-providers
+        .col-lg-3.left
+          = f.label :is_schedule_public, 'Select Services'
+        .col-lg-4.right
+          = f.collection_select :services, @services, :id, :name, {}, class: 'bootstrap-select'
+          .btn.btn-add-service.btn-default
+            %i.fa.fa-plus
+            Add Service
+          .service-list
 
-    / Text input
-    .form-group.row.service-providers
-      .col-lg-3.left
-        = f.label :is_schedule_public, 'Select Services'
-      .col-lg-4.right
-        = f.collection_select :services, @services, :id, :name, {}, class: 'bootstrap-select'
+      %hr
+      %h3 Configure Time Entries
+      .service-entries.well
 
-  %br/
-  %hr/
-  .actions
-    / = f.submit 'Save Schedule', class: 'btn btn-success'
-    .btn.btn-disabled.btn-default
-      Save Schedule
+    %br/
+    %hr/
+    .actions
+      / = f.submit 'Save Schedule', class: 'btn btn-success'
+      .btn.btn-disabled.btn-success
+        Save Schedule
+
+- content_for :javascript do
+  :javascript
+    $(function(){
+      window['view'] = new Scplanner.Views.Schedules.NewView()
+    });
