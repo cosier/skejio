@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/codebrew/backbone-rails.git
+  revision: 2d98d7157767dc04b00cac3f822f9576283ba921
+  specs:
+    rails-backbone (1.1.2)
+      coffee-script
+      ejs
+      jquery-rails
+      railties
+
+GIT
   remote: git://github.com/seyhunak/twitter-bootstrap-rails.git
   revision: 3edf24de985d946f16a2781644289cfdc51ba95b
   specs:
@@ -85,6 +95,7 @@ GEM
       warden (~> 1.2.3)
     devise-bootstrap-views (0.0.3)
     diff-lcs (1.2.5)
+    ejs (1.1.1)
     erb2haml (0.1.5)
       html2haml
     erubis (2.7.0)
@@ -284,6 +295,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rails (= 4.1.6)
+  rails-backbone!
   rollbar (~> 1.2.6)
   rspec-rails
   sass-rails (~> 4.0.3)

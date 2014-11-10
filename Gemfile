@@ -67,6 +67,8 @@ gem 'country_select'
 gem 'select2-rails'
 gem 'momentjs-rails', '>= 2.8.1'
 
+# Backbone support
+gem 'rails-backbone', git: 'git://github.com/codebrew/backbone-rails.git'
 
 # Bootstrap Rails asset support
 gem 'therubyracer'

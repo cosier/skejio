@@ -1,7 +1,6 @@
 class ScheduleRulesController < BusinessesController
-  load_and_authorize_resource
 
-  @@sidebar = :schedule_rules
+  sidebar :schedule_rules
 
   def index
     @schedule_rules = ScheduleRule.all
@@ -13,6 +12,20 @@ class ScheduleRulesController < BusinessesController
   end
 
   def new
+    @service_providers = User.business(@business).service_providers
+    @services = Service.business(@business)
+
+
+    if @service_providers.empty?
+      return redirect_to business_users_path,
+        alert: "You must create a Service before creating a Schedule Rule"
+    end
+
+    if @services.empty?
+      return redirect_to business_services_path,
+        alert: "You must create a Service before creating a Schedule Rule"
+    end
+
     respond_with(@schedule_rule)
   end
 

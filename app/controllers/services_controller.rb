@@ -3,7 +3,7 @@ class ServicesController < BusinessesController
   load_and_authorize_resource :service, parent: false, except: [:create]
   skip_load_resource only: [:create]
 
-  @@sidebar = :services
+  sidebar  :services
 
   def index
     respond_with(@services)

@@ -4,21 +4,26 @@ class BusinessesController < SecureController
     :id_param => :business_id
 
   before_action :validate_business
+  before_action :set_current_sidebar
 
   layout 'business_console'
 
-  include BusinessHelper
-
-  def dashboard
-  end
-
   def show
-    @current_sidebar = :dashboard
+    @@sidebar ||= :dashboard
   end
 
   def pending
-    @current_sidebar = :pending
+    @@sidebar ||= :pending
     redirect_to business_path(@business) if @business.is_active?
   end
+
+  def self.sidebar(target)
+    @@sidebar = (target and target.to_s.downcase.to_sym)
+  end
+
+  def set_current_sidebar
+    @current_sidebar = @@sidebar
+  end
+  # sidebar  :dashboard
 
 end

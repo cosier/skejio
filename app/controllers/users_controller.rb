@@ -3,7 +3,7 @@ class UsersController < BusinessesController
   load_and_authorize_resource
   skip_load_resource only: [:create]
 
-  @@sidebar = :users
+  sidebar  :users
 
   def index
     respond_with(@users)

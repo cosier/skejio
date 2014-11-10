@@ -1,5 +1,16 @@
-%h1 Listing Schedule Rules
-.view-archived
+%ol.breadcrumb
+  %li
+    %a{:href => business_schedule_rules_path(@business)} Schedule Rules
+  %li.active Directory
+
+
+.view-archived.pull-right
+  .btn.btn-default
+    %label
+      Show Archived Rules
+      = check_box_tag(:view_archived)
+.clear
+%br/
 
 %table.table.table-striped
   %tr
@@ -26,4 +37,4 @@
 %br
 %hr
 
-= link_to 'New Schedule rule', new_business_schedule_rule_path
+= link_to 'New Schedule Rule', new_business_schedule_rule_path, class: 'btn btn-success'

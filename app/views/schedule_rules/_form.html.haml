@@ -1,4 +1,7 @@
-= form_for @schedule_rule do |f|
+= simple_form_for([@business, @schedule_rule], class: 'form') do |f|
+  = f.hidden_field :business_id
+  = f.hidden_field :service_provider_id
+
   - if @schedule_rule.errors.any?
     #error_explanation
       %h2= "#{pluralize(@schedule_rule.errors.count, "error")} prohibited this schedule_rule from being saved:"
@@ -6,11 +9,26 @@
         - @schedule_rule.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :service_provider_id
-    = f.number_field :service_provider_id
-  .field
-    = f.label :business_id
-    = f.number_field :business_id
+  = form_error_messages(@schedule_rule)
+
+  .form-inputs
+    / Text input
+    .form-group.row.service-providers
+      .col-lg-3.left
+        = f.label :is_schedule_public, 'Service Provider'
+      .col-lg-4.right
+        = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select'
+
+    / Text input
+    .form-group.row.service-providers
+      .col-lg-3.left
+        = f.label :is_schedule_public, 'Select Services'
+      .col-lg-4.right
+        = f.collection_select :services, @services, :id, :name, {}, class: 'bootstrap-select'
+
+  %br/
+  %hr/
   .actions
-    = f.submit 'Save'
+    / = f.submit 'Save Schedule', class: 'btn btn-success'
+    .btn.btn-disabled.btn-default
+      Save Schedule

@@ -10,12 +10,32 @@
 # Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 # about supported directives.
 #
+#
 #= require jquery
 #= require jquery_ujs
+#= require jquery.timeago
+#= require jquery.numeric
+#= require jquery.cookie
+#= require jquery.sortable
+#= require jquery.fileupload
 #= require vendor/jquery.rumble
 #= require twitter/bootstrap
+#
+#= require underscore
+#= require backbone
+#= require backbone_rails_sync
+#= require backbone_datalink
+
+#= require moment
+#= require bootstrap-datetimepicker
+#= require bootstrap_select/bootstrap-select
+#= require select2
+#
 #= require_self
 #= require_tree .
+#
+
+# Function queue for iterative page loading
 window['ready'] ||= []
 
 ready_func = ()->
@@ -24,6 +44,10 @@ ready_func = ()->
     e.preventDefault()
     $("#wrapper").toggleClass "toggled"
     console.debug 'menu-toggle click'
+
+  $('.bootstrap-select').selectpicker
+      style: 'btn-default',
+      size: 4
 
   for func in ready
     func()

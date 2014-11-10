@@ -21,7 +21,11 @@ module ApplicationHelper
   end
 
   def body_tag
-    "#{params[:controller]} #{params[:action]}"
+    "#{params[:controller]}"
+  end
+
+  def wrapper_tag
+    "action-#{params[:action]}"
   end
 
   def form_error_messages(resource)

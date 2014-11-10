@@ -1,5 +1,13 @@
-%h1 New schedule_rule
+%ol.breadcrumb
+  %li
+    %a{:href => business_schedule_rules_path(@business)} Schedule Rules
+  %li.active New Schedule Rule
+
+%hr/
 
 = render 'form'
 
-= link_to 'Back', schedule_rules_path
+%br/
+%hr/
+
+= link_to 'Back', business_schedule_rules_path, class: 'btn btn-link'

@@ -13,7 +13,13 @@
  *= require bootstrap_and_overrides
  *= require global
  *
+ *= require bootstrap_select/bootstrap-select
+ *= require select2
+ *= require select2-bootstrap
+ *= require bootstrap-datetimepicker
+ *
  *= require business/main
+ *= require schedules/main
  *
  *= require welcome
  *= require_self

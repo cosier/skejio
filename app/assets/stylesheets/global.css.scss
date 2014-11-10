@@ -30,6 +30,18 @@ form p.error-text {
   font-weight: bold;
 }
 
+td > .label.label-default {
+  background:#fff;
+  border:1px solid #000;
+  color:#000;
+}
+td > .label {
+  margin-right:2px;
+}
+
+.clear {
+  clear:both;
+}
 
 i.fa.red {
   color:$dark-red;
@@ -87,4 +99,8 @@ form textarea {
 }
 #error_explanation {
   color:$dark-red;
+}
+
+select.bootstrap-select {
+  display:none;
 }

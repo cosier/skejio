@@ -1,11 +1,11 @@
-class NumbersController < BusinessController
+class NumbersController < BusinessesController
 
   # Load Numbers via CanCan factory
   load_and_authorize_resource
 
   layout 'business_console'
 
-  @@sidebar = :numbers
+  sidebar  :numbers
 
   def index
     @numbers = Number.all

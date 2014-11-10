@@ -4,13 +4,9 @@
     = link_to 'Users', business_users_path
   %li.active Directory
 
-%h2
-  User Staff for
-  = @business.name
+%br/
 
-%hr/
-
-%table.table.table-horizontal
+%table.table.table-striped
   %thead
     %tr
       %th Display Name
@@ -38,7 +34,11 @@
         %td
           = link_to 'Show', business_user_path(@business, user)
           = link_to 'Edit', edit_business_user_path(@business, user)
-          = link_to 'Destroy', [@business, user], :method => :delete, :data => { :confirm => 'Are you sure?' }
+          - if current_user.id == user.id
+            %span.muted
+              Destroy
+          - else
+            = link_to 'Destroy', [@business, user], :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 %hr/

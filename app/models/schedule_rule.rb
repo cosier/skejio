@@ -11,8 +11,16 @@
 #
 
 class ScheduleRule < ActiveRecord::Base
-  belongs_to :user # service_provider
+
+  belongs_to :service_provider,
+    class_name: 'User',
+    foreign_key: 'service_provider_id'
+
   has_many :rule_services
   has_many :time_entries,
     :through => :rule_services
+
+
+  attr_accessor :services
+
 end

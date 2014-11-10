@@ -38,6 +38,9 @@ class User < ActiveRecord::Base
   validates_presence_of :last_name
   validates_presence_of :phone
 
+  scope :business, ->(business){ where business_id: business.id  }
+  scope :service_providers, ->(){ with_roles(:service_provider)  }
+
   # Check the roles bitmask like this:
   # user.roles?(:admin)
   #
