@@ -18,29 +18,37 @@
         .col-lg-3.left
           = f.label :is_schedule_public, 'Service Provider'
         .col-lg-4.right
-          = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select'
+          = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select', data: { style: 'btn-info'}
       %hr
       / Text input
       .form-group.row.service-providers
         .col-lg-3.left
           = f.label :is_schedule_public, 'Select Services'
-        .col-lg-4.right
-          = f.collection_select :services, @services, :id, :name, {}, class: 'bootstrap-select'
+        .col-lg-9.right
+          - @services
+          = f.collection_select :services, @services, :id, :name, {  }, class: 'bootstrap-select'
           .btn.btn-add-service.btn-default
             %i.fa.fa-plus
             Add Service
           .service-list
+            .preloaded-message
+              You may add multiple services for this Service Provider,
+              %br/
+              by clicking the
+              %strong Add Service
+              button (for each Service)
 
       %hr
-      %h3 Configure Time Entries
-      .service-entries.well
+      / %h3.configure-time-sheets Configure Time Sheets
+      .service-entries.row
 
+    %br/
     %br/
     %hr/
     .actions
       / = f.submit 'Save Schedule', class: 'btn btn-success'
-      .btn.btn-disabled.btn-success
-        Save Schedule
+      .btn.btn-disabled.btn-default
+        Save Schedule (disabled)
 
 - content_for :javascript do
   :javascript

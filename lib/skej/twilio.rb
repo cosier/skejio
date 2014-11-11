@@ -6,8 +6,13 @@ module Skej
 
     class << self
 
+      # Returns a newly purchased number's
+      # sid
+      # number
       def buy_number(business, number)
-        sub_account(business.sub_account).incoming_phone_numbers.create(:phone_number => number)
+        response = sub_account(business.sub_account).incoming_phone_numbers.create(:phone_number => number)
+        binding.pry
+        response
       end
 
       # Return a list of Available Incoming Numbers,

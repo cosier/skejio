@@ -7,7 +7,7 @@ class BusinessesController < SecureController
   before_action :set_current_sidebar
 
   layout 'business_console'
-
+  @@sidebar = :dashboard
   def show
     @@sidebar ||= :dashboard
   end

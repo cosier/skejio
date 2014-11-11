@@ -1,15 +1,103 @@
+@import "../colors";
+
 .schedule_rules {
+
+
+  .view-archived {
+    top:-2px;
+    position: relative;
+  }
+
   .action-new {
 
     .service-providers {
       .right {
         position: relative;
-        left:-70px;
         top:4px;
         select {
           font-size:22px;
         }
       }
+    }
+
+    .service-entries.row {
+      margin-left:0;
+      margin-right:0;
+    }
+
+    .service-list.loaded {
+      .preloaded-message {
+        display:none;
+      }
+    }
+
+    .service-list {
+      border-radius:4px;
+      margin-top:4px;
+
+      .preloaded-message {
+        padding:20px 0;
+        font-size:12px;
+      }
+
+      .service-label {
+        padding:10px;
+        border:1px solid $green;
+        color:$green;
+        display: inline-block;
+        max-width:200px;
+        margin-right:10px;
+        margin-top:10px;
+        border-radius:10px;
+      }
+    }
+
+    .time-sheet {
+      border:1px solid $green;
+      margin-top:20px;
+      box-shadow:1px 1px 10px #c7c7c7;
+
+      .validity {
+        .from, .until {
+          float:left;
+        }
+      }
+
+      .header {
+        font-size:16px;
+        color:$green;
+        text-transform: uppercase;
+      }
+
+      .divider {
+        border-left: 1px solid #999;
+        margin-left: 20px;
+      }
+
+      .actions.well {
+        border-radius:0;
+        margin-bottom:0;
+        label {
+          font-size:12px;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .time-sheet:last-child {
+      margin-bottom:50px;
+    }
+
+    h3.configure-time-sheets {
+      font-size:14px;
+      font-weight:bold;
+      text-transform: uppercase;
+      background:#fff;
+      border:1px solid #e1e1e1;
+      padding:10px 20px;
+      color:#000;
+      display:block;
+      max-width:250px;
     }
 
     form {

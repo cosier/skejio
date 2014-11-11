@@ -12,3 +12,11 @@
 %hr/
 
 = link_to 'Back', business_schedule_rules_path, class: 'btn btn-link'
+
+- content_for :javascript do
+  :coffeescript
+    window.Scp ||= {}
+
+    Scp.Data =
+      services: #{Service.business(current_user.business).to_json}
+      providers: #{@service_providers.to_json}

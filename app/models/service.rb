@@ -15,4 +15,10 @@
 class Service < ActiveRecord::Base
   belongs_to :business
   scope :business, ->(business){ where business_id: business.id  }
+
+  def disabled?
+    true
+  end
+
+  alias_method :disabled, :disabled?
 end

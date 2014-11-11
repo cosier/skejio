@@ -3,6 +3,8 @@
     %a{:href => business_schedule_rules_path(@business)} Schedule Rules
   %li.active Directory
 
+.pull-left
+  = link_to 'New Schedule Rule', new_business_schedule_rule_path, class: 'btn btn-success'
 
 .view-archived.pull-right
   .btn.btn-default
@@ -37,4 +39,4 @@
 %br
 %hr
 
-= link_to 'New Schedule Rule', new_business_schedule_rule_path, class: 'btn btn-success'
+

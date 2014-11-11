@@ -74,10 +74,13 @@ gem 'rails-backbone', git: 'git://github.com/codebrew/backbone-rails.git'
 gem 'therubyracer'
 gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem 'haml-rails'
+gem 'haml_coffee_assets'
+gem 'execjs'
 
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.1.3'
 gem 'devise-bootstrap-views'
+
 
 # Use evented thin server
 gem 'thin'
