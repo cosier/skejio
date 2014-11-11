@@ -4,3 +4,8 @@ $dark-red: #a94442;
 $red: lighten(#a94442,10%);
 
 $green: #5cb85c;
+$blue: #5bc0de;
+
+.red {
+  color: $red;
+}

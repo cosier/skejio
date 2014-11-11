@@ -29,11 +29,13 @@
 #= require moment
 #= require bootstrap-datetimepicker
 #= require bootstrap_select/bootstrap-select
+#= require bootstrap-multiselect
 #= require select2
 #
 #= require_self
 #
 #= require underscore
+#= require underscore.string
 #= require backbone
 #= require backbone_rails_sync
 #= require backbone_datalink

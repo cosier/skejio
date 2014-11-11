@@ -1,0 +1,91 @@
+%h4.header.breaks Shift Breaks
+.col-lg-12.break-manager
+  %table.table.table-striped.breaks-manager.table-horizontal
+    %thead
+      %tr
+        %th Break Day
+        %th Start
+        %th End
+        %th Summary
+        %th
+    %tbody
+      %tr.pregame
+        %td{colspan: '100'}
+          No Breaks set, are you sure?
+
+  .actions.well.row
+    .col-lg-12
+      .row
+        .col-lg-6
+          %h5 Break Day Entry
+          .group.group-days
+            %select.entry-days{ multiple: "multiple" }
+              %option{ value: 'monday', lbl: 'MON', selected: true }    Monday
+              %option{ value: 'tuesday', lbl: 'TUE', selected: true }   Tuesday
+              %option{ value: 'wednesday', lbl: 'WED', selected: true } Wednesday
+              %option{ value: 'thursday', lbl: 'THU', selected: true }  Thursday
+              %option{ value: 'friday', lbl: 'FRI', selected: true }    Friday
+              %option{ value: 'saturday', lbl: 'SAT' }  Saturday
+              %option{ value: 'sunday', lbl: 'SUN' }    Sunday
+
+        .col-lg-6
+          .group.group-day
+            %label Start Time &nbsp;
+            %select.bootstrap-select.start.mini
+            %select.bootstrap-select.start-meridian.mini
+              %option{ value: 'AM', selected: true  } AM
+              %option{ value: 'PM'} PM
+
+          .group.group-day
+            %label End Time &nbsp;
+            %select.bootstrap-select.end.mini
+            %select.bootstrap-select.end-meridian.mini
+              %option AM
+              %option{selected:true} PM
+
+      .row
+        .col-lg-6
+          .configure-rule-expiration.state-view.closed
+            .state-open
+              .close
+                %i.fa.fa-remove
+              %h5 Configure Rule Expiration Dates
+              .date
+                .row
+                  .col-lg-4
+                    %label Valid From:
+                  .col-lg-8
+                    %input{value: "#{moment().date()}/#{moment().month()}/#{moment().year()}"}
+                .row
+                  .col-lg-4
+                    %label Valid Until:
+                  .col-lg-8
+                    %input{value: "forever"}
+
+            .state-closed
+              .btn.btn-link.open
+                %i.fa.fa-calendar
+                Configure Rule Expiration
+        .col-lg-6
+          .configure-service-specification.state-view.closed
+            .state-open
+              .close
+                %i.fa.fa-remove
+              %h5 Configure which Services apply for your Break
+              %select.choose-break-service{ multiple: true, data: { normal: true, empty: 'All Services Apply', 'select-all': 'false' } }
+                - for service in context.services.models
+                  %option{value: service.id }= service.get('name')
+
+              %p.muted
+                (optional)
+
+            .state-closed
+              .btn.btn-link.open
+                %i.fa.fa-list-alt
+                Which Service: All Services
+
+      %hr/
+      .group.group-day
+        .btn.btn-add-break.btn-info
+          %i.fa.fa-plus
+          Add Break Entry

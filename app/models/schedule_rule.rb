@@ -16,10 +16,9 @@ class ScheduleRule < ActiveRecord::Base
     class_name: 'User',
     foreign_key: 'service_provider_id'
 
-  has_many :rule_services
+  has_many :time_sheets
   has_many :time_entries,
-    :through => :rule_services
-
+    :through => :time_sheets
 
   attr_accessor :services
 

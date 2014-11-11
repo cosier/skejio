@@ -1,0 +1,52 @@
+/ %td.c-check
+/   %input{type: 'checkbox'}
+
+%td.c-office
+  - if context.state == 'edit'
+    %select.edit-office
+      - for office in context.offices.models
+        %option{value: office.id, selected: (this.model.get('office_id') == office.id) ? 'true' : 'false' }
+          = office.get('name').toUpperCase()
+
+  - else
+    = this.model.office().get('name')
+
+%td.c-day
+  - if context.state == 'edit'
+    %select.edit-day
+      - for day in context.DAYS
+        %option{value: day, selected: (this.model.get('day') == day) ? 'true' : 'false' }
+          = day.toUpperCase()
+  - else
+    = this.model.get('day')
+
+%td.c-start
+  - if context.state == 'edit'
+    %select.edit-start
+    %select.edit-start-meridian
+      %option{value: 'AM', selected: (this.model.get('start_meridian') == 'AM') ? 'selected' : false } AM
+      %option{value: 'PM', selected: (this.model.get('start_meridian') == 'PM') ? 'selected' : false } PM
+  - else
+    = "#{this.model.get('start_hour')}:#{this.model.pretty('start_min')}"
+    = this.model.get('start_meridian').toUpperCase()
+
+%td.c-end
+  - if context.state == 'edit'
+    %select.edit-end
+    %select.edit-end-meridian
+      %option{value: 'AM', selected: (this.model.get('end_meridian') == 'AM') ? 'selected' : false } AM
+      %option{value: 'PM', selected: (this.model.get('end_meridian') == 'PM') ? 'selected' : false } PM
+  - else
+    = "#{this.model.get('end_hour')}:#{this.model.pretty('end_min')}"
+    = this.model.get('end_meridian').toUpperCase()
+
+
+%td.c-actions{style: 'width:100px'}
+  - if context.state == 'edit'
+    .btn.save
+      %i.fa.fa-save
+  - else
+    .btn.edit
+      %i.fa.fa-edit
+    .btn.destroy
+      %i.fa.fa-trash-o

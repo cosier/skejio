@@ -9,6 +9,7 @@
 = render 'form'
 
 %br/
+%br/
 %hr/
 
 = link_to 'Back', business_schedule_rules_path, class: 'btn btn-link'
@@ -18,5 +19,6 @@
     window.Scp ||= {}
 
     Scp.Data =
-      services: #{Service.business(current_user.business).to_json}
+      services: #{@services.to_json}
+      offices: #{@offices.to_json}
       providers: #{@service_providers.to_json}

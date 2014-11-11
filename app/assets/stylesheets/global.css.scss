@@ -1,5 +1,14 @@
 @import "colors";
 
+.hidden {
+  display:none;
+}
+.bootstrap-select.mini {
+  max-width:80px;
+}
+
+
+
 p.user-info {
   padding:14px;
 }
@@ -7,6 +16,11 @@ p.user-info {
 // Skinny headers
 h1,h2,h3 {
   font-weight:100;
+}
+
+.multiselect-container>li,
+.multiselect-container>li a {
+  height:28px;
 }
 
 * {

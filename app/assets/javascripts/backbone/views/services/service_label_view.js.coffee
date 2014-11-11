@@ -1,6 +1,6 @@
 Scplanner.Views.Services ||= {}
 
-class Scplanner.Views.Services.ServiceLabelView extends Backbone.View
+class Scplanner.Views.ServiceLabelView extends Backbone.View
   template: JST["backbone/templates/services/service_label"]
   className: "service-label"
 

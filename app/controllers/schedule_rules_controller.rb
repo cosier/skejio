@@ -14,16 +14,21 @@ class ScheduleRulesController < BusinessesController
   def new
     @service_providers = User.business(@business).service_providers
     @services = Service.business(@business)
-
+    @offices = Office.business(@business)
 
     if @service_providers.empty?
       return redirect_to business_users_path,
-        alert: "You must create a Service before creating a Schedule Rule"
+        alert: "You must have at least one Service Provider before creating a Schedule Rule"
     end
 
     if @services.empty?
       return redirect_to business_services_path,
-        alert: "You must create a Service before creating a Schedule Rule"
+        alert: "You must have at least one Service before creating a Schedule Rule"
+    end
+
+    if @offices.empty?
+      return redirect_to business_offices_path,
+        alert: "You must have at least one Office before creating a Schedule Rule"
     end
 
     respond_with(@schedule_rule)

@@ -19,4 +19,5 @@ class Office < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :location
 
+  scope :business, ->(business){ where business_id: business.id  }
 end

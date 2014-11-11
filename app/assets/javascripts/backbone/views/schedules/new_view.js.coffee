@@ -6,10 +6,10 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
   events:
     "submit form": "save"
-    "click .btn-add-service": "add_service"
+    "click .btn-add-time-sheet": "add_time_sheet"
 
-  services: new Scplanner.Collections.ServicesCollection()
-  rules:    new Scplanner.Collections.RuleServicesCollection()
+  time_sheets: new Scplanner.Collections.TimeSheetsCollection()
+  services:    new Scplanner.Collections.ServicesCollection()
 
   last_cache: {}
 
@@ -20,46 +20,26 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     window.Scp ||= {}
     window.Scp.Co || = {}
 
+    Scp.Co.Providers = new Scplanner.Collections.ServicesCollection(Scp.Data.providers)
     Scp.Co.Services = new Scplanner.Collections.ServicesCollection(Scp.Data.services)
     Scp.Co.Offices  = new Scplanner.Collections.OfficesCollection(Scp.Data.offices)
 
-    # @model = new @collection.model()
+    @add_time_sheet()
+    @render()
 
-  remove_service: (service)->
-    console.debug "Removing Service", service
-    @services.remove(service)
-    @remove_timesheet(service)
-
-    select = @$('#schedule_rule_services')
-    select.append($("<option value='#{service.id}'>#{service.get('name')}</option>"))
-    select.selectpicker('refresh');
-
-  add_service: =>
-    id = @$('#schedule_rule_services').val() || @$('#schedule_rule_services option').first().attr('value')
-    return false unless id
-    # Get the select option element, and fallback to the first available one.
-    # name = @$('#schedule_rule_services + .bootstrap-select > button span.filter-option').text()
-    name = ''
-    removed = false
-    @$('#schedule_rule_services option').map ->
-      el = $(@)
-      if parseInt(el.val()) == parseInt(id)
-        name = el.html()
-        el.remove()
-        removed = true
-
-    model = new Scplanner.Models.Service
-      id: id
-      name: name
+  add_time_sheet: =>
+    model = new Scplanner.Models.TimeSheet
 
     model.bind 'destroy', =>
-      @remove_service(model)
+      @remove_timesheet(model)
 
-    @services.add model
+    @time_sheets.add(model)
 
-    @render_services()
     @render_timesheets()
+
     @$('#schedule_rule_services').selectpicker('refresh')
+    @$('.date').datetimepicker
+      pickTime: false
 
 
   save: (e) ->
@@ -77,47 +57,52 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
       error: (schedule_creator, jqXHR) =>
         @model.set({errors: $.parseJSON(jqXHR.responseText)})
 
-  render_services: ->
-    @container = $(".right .service-list")
-    @container.empty()
-
-    @services.each (service)=>
-      console.debug "Adding Service:", service
-      view = new Scplanner.Views.Services.ServiceLabelView
-        model: service
-      @container.append view.render().el
 
   render_timesheets: ->
     current_timesheets = {}
 
+
     @$('.time-sheet').each (i, el)->
-      current_timesheets[$(el).data('view').model.id] = true
+      current_timesheets[$(el).data('view').model.cid] = true
 
-    @services.each (service)=>
-      unless current_timesheets[service.id]
-        @add_timesheet(service)
+    @time_sheets.each (sheet)=>
+      unless current_timesheets[sheet.cid]
+        @add_timesheet(sheet)
 
-  add_timesheet: (service)->
+    add_btn = $('.btn-add-time-sheet')
+    spinner = $('.time-sheet-spinner')
+    spinner.addClass('hidden')
+
+    if add_btn.hasClass 'hidden'
+      add_btn.removeClass('hidden')
+
+  add_timesheet: (sheet)->
     console.debug "Adding Timesheet"
     container = @$('.service-entries')
 
     view = new Scplanner.Views.Schedules.TimeSheetView
-      model: service
+      model: sheet
 
     container.append(view.render().el)
     $('.bootstrap-select').selectpicker()
 
-  remove_timesheet: (service)->
-    console.debug "Removing Timesheet for #{service.get('name')}"
+  remove_timesheet: (sheet)->
+    console.debug "Removing Timesheet for #{sheet.get('name')}"
+    @time_sheets.remove(sheet)
     container  = @$('.service-entries')
-    time_sheet = @$(".time-sheet[service-id=#{service.id}]")
+    time_sheet = @$(".time-sheet[service-id=#{sheet.cid}]")
     time_view  = time_sheet.data('view')
 
     time_view.remove() if time_view
 
   render: ->
-    @$el.html @template @model.toJSON()
 
-    this.$("form").backboneLink(@model)
+    brkManagerView = new Scplanner.Views.Schedules.BreakManagerView()
+    $('.break-entries').html(brkManagerView.render().el)
+
+    # this.$("form").backboneLink(@model)
+
+
+
 
     return this
