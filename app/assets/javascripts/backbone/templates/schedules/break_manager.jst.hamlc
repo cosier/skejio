@@ -50,17 +50,17 @@
               .close
                 %i.fa.fa-remove
               %h5 Configure Rule Expiration Dates
-              .date
+              .valid_dates
                 .row
                   .col-lg-4
-                    %label Valid From:
+                    %label{for: '1234'} Valid From:
                   .col-lg-8
-                    %input{value: "#{moment().date()}/#{moment().month()}/#{moment().year()}"}
+                    %input.date{id: 'valid_from', name: 'valid_from', value: "#{moment().date()}/#{moment().month()}/#{moment().year()}"}
                 .row
                   .col-lg-4
-                    %label Valid Until:
+                    %label{for: '123'} Valid Until:
                   .col-lg-8
-                    %input{value: "forever"}
+                    %input.date{id: 'valid_until', name: 'valid_until', value: "#{moment().date()}/#{moment().month()}/#{parseInt(moment().year()) + 1}", placeholder: "Forever."}
 
             .state-closed
               .btn.btn-link.open
@@ -77,7 +77,7 @@
                   %option{value: service.id }= service.get('name')
 
               %p.muted
-                (optional)
+                By default, your Break will be available for all Services.
 
             .state-closed
               .btn.btn-link.open

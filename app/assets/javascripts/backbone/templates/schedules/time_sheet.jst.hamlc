@@ -2,20 +2,24 @@
   .time-sheet-destroy.destroy
     %i.fa.fa-remove
 
-  .validity.pull-right
+  .validity.pull-right.closed
+    .edit-validity
+      %i.fa.fa-edit
+
+    .save-validity
+      %i.fa.fa-save
+
+    .filter-screen
+
     .from
       .label.label-default Valid From:
-      .input-group.date#valid-from
-        %input.form-control{placeholder: '- - ', :type => "text", value: "#{moment().month()}/#{moment().date()}/#{moment().year()}"}
-        %span.input-group-addon
-          %i.fa.fa-calendar
+      .input-group#valid-from
+        %input.date.form-control{placeholder: 'Yesterday. ', :type => "text", value: "#{moment().month()}/#{moment().date()}/#{moment().year()}"}
 
     .until
       .label.label-default Valid Until:
-      .input-group.date#valid-until
-        %input.form-control{:type => "text", placeholder: '- - ', }
-        %span.input-group-addon
-          %i.fa.fa-calendar
+      .input-group#valid-until
+        %input.date.form-control{:type => "text", placeholder: '- Until Forever. ', }
 
   %br/
   %br/

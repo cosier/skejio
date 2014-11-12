@@ -31,22 +31,24 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       $('tr.pregame').addClass 'hidden'
       self.add_break(brk)
 
-  enable_rule_expiration: ->
+  enable_rule_expiration: =>
     console.debug 'enable_rule_expiration'
     @$('.configure-rule-expiration.state-view').removeClass('closed')
     @$('.configure-rule-expiration.state-view').addClass('open')
+    @hooks()
 
-  disable_rule_expiration: ->
+  disable_rule_expiration: =>
     console.debug 'disable_rule_expiration'
     @$('.configure-rule-expiration.state-view').removeClass('open')
     @$('.configure-rule-expiration.state-view').addClass('closed')
 
-  enable_service_specification: ->
+  enable_service_specification: =>
     console.debug 'enable_service_specification'
     @$('.configure-service-specification.state-view').removeClass('closed')
     @$('.configure-service-specification.state-view').addClass('open')
+    @hooks()
 
-  disable_service_specification: ->
+  disable_service_specification: =>
     console.debug 'disable_service_specification'
     @$('.configure-service-specification.state-view').removeClass('open')
     @$('.configure-service-specification.state-view').addClass('closed')
@@ -128,61 +130,59 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       enable_date_validity: @view_vars.enable_date_validity
       enable_service_specification: @view_vars.enable_service_specification
 
+    $('.date').datetimepicker
+      pickTime: false
+
     @add_break_entries()
     @insert_option_intervals('start', 11)
     @insert_option_intervals('end', 12)
     @hooks()
+
     return this
 
   hooks: ->
-    setTimeout ->
+    setTimeout =>
+
+      $('.date').datetimepicker
+        pickTime: false
+
       console.debug "Select[multiple]", @$('select[multiple]')
       @$('select[multiple]').each (i, select)->
         console.debug 'select[multiple]', select
         select = $(select)
-        if select.attr('data-normal')
-          select.multiselect
-            buttonWidth: 250
-            includeSelectAllOption: false
-            buttonText: (options, select)->
-              return select.attr('data-empty') if options.length == 0
-              alert('ok')
-              "Services: #{options.length}"
+        select_all_option = true
+        if select.attr('data-select-all') == 'false'
+          select_all_option = false
 
-        else
-          select_all_option = true
-          if select.attr('data-select-all') == 'false'
-            select_all_option = false
+        select.multiselect
+          buttonWidth: 350
+          includeSelectAllOption: select_all_option
+          selectAllText: 'Select All'
+          buttonText: (options, select) ->
+            return select.attr('data-empty') || 'Select Work Days' if options.length == 0
 
-          select.multiselect
-            buttonWidth: 350
-            includeSelectAllOption: select_all_option
-            selectAllText: 'Select All'
-            buttonText: (options, select) ->
-              return select.attr('data-empty') || 'Select Work Days' if options.length == 0
+            days = []
+            options.map ->
+              days.push($(this).attr 'value')
 
-              days = []
-              options.map ->
-                days.push($(this).attr 'value')
+            if (days.length == 5 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0)
+              return 'Monday to Friday'
 
-              if (days.length == 5 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0)
-                return 'Monday to Friday'
+            if (days.length == 6 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0 and days.indexOf('saturday') >= 0)
+              return 'Monday to Saturday'
 
-              if (days.length == 6 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0 and days.indexOf('saturday') >= 0)
-                return 'Monday to Saturday'
+            if (days.length == 7)
+              return 'Every Day'
 
-              if (days.length == 7)
-                return 'Every Day'
+            labels = []
+            options.each ->
+              if $(this).attr("lbl") isnt `undefined`
+                labels.push "#{$(this).attr('lbl')}"
+              else
+                labels.push $(this).html()
+              return
 
-              labels = []
-              options.each ->
-                if $(this).attr("lbl") isnt `undefined`
-                  labels.push "#{$(this).attr('lbl')}"
-                else
-                  labels.push $(this).html()
-                return
-
-              labels.join(", ") + " "
-
+            labels.join(", ") + " "
+    , 500
 
 

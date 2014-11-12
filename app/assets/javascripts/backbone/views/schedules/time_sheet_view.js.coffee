@@ -8,6 +8,8 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     "click .btn-add-service": "add_service"
     "click .btn-add-entry":   "add_entry"
     "click .destroy":         "destroy"
+    "click .edit-validity":   "edit_validity"
+    "click .save-validity":   "save_validity"
 
 
 
@@ -26,6 +28,14 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @entries.bind 'add', (entry)=>
       console.debug 'bind:add', entry
       @render_entry(entry)
+
+  edit_validity: =>
+    @$('.validity').removeClass('closed')
+    @$('.validity').addClass('open')
+
+  save_validity: =>
+    @$('.validity').removeClass('open')
+    @$('.validity').addClass('closed')
 
   destroy: =>
     console.debug "Destroying View", @
@@ -147,39 +157,36 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @insert_option_intervals()
     @$('select[multiple]').each (i, select)->
       select = $(select)
-      if select.attr('data-normal')
-        select.multiselect
-          buttonWidth: 250
-      else
-        select.multiselect
-          buttonWidth: 350
-          includeSelectAllOption: true
-          selectAllText: 'Select All'
-          buttonText: (options, select) ->
-            return 'Select Work Days' if options.length == 0
+      select.multiselect
+        buttonWidth: 350
+        includeSelectAllOption: true
+        selectAllText: 'Select All'
 
-            days = []
-            options.map ->
-              days.push($(this).attr 'value')
+        buttonText: (options, select) ->
+          return 'Select Work Days' if options.length == 0
 
-            if (days.length == 5 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0)
-              return 'Monday to Friday'
+          days = []
+          options.map ->
+            days.push($(this).attr 'value')
 
-            if (days.length == 6 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0 and days.indexOf('saturday') >= 0)
-              return 'Monday to Saturday'
+          if (days.length == 5 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0)
+            return 'Monday to Friday'
 
-            if (days.length == 7)
-              return 'Every Day'
+          if (days.length == 6 and days.indexOf('monday') >= 0 and days.indexOf('tuesday') >= 0 and days.indexOf('wednesday') >= 0 and days.indexOf('thursday') >= 0 and days.indexOf('friday') >= 0 and days.indexOf('saturday') >= 0)
+            return 'Monday to Saturday'
 
-            labels = []
-            options.each ->
-              if $(this).attr("lbl") isnt `undefined`
-                labels.push "#{$(this).attr('lbl')}"
-              else
-                labels.push $(this).html()
-              return
+          if (days.length == 7)
+            return 'Every Day'
 
-              labels.join(", ") + " "
+          labels = []
+          options.each ->
+            if $(this).attr("lbl") isnt `undefined`
+              labels.push "#{$(this).attr('lbl')}"
+            else
+              labels.push $(this).html()
+            return
+
+          labels.join(", ") + " "
 
     $(this).data('view', @)
 
