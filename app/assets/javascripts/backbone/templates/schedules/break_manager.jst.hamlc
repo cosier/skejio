@@ -8,6 +8,7 @@
         %th End
         %th Summary
         %th Valid From/Until
+        %th Floating Break
         - if @services.length > 1
           %th Service
         - if @offices.length > 1
@@ -48,6 +49,17 @@
               %option AM
               %option{selected:true} PM
 
+          .group.group-float
+            %label Floating Break &nbsp;
+            %select.bootstrap-select.float.mini
+              %option{value: "", selected: true} --
+              %option{value: "15"} 15min
+              %option{value: "30"} 30min
+              %option{value: "45"} 45min
+              %option{value: "60"} 60min
+              %option{value: "90"} 90min
+              %option{value: "120"} 120min
+
       .row
         .col-lg-6
           .configure-rule-expiration.state-view.closed
@@ -58,12 +70,12 @@
               .valid_dates
                 .row
                   .col-lg-4
-                    %label{for: '1234'} Valid From:
+                    %label{for: 'valid_from'} Valid From:
                   .col-lg-8
                     %input.date{id: 'valid_from', name: 'valid_from', value: "Now" }
                 .row
                   .col-lg-4
-                    %label{for: '123'} Valid Until:
+                    %label{for: 'valid_unit'} Valid Until:
                   .col-lg-8
                     %input.date{id: 'valid_until', name: 'valid_until', value: "Forever", placeholder: "Forever."}
 
@@ -71,6 +83,7 @@
               .btn.btn-link.open
                 %i.fa.fa-calendar
                 Configure Rule Expiration
+
         - if @services.length > 1
           .col-lg-6
             .configure-service-specification.state-view.closed

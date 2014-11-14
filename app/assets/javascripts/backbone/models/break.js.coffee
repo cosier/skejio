@@ -9,6 +9,16 @@ class Scplanner.Models.Break extends Backbone.Model
       v = "0#{v}"
     v
 
+  floating_break: ->
+    f = parseInt(@get 'floating_break')
+    if f and f > 0
+      return "#{f}min"
+    else
+      '- -'
+
+  offices: ->
+    '- -'
+
   duration: ->
     mins = 0
     start_hour = parseInt @get('start_hour')
@@ -49,10 +59,21 @@ class Scplanner.Models.Break extends Backbone.Model
       "#{@hourize(mins)} hours"
 
   valid_dates: ->
-    "- -"
+    from = @get('valid_from')
+    unt  = @get('valid_until')
+
+    if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
+      return '- -'
+
+    "#{from} - #{unt}"
 
   services: ->
-    []
+    co = []
+    for service in @get('services')
+      co.push Scp.Co.Services.findWhere
+        id: parseInt(service)
+
+    co
 
   hourize: (mins)->
     return mins if not mins
@@ -74,6 +95,10 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
     for day in data.days
       @add
         day: day
+        services: data.services
+        valid_from:  data.valid_from
+        valid_until: data.valid_until
+        floating_break: data.floating_break
         start_hour: data.start_hour
         start_min: data.start_min
         start_meridian: data.start_meridian

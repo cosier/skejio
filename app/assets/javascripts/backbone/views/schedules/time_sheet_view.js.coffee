@@ -49,6 +49,8 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @$('.time-sheet-services').removeClass('open')
     @$('.time-sheet-services').addClass('closed')
 
+    @$('.message .txt').html $('.selection button.multiselect').text()
+
   edit_validity: =>
     @$('.validity').removeClass('closed')
     @$('.validity').addClass('open')
@@ -208,6 +210,8 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
           if select.attr('label-count')
             if parseInt(select.attr('total')) <= labels.length
               "All #{select.attr('label-count')}"
+            else if labels.length == 1
+              "#{labels[0]}"
             else
               "#{labels.length} #{select.attr('label-count')}"
           else

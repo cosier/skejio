@@ -34,6 +34,9 @@
 %td.c-valid-dates
   != this.model.valid_dates()
 
+%td.c-floating-breaks
+  = @model.floating_break()
+
 %td.c-valid-services
   - services = this.model.services()
   - if services.length == 0
@@ -43,7 +46,10 @@
       .service-label
         = service.get('name')
 
-%td.c-offices
+- if @offices.length > 1
+  %td.c-offices
+    = @model.offices()
+
 %td.c-actions{style: 'width:100px'}
   - if context.state == 'edit'
     .btn.save

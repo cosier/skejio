@@ -94,10 +94,12 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
     @breaks.add_batch
       days: @$('select.entry-days[multiple]').val()
-
+      services: @$('select.choose-break-service').val() || []
       start_meridian: @$('select.start-meridian').val()
       end_meridian:   @$('select.end-meridian').val()
-
+      valid_from:     @$('input#valid_from').val()
+      valid_until:    @$('input#valid_until').val()
+      floating_break: @$('select.float').val()
       start_hour: start_hour
       start_min:  start_min
       end_hour:   end_hour

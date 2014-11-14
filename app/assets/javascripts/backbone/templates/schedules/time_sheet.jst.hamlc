@@ -25,7 +25,7 @@
       .label.label-default For:
       .input-group#time-sheet-service-selector
         .message.noselect
-          All Services
+          %span.txt All Services
           %span.edit-services.btn
             %i.fa.fa-edit
 
