@@ -7,6 +7,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
   events:
     "click .btn-add-break": "create_break"
     "click .destroy":       "destroy"
+    "click .configure-office .open":  "enable_office_specification"
+    "click .configure-office .close":  "disable_office_specification"
     "click .configure-service-specification .open":  "enable_service_specification"
     "click .configure-service-specification .close":  "disable_service_specification"
     "click .configure-rule-expiration .open":  "enable_rule_expiration"
@@ -70,6 +72,17 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     @$('.configure-service-specification.state-view').removeClass('open')
     @$('.configure-service-specification.state-view').addClass('closed')
 
+  enable_office_specification: =>
+    console.debug 'enable_office_specification'
+    @$('.configure-office.state-view').removeClass('closed')
+    @$('.configure-office.state-view').addClass('open')
+
+  disable_office_specification: =>
+    console.debug 'disable_office_specification'
+    @$('.configure-office.state-view').removeClass('open')
+    @$('.configure-office.state-view').addClass('closed')
+
+
 
   remove_break: (brk)->
     @breaks.remove(brk)
@@ -95,6 +108,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     @breaks.add_batch
       days: @$('select.entry-days[multiple]').val()
       services: @$('select.choose-break-service').val() || []
+      offices: @$('select.choose-break-office').val() || []
       start_meridian: @$('select.start-meridian').val()
       end_meridian:   @$('select.end-meridian').val()
       valid_from:     @$('input#valid_from').val()

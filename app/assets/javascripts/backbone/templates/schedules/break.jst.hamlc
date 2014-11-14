@@ -48,7 +48,9 @@
 
 - if @offices.length > 1
   %td.c-offices
-    = @model.offices()
+    - for office in @model.offices()
+      .label.label-success
+        = office.get('name')
 
 %td.c-actions{style: 'width:100px'}
   - if context.state == 'edit'

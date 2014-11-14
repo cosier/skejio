@@ -84,13 +84,10 @@
                 %i.fa.fa-calendar
                 Configure Rule Expiration
 
-        - if @services.length > 1
-          .col-lg-6
+        .col-lg-6
+          - if @services.length > 1
             .configure-service-specification.state-view.closed
               .state-open
-                .close
-                  %i.fa.fa-remove
-                %h5 Configure which Services apply for your Break
                 %select.choose-break-service{ multiple: true, data: { normal: true, empty: 'All Services Apply', 'select-all': 'false' } }
                   - for service in context.services.models
                     %option{value: service.id }= service.get('name')
@@ -102,6 +99,18 @@
                 .btn.btn-link.open
                   %i.fa.fa-list-alt
                   Which Service: All Services
+
+
+          .configure-office.state-view.closed
+            .state-open
+              %select.choose-break-office{ multiple: true, data: { normal: true, empty: 'All Offices Apply', 'select-all': 'false' } }
+                - for office in context.offices.models
+                  %option{value: office.id }= office.get('name')
+
+            .state-closed
+              .btn.btn-link.open
+                %i.fa.fa-map-marker
+                All Offices
 
       %hr/
       .group.group-day

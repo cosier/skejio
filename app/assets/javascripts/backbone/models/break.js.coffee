@@ -17,7 +17,22 @@ class Scplanner.Models.Break extends Backbone.Model
       '- -'
 
   offices: ->
-    'All Offices'
+    ids = @get('offices')
+    all_model = new Scp.Co.Offices.model
+      name: 'All Offices'
+
+    if ids.length == 0
+      return [all_model]
+
+    if ids.length == Scp.Co.Offices.length
+      return [all_model]
+
+    co = []
+    for id in ids
+      co.push Scp.Co.Offices.findWhere
+        id: parseInt(id)
+
+    co
 
   duration: ->
     mins = 0
@@ -96,6 +111,7 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
       @add
         day: day
         services: data.services
+        offices: data.offices
         valid_from:  data.valid_from
         valid_until: data.valid_until
         floating_break: data.floating_break
