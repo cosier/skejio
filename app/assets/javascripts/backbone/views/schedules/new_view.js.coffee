@@ -7,6 +7,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
   events:
     "submit form": "save"
     "click .btn-add-time-sheet": "add_time_sheet"
+    "click .btn-save-everything": "save"
 
   time_sheets: new Scplanner.Collections.TimeSheetsCollection()
   services:    new Scplanner.Collections.ServicesCollection()
@@ -16,14 +17,15 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
   constructor: (options) ->
     super(options)
+    @model = new Scplanner.Models.ScheduleRule()
 
     window.Scp ||= {}
     window.Scp.Co || = {}
 
-    Scp.Co.Providers = new Scplanner.Collections.ServicesCollection(Scp.Data.providers)
+    Scp.Co.Providers = new Scplanner.Collections.ProvidersCollection(Scp.Data.providers)
     Scp.Co.Services = new Scplanner.Collections.ServicesCollection(Scp.Data.services)
     Scp.Co.Offices  = new Scplanner.Collections.OfficesCollection(Scp.Data.offices)
-    
+
     @add_time_sheet()
     @render()
 
@@ -42,14 +44,32 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
       pickTime: false
 
 
-  save: (e) ->
+  save: (e) =>
+    console.debug 'Saving Everything'
     e.preventDefault()
     e.stopPropagation()
 
-    @model.unset("errors")
-    return false
+    payload =
+      service_provider_id: @$('select#schedule_rule_service_provider_id').val()
+      sheets: []
+      breaks: []
 
-    
+    @$('.time-sheet.row').each (i, el)->
+      sheet = $(el).data('view')
+      payload.sheets.push sheet.payload()
+
+    payload.breaks = @$('.breaks').data('view').payload()
+
+    @model.unset("errors")
+    @model.set(payload)
+
+    @model.save
+      success: (result)->
+        console.debug 'ScheduleRule: saved', result
+      error: (error)->
+        console.error 'ScheduleRule: save failed', error
+
+
 
   render_timesheets: ->
     current_timesheets = {}
@@ -92,8 +112,6 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
     brkManagerView = new Scplanner.Views.Schedules.BreakManagerView()
     $('.break-entries').html(brkManagerView.render().el)
-
-    # this.$("form").backboneLink(@model)
 
 
 

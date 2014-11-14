@@ -156,6 +156,9 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     # console.debug "HTML", html
     select.html(html)
 
+  payload: ->
+    []
+
   render: =>
     @$el.html @template
       services: @services
