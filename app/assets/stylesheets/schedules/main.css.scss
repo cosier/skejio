@@ -30,13 +30,13 @@
     .state-view.open {
       .state-open {
         display: block;
-        padding:10px;
+        padding:2px;
         top: 3px;
         left: -10px;
-        border:1px solid #e1e1e1;
+        // border:1px solid #e1e1e1;
         border-radius:4px;
-        min-height:106px;
-        background:#fff;
+        // min-height:106px;
+        // background:#fff;
         h5 {
           top:-10px;
           left:5px;
