@@ -17,7 +17,7 @@ class Scplanner.Models.Break extends Backbone.Model
       '- -'
 
   offices: ->
-    '- -'
+    'All Offices'
 
   duration: ->
     mins = 0
