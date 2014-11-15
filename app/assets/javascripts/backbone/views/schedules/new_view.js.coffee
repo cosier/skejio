@@ -23,7 +23,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     Scp.Co.Providers = new Scplanner.Collections.ServicesCollection(Scp.Data.providers)
     Scp.Co.Services = new Scplanner.Collections.ServicesCollection(Scp.Data.services)
     Scp.Co.Offices  = new Scplanner.Collections.OfficesCollection(Scp.Data.offices)
-
+    
     @add_time_sheet()
     @render()
 
@@ -49,14 +49,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     @model.unset("errors")
     return false
 
-    @collection.create @model.toJSON(),
-      success: (schedule_creator) =>
-        @model = schedule_creator
-        window.location.hash = "/#{@model.id}"
-
-      error: (schedule_creator, jqXHR) =>
-        @model.set({errors: $.parseJSON(jqXHR.responseText)})
-
+    
 
   render_timesheets: ->
     current_timesheets = {}
