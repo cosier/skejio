@@ -3,6 +3,9 @@ class ScheduleRulesController < BusinessesController
   sidebar :schedule_rules
   before_filter :set_sidebar
 
+  before_filter :provide_create_with_schedule_rule, only: [:create]
+  skip_load_resource only: [:create]
+
   def index
     @schedule_rules = ScheduleRule.all
     respond_with(@schedule_rules)
@@ -39,6 +42,8 @@ class ScheduleRulesController < BusinessesController
   end
 
   def create
+    @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
+    @schedule_rule.business_id = @business.id
     @schedule_rule.save
     respond_with(@schedule_rule)
   end
@@ -54,6 +59,13 @@ class ScheduleRulesController < BusinessesController
   end
 
   private
+
+  def provide_create_with_schedule_rule
+    if authorize! :create, ScheduleRule
+      @schedule_rule = ScheduleRule.new 
+      @schedule_rule.attributes = schedule_rule_params.dup
+    end
+  end
 
   def set_sidebar
     set_current_sidebar :schedule_rules
