@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111023241) do
+ActiveRecord::Schema.define(version: 20141115110827) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "break_shifts", force: true do |t|
+    t.integer  "business_id",                   null: false
+    t.integer  "office_id",                     null: false
+    t.integer  "time_sheet_id",                 null: false
+    t.integer  "day",                           null: false
+    t.integer  "start_hour",                    null: false
+    t.integer  "start_minute",                  null: false
+    t.integer  "end_hour",                      null: false
+    t.integer  "end_minute",                    null: false
+    t.boolean  "is_enabled",     default: true
+    t.datetime "valid_from_at",                 null: false
+    t.datetime "valid_until_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "businesses", force: true do |t|
     t.string   "name",                           null: false
