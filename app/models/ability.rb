@@ -41,9 +41,11 @@ class Ability
     end
 
     if user.roles? :appointment_manager
+      can :manage, BreakShift, { business_id: user.business_id }
     end
 
     if user.roles? :appointment_viewer
+      can :read, BreakShift, { business_id: user.business_id }
     end
 
     # Users can all read their own Business
