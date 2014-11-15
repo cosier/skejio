@@ -30,6 +30,9 @@ class Ability
 
       # Can manage Users belonging to the same Business
       can :manage, ScheduleRule, { business_id: user.business_id }
+
+      # Can manage 
+      can :manage, BreakShift, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_manager
