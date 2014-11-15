@@ -28,6 +28,9 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  scope :api do
+    resources :break_shifts
+  end
 
   devise_scope :user do
     # tmp devise fix until we hook our links with javascript for :delete requests
