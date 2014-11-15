@@ -42,7 +42,12 @@
         .container-fluid
           = bootstrap_flash
           = yield
-      / /#page-content-wrapper
-    / /#wrapper
+
+
     = javascript_include_tag "application"
+    :coffeescript
+      window.Scp ||= {}
+      Scp.business_id = '#{current_user and current_user.business_id}'
+      
+      
     = yield :javascript
