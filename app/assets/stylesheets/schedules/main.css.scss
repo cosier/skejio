@@ -196,7 +196,7 @@
       padding:5px;
       
       .edit-services {
-        color:$dark-red;
+        /*color:$dark-red;*/
       }
 
       .save-services {
@@ -267,6 +267,9 @@
         }
         .label {
           opacity:0.4;
+        }
+        .edit-validity {
+          color:#999;
         }
       }
 
