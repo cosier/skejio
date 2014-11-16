@@ -40,6 +40,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       @update_tab_count()
 
   update_tab_count: =>
+    console.debug 'model.trigger:update_tab_count'
     @model.trigger 'update_tab_count'
 
   get_time_entry_count: =>

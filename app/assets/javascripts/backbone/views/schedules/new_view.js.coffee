@@ -17,6 +17,8 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
   constructor: (options) ->
     super(options)
+
+    self   = @
     @model = new Scplanner.Models.ScheduleRule()
 
     window.Scp ||= {}
@@ -29,7 +31,9 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     communicator = new Backbone.Model()
 
     # Watch for updates on entries — so we can update the tab count
-    communicator.bind 'update_tab_count', @render_tab_counts
+    communicator.bind 'update_tab_count', ->
+      self.render_tab_counts()
+
     @brk_man_view = new Scplanner.Views.Schedules.BreakManagerView
       model: communicator
 
@@ -98,10 +102,11 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
   add_timesheet: (sheet)->
     console.debug "Adding Timesheet"
     container = @$('.service-entries')
+    self = @
 
     # Watch for updates on entries — so we can update the tab count
-    sheet.bind 'update_tab_count', @update_tab_count
-
+    sheet.bind 'update_tab_count', ->
+      self.render_tab_counts()
 
     view = new Scplanner.Views.Schedules.TimeSheetView
       model: sheet
