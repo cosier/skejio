@@ -109,6 +109,7 @@ group :development, :test do
 end
 
 gem 'pry'
+gem 'faker'
 
 
 group :test do
