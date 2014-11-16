@@ -12,6 +12,7 @@
 
 class ScheduleRule < ActiveRecord::Base
 
+  belongs_to :business
   belongs_to :service_provider,
     class_name: 'User',
     foreign_key: 'service_provider_id'
@@ -21,5 +22,8 @@ class ScheduleRule < ActiveRecord::Base
     :through => :time_sheets
 
   attr_accessor :services
+
+  validates_presence_of :service_provider
+  validates_presence_of :business
 
 end

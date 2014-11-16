@@ -35,28 +35,28 @@ class ScheduleRulesController < BusinessesController
         alert: "You must have at least one Office before creating a Schedule Rule"
     end
 
-    respond_with(@schedule_rule)
+    respond_with(@business, @schedule_rule)
   end
 
   def edit
   end
 
   def create
-    binding.pry
     @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
     @schedule_rule.business_id = @business.id
+
     # @schedule_rule.save
-    respond_with(@schedule_rule)
+    respond_with(@business, @schedule_rule)
   end
 
   def update
     @schedule_rule.update(schedule_rule_params)
-    respond_with(@schedule_rule)
+    respond_with(@business, @schedule_rule)
   end
 
   def destroy
     @schedule_rule.destroy
-    respond_with(@schedule_rule)
+    respond_with(@business, @schedule_rule)
   end
 
   private

@@ -31,10 +31,10 @@
   - @schedule_rules.each do |schedule_rule|
     %tr
       %td= schedule_rule.service_provider_id
-      %td= schedule_rule.last_updated_at
-      %td= link_to 'Show', business_schedule_rule(schedule_rule)
-      %td= link_to 'Edit', edit_business_schedule_rule_path(schedule_rule)
-      %td= link_to 'Destroy', business_schedule_rule, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %td= schedule_rule.updated_at
+      %td= link_to 'Show', business_schedule_rule_path(@business, schedule_rule)
+      %td= link_to 'Edit', edit_business_schedule_rule_path(@business, schedule_rule)
+      %td= link_to 'Destroy', business_schedule_rule_path(@business, schedule_rule), :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 %hr

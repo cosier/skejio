@@ -20,21 +20,32 @@
         .col-lg-4.right
           = f.collection_select :service_provider_id, @service_providers, :id, :display_name, {}, class: 'bootstrap-select', data: { style: 'btn-default'}
       %hr
-      / %h3.configure-time-sheets Time Sheets
-      .service-entries.row
-      .break-entries.row
+      -# Nav tabs
+      %ul.nav.nav-tabs{:role => "tablist"}
+        %li.active{:role => "presentation"}
+          %a{"aria-controls" => "availability", "data-toggle" => "tab", :href => "#availability", :role => "tab"} Availability
+        %li{:role => "presentation"}
+          %a{"aria-controls" => "breaks", "data-toggle" => "tab", :href => "#breaks", :role => "tab"} Breaks
+
+      .tab-content
+        #availability.service-entries.row.active.tab-pane{role: "tabpanel"}
+          .btn.btn-add-time-sheet.btn-link.hidden.pull-right
+            %i.fa.fa-plus
+            Add another Time Sheet
+          .clear
+        #breaks.break-entries.row.tab-pane{role: "tabpanel"}
+          %br/
+          %br/
+
       .time-sheet-spinner
         %i.fa.fa-spinner.fa-spin
         Loading...
 
+      .alert.alert-info.hidden
+        Would you like to add some breaks?
+
     %br/
-    %br/
-    %hr/
     .actions
-      / = f.submit 'Save Schedule', class: 'btn btn-success'
-      .btn.btn-add-time-sheet.btn-default.hidden.pull-left
-        %i.fa.fa-plus
-        Add Time Sheet
 
       .btn.btn-save-everything.btn-default.pull-right.btn-lg
         %i.fa.fa-check

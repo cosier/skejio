@@ -1,7 +1,9 @@
 @import "../colors";
 
 .schedule_rules {
-
+  label[for="schedule_rule_is_schedule_public"] {
+    font-size:25px;
+  }
   .breaks.row {
     margin-left:0;
     margin-right:0;
