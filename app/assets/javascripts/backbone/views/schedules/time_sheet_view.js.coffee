@@ -28,9 +28,22 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @$el.attr('service-id', @model.id)
     @$el.data('view', @)
 
+    @entries.bind 'destroy', (entry)=>
+      @update_tab_count()
+
+    @entries.bind 'remove', (entry)=>
+      @update_tab_count()
+
     @entries.bind 'add', (entry)=>
       console.debug 'bind:add', entry
       @render_entry(entry)
+      @update_tab_count()
+
+  update_tab_count: =>
+    @model.trigger 'update_tab_count'
+
+  get_time_entry_count: =>
+    parseInt @entries.length
 
   show_picker: (e)->
     el  = $(e.target)
@@ -61,6 +74,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
 
   destroy: =>
     console.debug "Destroying View", @
+    @model.trigger 'update_tab_count'
     @model.trigger('destroy')
     @remove()
 
@@ -168,7 +182,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
         model: service
 
       container.append(view.render().el)
-  
+
   payload: =>
     { id: @model.cid }
 

@@ -13,7 +13,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
   services:    new Scplanner.Collections.ServicesCollection()
 
   last_cache: {}
-
+  time_sheet_views: new Backbone.Collection()
 
   constructor: (options) ->
     super(options)
@@ -25,6 +25,13 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     Scp.Co.Providers = new Scplanner.Collections.ProvidersCollection(Scp.Data.providers)
     Scp.Co.Services = new Scplanner.Collections.ServicesCollection(Scp.Data.services)
     Scp.Co.Offices  = new Scplanner.Collections.OfficesCollection(Scp.Data.offices)
+
+    communicator = new Backbone.Model()
+
+    # Watch for updates on entries — so we can update the tab count
+    communicator.bind 'update_tab_count', @render_tab_counts
+    @brk_man_view = new Scplanner.Views.Schedules.BreakManagerView
+      model: communicator
 
     @add_time_sheet()
     @render()
@@ -74,7 +81,6 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
   render_timesheets: ->
     current_timesheets = {}
 
-
     @$('.time-sheet').each (i, el)->
       current_timesheets[$(el).data('view').model.cid] = true
 
@@ -93,8 +99,14 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     console.debug "Adding Timesheet"
     container = @$('.service-entries')
 
+    # Watch for updates on entries — so we can update the tab count
+    sheet.bind 'update_tab_count', @update_tab_count
+
+
     view = new Scplanner.Views.Schedules.TimeSheetView
       model: sheet
+
+    @time_sheet_views.add({view: view})
 
     container.append(view.render().el)
     $('.bootstrap-select').selectpicker()
@@ -102,18 +114,26 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
   remove_timesheet: (sheet)->
     console.debug "Removing Timesheet for #{sheet.get('name')}"
     @time_sheets.remove(sheet)
+
     container  = @$('.service-entries')
     time_sheet = @$(".time-sheet[service-id=#{sheet.cid}]")
     time_view  = time_sheet.data('view')
 
     time_view.remove() if time_view
 
+  render_tab_counts: =>
+    av_count = 0
+    brk_count = 0
+
+    @time_sheet_views.each (model)->
+      view = model.get('view')
+      av_count += view.get_time_entry_count()
+
+    brk_count += @brk_man_view.get_time_entry_count()
+
+    $('#availability-tab .count').html("(#{av_count})")
+    $('#breaks-tab .count').html("(#{brk_count})")
+
   render: ->
-
-    brkManagerView = new Scplanner.Views.Schedules.BreakManagerView()
-    $('.break-entries').html(brkManagerView.render().el)
-
-
-
-
+    $('.break-entries').html(@brk_man_view.render().el)
     return this

@@ -23,9 +23,13 @@
       -# Nav tabs
       %ul.nav.nav-tabs{:role => "tablist"}
         %li.active{:role => "presentation"}
-          %a{"aria-controls" => "availability", "data-toggle" => "tab", :href => "#availability", :role => "tab"} Availability
+          %a{id: "availability-tab", "aria-controls" => "availability", "data-toggle" => "tab", :href => "#availability", :role => "tab"}
+            Availability
+            %span.count.muted (0)
         %li{:role => "presentation"}
-          %a{"aria-controls" => "breaks", "data-toggle" => "tab", :href => "#breaks", :role => "tab"} Breaks
+          %a{id: "breaks-tab", "aria-controls" => "breaks", "data-toggle" => "tab", :href => "#breaks", :role => "tab"}
+            Breaks
+            %span.count.muted (0)
 
       .tab-content
         #availability.service-entries.row.active.tab-pane{role: "tabpanel"}

@@ -39,7 +39,15 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
     @$el.data('view', @)
 
+    @breaks.bind 'destroy', (brk)->
+      self.model.trigger 'update_tab_count'
+
+    @breaks.bind 'remove', (brk)->
+      self.model.trigger 'update_tab_count'
+
     @breaks.bind 'add', (brk)->
+      self.model.trigger 'update_tab_count'
+
       $('tr.pregame').addClass 'hidden'
       self.add_break(brk)
 
@@ -47,6 +55,9 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       $('#valid_until').datetimepicker({pickTime: false})
       $('#valid_from').datetimepicker({pickTime: false})
     , 1000
+
+  get_time_entry_count: =>
+    parseInt @breaks.length
 
   enable_rule_expiration: =>
     console.debug 'enable_rule_expiration'
