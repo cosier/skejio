@@ -15,8 +15,20 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require_relative './rails_helper'
+require 'twilio-test-toolkit'
+require 'factory_girl'
+require 'database_cleaner'
 
 RSpec.configure do |config|
+
+  require_relative 'support/twilio_test_toolkit_patch.rb'
+
+  # Setup Twilio testing lib - capybara2+
+  config.include TwilioTestHelper
+  config.include TwilioTestToolkit::DSL
+
+  config.extend  FactoryGirl::Syntax::Methods, :type => :feature
+  config.include FactoryGirl::Syntax::Methods
 
   config.include FactoryMacros, :type => :model
   config.include Devise::TestHelpers, :type => :controller
