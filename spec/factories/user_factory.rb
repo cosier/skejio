@@ -31,13 +31,27 @@ FactoryGirl.define do
   factory :user, class: 'User' do
     association :business
 
-    first_name 'John'
-    last_name 'Doe'
+    first_name Faker::Name.first_name
+    last_name Faker::Name.last_name
 
     # override this in your builder
-    email "john.doe.#{Random.rand(9999)}@example.com"
+    email "person#{Random.rand(100.999)}@example.com"
     password '12345678'
-    phone '+1 (555) 555-5555'
+
+    phone "+1 (#{Random.rand(100..999)}) #{Random.rand(100..999)}-#{Random.rand(1000..9999)}"
+
+    factory :service_provider do
+      roles [:service_provider]
+    end
+
+    factory :admin do
+      roles [:admin]
+    end
+
+    factory :super_admin do
+      roles [:super_admin]
+    end
+
   end
 
 

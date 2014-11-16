@@ -19,8 +19,7 @@
 FactoryGirl.define do
 
   factory :business, class: 'Business' do
-    name 'Jiffy Lube'
+    name Faker::Company.name
   end
-
 
 end
