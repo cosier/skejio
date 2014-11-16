@@ -14,4 +14,5 @@ class TimeSheet < ActiveRecord::Base
 
   has_many :time_sheet_services
   has_many :time_entries
+
 end

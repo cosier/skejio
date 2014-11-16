@@ -4,7 +4,7 @@
 #
 #  id             :integer          not null, primary key
 #  business_id    :integer          not null
-#  office_id      :integer          not null
+#  office_id      :integer
 #  time_sheet_id  :integer          not null
 #  day            :integer          not null
 #  start_hour     :integer          not null
@@ -12,8 +12,8 @@
 #  end_hour       :integer          not null
 #  end_minute     :integer          not null
 #  is_enabled     :boolean          default(TRUE)
-#  valid_from_at  :datetime         not null
-#  valid_until_at :datetime         not null
+#  valid_from_at  :datetime
+#  valid_until_at :datetime
 #  created_at     :datetime
 #  updated_at     :datetime
 #
@@ -32,4 +32,14 @@ class TimeEntry < ActiveRecord::Base
     :friday,
     :saturday,
   ]
+
+
+  validates_presence_of :start_hour
+  validates_presence_of :start_minute
+  validates_presence_of :end_hour
+  validates_presence_of :end_minute
+  validates_presence_of :schedule_rule
+  validates_presence_of :business
+
+
 end
