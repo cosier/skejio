@@ -185,7 +185,18 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       container.append(view.render().el)
 
   payload: =>
-    { id: @model.cid }
+    data =
+      id: @model.id
+
+      valid_from: @$('.from input').val()
+      valid_until: @$('.until input').val()
+
+      services:
+        @$('select.services-selection').val()
+
+      entries:
+        @entries.map (entry)->
+          entry.toJSON()
 
   render: =>
     @$el.html @template

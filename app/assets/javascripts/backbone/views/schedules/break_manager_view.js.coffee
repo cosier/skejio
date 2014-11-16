@@ -168,7 +168,9 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     select.html(html)
 
   payload: ->
-    []
+    @breaks.map (brk)->
+      brk.toJSON()
+
 
   render: =>
     @$el.html @template
