@@ -113,7 +113,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       end_meridian:   @$('select.end-meridian').val()
       valid_from:     @$('input#valid_from').val()
       valid_until:    @$('input#valid_until').val()
-      floating_break: @$('select.float').val()
+      floating_break: @$('input.float').val()
       start_hour: start_hour
       start_min:  start_min
       end_hour:   end_hour
@@ -181,6 +181,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
       $('.date').datetimepicker
         pickTime: false
+
+      @$('.numeric').numeric()
 
       console.debug "Select[multiple]", @$('select[multiple]')
       @$('select[multiple]').each (i, select)->

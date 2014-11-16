@@ -50,16 +50,10 @@
               %option{selected:true} PM
 
           .group.group-float
-            %label Floating Break &nbsp;
-            %select.bootstrap-select.float.mini
-              %option{value: "", selected: true} --
-              %option{value: "15"} 15min
-              %option{value: "30"} 30min
-              %option{value: "45"} 45min
-              %option{value: "60"} 60min
-              %option{value: "90"} 90min
-              %option{value: "120"} 120min
-
+            %label
+              Floating Break &nbsp;
+              %span.muted (minutes)
+            %input.float.numeric{type: 'text', placeholder: '0'}
       .row
         .col-lg-6
           .configure-rule-expiration.state-view.closed

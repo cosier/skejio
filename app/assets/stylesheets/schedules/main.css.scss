@@ -2,13 +2,27 @@
 
 .schedule_rules {
 
+  .breaks.row {
+    margin-left:0;
+    margin-right:0;
+    margin-top:50px;
+    box-shadow: 1px 1px 10px #c7c7c7;
+  }
+  .time-sheet-spinner {
+    padding-top:30px;
+    font-size:12px;
+    color:#999;
+  }
   h4.breaks {
     background:#fff;
     border:1px solid $blue;
     border-bottom:none;
     color:$blue;
-    padding:10px;
+    padding:20px 10px;
     margin-bottom:0;
+    margin-top:0;
+    font-size: 16px;
+    text-transform: uppercase;
   }
 
   .break-manager {
@@ -93,11 +107,6 @@
         // border-radius: 5px;
       }
     }
-  }
-
-  .breaks.row {
-    margin-left:0;
-    margin-right:0;
   }
 
   .btn-add-service {

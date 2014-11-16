@@ -42,9 +42,10 @@ class ScheduleRulesController < BusinessesController
   end
 
   def create
+    binding.pry
     @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
     @schedule_rule.business_id = @business.id
-    @schedule_rule.save
+    # @schedule_rule.save
     respond_with(@schedule_rule)
   end
 
