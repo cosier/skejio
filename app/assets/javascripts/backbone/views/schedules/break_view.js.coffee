@@ -28,10 +28,10 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
   save: ->
     console.debug 'break_view:save'
     @state = 'normal'
-    end_hour   = parseInt @$('select.edit-end').val().split(':')[0]
-    end_min    = parseInt @$('select.edit-end').val().split(':')[1]
-    start_hour = parseInt @$('select.edit-start').val().split(':')[0]
-    start_min  = parseInt @$('select.edit-start').val().split(':')[1]
+    end_hour       = parseInt @$('select.edit-end').val().split(':')[0]
+    end_minute     = parseInt @$('select.edit-end').val().split(':')[1]
+    start_hour     = parseInt @$('select.edit-start').val().split(':')[0]
+    start_minute   = parseInt @$('select.edit-start').val().split(':')[1]
     start_meridian = @$('select.edit-start-meridian').val()
     end_meridian   = @$('select.edit-end-meridian').val()
 
@@ -39,10 +39,10 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
       day: @$('select.edit-day').val()
       start_meridian: start_meridian
       start_hour: start_hour
-      start_min: start_min
+      start_minute: start_minute
       end_meridian: end_meridian
       end_hour: end_hour
-      end_min: end_min
+      end_minute: end_minute
 
     @render()
 

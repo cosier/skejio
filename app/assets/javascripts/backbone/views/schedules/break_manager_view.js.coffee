@@ -111,10 +111,10 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
   create_break: ->
     console.debug "add_break"
-    end_hour   = parseInt @$('select.end').val().split(':')[0]
-    end_min    = parseInt @$('select.end').val().split(':')[1]
-    start_hour = parseInt @$('select.start').val().split(':')[0]
-    start_min  = parseInt @$('select.start').val().split(':')[1]
+    end_hour      = parseInt @$('select.end').val().split(':')[0]
+    end_minute    = parseInt @$('select.end').val().split(':')[1]
+    start_hour    = parseInt @$('select.start').val().split(':')[0]
+    start_minute  = parseInt @$('select.start').val().split(':')[1]
 
     @breaks.add_batch
       days: @$('select.entry-days[multiple]').val()
@@ -125,10 +125,10 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       valid_from:     @$('input#valid_from').val()
       valid_until:    @$('input#valid_until').val()
       floating_break: @$('input.float').val()
-      start_hour: start_hour
-      start_min:  start_min
-      end_hour:   end_hour
-      end_min:    end_min
+      start_hour:    start_hour
+      start_minute:  start_minute
+      end_hour:      end_hour
+      end_minute:    end_minute
 
   add_break_entries: =>
     container = @$('table.breaks-manager tbody')
