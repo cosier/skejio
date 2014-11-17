@@ -24,7 +24,6 @@ class SecureController < ApplicationController
 
     # Check for invalid businesses
     if @business.nil?
-      binding.pry
       return redirect_to "/", alert: "Business not found"
     end
 

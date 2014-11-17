@@ -12,7 +12,7 @@
 
 FactoryGirl.define do
   factory :schedule_rule do
-    association :business
-    association :service_provider
+    service_provider
+    business
   end
 end

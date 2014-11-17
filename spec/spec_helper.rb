@@ -19,12 +19,24 @@ require 'twilio-test-toolkit'
 require 'factory_girl'
 require 'database_cleaner'
 
+# Zeus does not preload RSpec, but running `rspec spec` does
+require 'rspec/core' unless defined? RSpec.configure
+# require 'rspec/rails'
+
+
 RSpec.configure do |config|
 
+  require_relative 'support/helpers/schedule_rules_spec_helper'
+  require_relative 'support/twilio_support'
+  require_relative 'support/devise_macros'
+  require_relative 'support/factory_macros'
+
+  require_relative 'support/factory_girl'
   require_relative 'support/twilio_test_toolkit_patch.rb'
 
   # Setup Twilio testing lib - capybara2+
-  config.include TwilioTestHelper
+  config.include TwilioSupport
+  config.include ScheduleRulesSpecHelper
   config.include TwilioTestToolkit::DSL
 
   config.extend  FactoryGirl::Syntax::Methods, :type => :feature
