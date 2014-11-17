@@ -57,7 +57,7 @@ class ScheduleRulesController < BusinessesController
 
         # Create TimeSheetServices if any services were specified
         sheet[:services].each do |service|
-            time_sheet.time_sheet_services.create(service_id: service, business_id: @bid)
+            ss = TimeSheetService.create(service_id: service, business_id: @bid, time_sheet_id: time_sheet.id)
         end if sheet[:services].present?
 
         # Create Time Sheet Entries
@@ -67,14 +67,30 @@ class ScheduleRulesController < BusinessesController
 
           entry = convert_meridians(entry)
 
-          time_sheet.time_entries.create entry.permit!
-        end
+          te = TimeEntry.create entry.permit!
+          raise te.errors.to_json if not te.persisted?
+
+        end if sheet[:entries]
       end if sheets
 
       # Create BreakShift(s) on the ScheduleRule
       params[:schedule_rule][:breaks].each do |brk|
+        brk[:business_id] = @bid
+        brk[:schedule_rule_id] = @s.id
+
         brk = convert_meridians(brk)
-        @s.break_shifts.create brk.permit!
+        bs = @s.break_shifts.create brk.except(:services, :offices).permit!
+        raise bs.errors.to_json if not bs.persisted?
+
+        brk[:services].each do |service_id|
+          bs.break_services.create(break_shift_id: bs.id, service_id: service_id, business_id: @bid)
+        end if brk[:services].present?
+
+        brk[:offices].each do |office_id|
+          bs.break_offices.create(break_shift_id: bs.id, office_id: office_id, business_id: @bid)
+        end if brk[:offices].present?
+
+
       end if params[:schedule_rule][:breaks].present?
 
     end
@@ -97,6 +113,7 @@ class ScheduleRulesController < BusinessesController
   private
 
   def convert_meridians(entry)
+    entry = entry.dup
     # convert meridians into 24 time
     if entry[:start_meridian].downcase == "pm"
       entry[:start_hour] = entry[:start_hour].to_i + 12
@@ -106,10 +123,7 @@ class ScheduleRulesController < BusinessesController
       entry[:end_hour] = entry[:end_hour].to_i + 12
     end
 
-    entry.delete :start_meridian
-    entry.delete :end_meridian
-
-    entry
+    entry.except(:start_meridian, :end_meridian)
   end
 
   def provide_create_with_schedule_rule

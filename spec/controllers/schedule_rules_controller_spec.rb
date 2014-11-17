@@ -37,10 +37,12 @@ describe ScheduleRulesController, :type => :controller do
 
     it 'saves 15 BreakShifts onto the ScheduleRule' do
       expect(assigns(:schedule_rule).break_shifts.length).to eq(15)
+      expect(assigns(:schedule_rule).break_shifts.select(&:persisted?).length).to eq(15)
     end
 
     it 'saves 15 TimeEntries onto the ScheduleRule' do
       expect(assigns(:schedule_rule).time_entries.length).to eq(15)
+      expect(assigns(:schedule_rule).time_entries.select(&:persisted?).length).to eq(15)
     end
 
     it 'doesn\'t set validity dates when using natural text' do
