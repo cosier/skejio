@@ -122,8 +122,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       offices: @$('select.choose-break-office').val() || []
       start_meridian: @$('select.start-meridian').val()
       end_meridian:   @$('select.end-meridian').val()
-      valid_from:     @$('input#valid_from').val()
-      valid_until:    @$('input#valid_until').val()
+      valid_from_at:     @$('input#valid_from').val()
+      valid_until_at:    @$('input#valid_until').val()
       floating_break: @$('input.float').val()
       start_hour:    start_hour
       start_minute:  start_minute

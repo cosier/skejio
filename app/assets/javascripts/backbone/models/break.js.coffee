@@ -74,8 +74,8 @@ class Scplanner.Models.Break extends Backbone.Model
       "#{@hourize(mins)} hours"
 
   valid_dates: ->
-    from = @get('valid_from')
-    unt  = @get('valid_until')
+    from = @get('valid_from_at')
+    unt  = @get('valid_until_at')
 
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
       return '- -'
@@ -112,8 +112,8 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
         day: day
         services: data.services
         offices: data.offices
-        valid_from:  data.valid_from
-        valid_until: data.valid_until
+        valid_from_at:  data.valid_from_at
+        valid_until_at: data.valid_until_at
         floating_break: data.floating_break
         start_hour: data.start_hour
         start_minute: data.start_minute

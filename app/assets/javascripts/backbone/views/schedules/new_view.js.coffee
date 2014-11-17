@@ -59,25 +59,40 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     console.debug 'Saving Everything'
     e.preventDefault()
     e.stopPropagation()
+    self = @
 
     payload =
       service_provider_id: @$('select#schedule_rule_service_provider_id').val()
       sheets: []
       breaks: []
 
+    validation_fail = false
+
     @$('.time-sheet.row').each (i, el)->
       sheet = $(el).data('view')
-      payload.sheets.push sheet.payload()
+      sheet_payload = sheet.payload()
 
+      validation_fail = true unless sheet_payload
+      payload.sheets.push sheet_payload
+
+    # bail early if we have validation inconsistencies
     payload.breaks = @$('.breaks').data('view').payload()
+
+    if payload.breaks.length == 0 and not validation_fail
+      if not confirm 'You havn\'t added any Breaks for this User yet, continue?'
+        validation_fail = true
+
+
+    return false if validation_fail
 
     @model.unset("errors")
     @model.set(payload)
-
-    @model.save
+    @model.save @model.toJSON(),
       success: (result)->
         console.debug 'ScheduleRule: saved', result
+        window.location = self.model.url()
       error: (error)->
+        alert 'Oops something strange happened, please refresh the page and try again'
         console.error 'ScheduleRule: save failed', error
 
 

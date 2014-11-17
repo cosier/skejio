@@ -27,7 +27,7 @@
       %option{value: 'AM', selected: (this.model.get('start_meridian') == 'AM') ? 'selected' : false } AM
       %option{value: 'PM', selected: (this.model.get('start_meridian') == 'PM') ? 'selected' : false } PM
   - else
-    = "#{this.model.get('start_hour')}:#{this.model.pretty('start_min')}"
+    = "#{this.model.get('start_hour')}:#{this.model.pretty('start_minute')}"
     = this.model.get('start_meridian').toUpperCase()
 
 %td.c-end
@@ -37,7 +37,7 @@
       %option{value: 'AM', selected: (this.model.get('end_meridian') == 'AM') ? 'selected' : false } AM
       %option{value: 'PM', selected: (this.model.get('end_meridian') == 'PM') ? 'selected' : false } PM
   - else
-    = "#{this.model.get('end_hour')}:#{this.model.pretty('end_min')}"
+    = "#{this.model.get('end_hour')}:#{this.model.pretty('end_minute')}"
     = this.model.get('end_meridian').toUpperCase()
 
 

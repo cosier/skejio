@@ -80,10 +80,10 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @remove()
 
   add_entry: ->
-    end_hour   = parseInt @$('select.end').val().split(':')[0]
-    end_min    = parseInt @$('select.end').val().split(':')[1]
-    start_hour = parseInt @$('select.start').val().split(':')[0]
-    start_min  = parseInt @$('select.start').val().split(':')[1]
+    end_hour      = parseInt @$('select.end').val().split(':')[0]
+    end_minute    = parseInt @$('select.end').val().split(':')[1]
+    start_hour    = parseInt @$('select.start').val().split(':')[0]
+    start_minute  = parseInt @$('select.start').val().split(':')[1]
 
     @entries.add_batch
       office_id: parseInt(@$('select.office').val())
@@ -92,10 +92,10 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       start_meridian: @$('select.start-meridian').val()
       end_meridian:   @$('select.end-meridian').val()
 
-      start_hour: start_hour
-      start_min:  start_min
-      end_hour:   end_hour
-      end_min:    end_min
+      start_hour:    start_hour
+      start_minute:  start_minute
+      end_hour:      end_hour
+      end_minute:    end_minute
 
     @process_entry_empty_state()
     console.debug 'add_entry', @entries
@@ -185,11 +185,15 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       container.append(view.render().el)
 
   payload: =>
+    if @entries.length == 0
+      alert 'Oops, you have a Time Sheet with no Entries.'
+      return false
+
     data =
       id: @model.id
 
-      valid_from: @$('.from input').val()
-      valid_until: @$('.until input').val()
+      valid_from_at: @$('.from input').val()
+      valid_until_at: @$('.until input').val()
 
       services:
         @$('select.services-selection').val()

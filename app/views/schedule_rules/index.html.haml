@@ -17,7 +17,6 @@
 %table.table.table-striped
   %tr
     %th Service provider
-    %th Summary
     %th Last Updated
     %th
     %th
@@ -30,10 +29,9 @@
           %p Click the button below to easily add a new Schedule Rule.
   - @schedule_rules.each do |schedule_rule|
     %tr
-      %td= schedule_rule.service_provider_id
+      %td= schedule_rule.service_provider.display_name
       %td= schedule_rule.updated_at
       %td= link_to 'Show', business_schedule_rule_path(@business, schedule_rule)
-      %td= link_to 'Edit', edit_business_schedule_rule_path(@business, schedule_rule)
       %td= link_to 'Destroy', business_schedule_rule_path(@business, schedule_rule), :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br

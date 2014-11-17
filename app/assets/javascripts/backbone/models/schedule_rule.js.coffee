@@ -3,7 +3,7 @@ class Scplanner.Models.ScheduleRule extends Backbone.Model
 
   defaults: {}
   url: ->
-    u = "/businesses/#{Scp.business_id}/schedule_rules/"
+    u = "/businesses/#{Scp.business_id}/schedule_rules"
     u = "#{u}/#{@id}" if @id
     u
 
