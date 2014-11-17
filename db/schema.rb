@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141117042111) do
+ActiveRecord::Schema.define(version: 20141117054518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "break_offices", force: true do |t|
+    t.integer  "break_shift_id"
+    t.integer  "office_id"
+    t.integer  "business_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "break_services", force: true do |t|
+    t.integer  "break_shift_id"
+    t.integer  "service_id"
+    t.integer  "business_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "break_shifts", force: true do |t|
     t.integer  "business_id",                     null: false
@@ -30,6 +46,7 @@ ActiveRecord::Schema.define(version: 20141117042111) do
     t.datetime "valid_until_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "floating_break",   default: 0
   end
 
   create_table "businesses", force: true do |t|

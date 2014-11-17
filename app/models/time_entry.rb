@@ -33,12 +33,16 @@ class TimeEntry < ActiveRecord::Base
     :saturday,
   ]
 
+  validates_presence_of :business
 
   validates_presence_of :start_hour
   validates_presence_of :start_minute
   validates_presence_of :end_hour
   validates_presence_of :end_minute
-  validates_presence_of :business
+
+  def day_title
+    day.first.to_s.titleize if day.length > 0
+  end
 
 
 end

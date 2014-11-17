@@ -23,6 +23,9 @@ class BreakShift < ActiveRecord::Base
   belongs_to :office
   belongs_to :business
 
+  has_many :break_services
+  has_many :break_offices
+
   bitmask :day, :as => [
     :sunday,
     :monday,
@@ -39,5 +42,10 @@ class BreakShift < ActiveRecord::Base
   validates_presence_of :end_minute
   validates_presence_of :schedule_rule
   validates_presence_of :business
+
+  def day_title
+    day.first.to_s.titleize if day.length > 0
+  end
+
 
 end
