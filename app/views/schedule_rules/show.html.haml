@@ -25,7 +25,11 @@
           %td= entry.start_minute
           %td= entry.end_hour
           %td= entry.end_minute
-          %td= entry.office.name
+          - if entry.office
+            %td= entry.office.name
+          - else
+            %td All Offices
+
 %hr/
 %h4
   Break entries

@@ -9,7 +9,10 @@
           = office.get('name').toUpperCase()
 
   - else
-    = this.model.office().get('name')
+    - if this.model.office()
+      = this.model.office().get('name')
+    - else
+      All Offices
 
 %td.c-day
   - if context.state == 'edit'
