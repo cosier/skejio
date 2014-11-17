@@ -4,22 +4,30 @@
   %li.active Directory
 
 .pull-left
-  = link_to 'New Schedule Rule', new_business_schedule_rule_path, class: 'btn btn-success'
+  = link_to new_business_schedule_rule_path, class: 'btn btn-default' do
+    %i.fa.fa-plus-circle
+    New Schedule Rule
 
 .view-archived.pull-right
-  .btn.btn-default
-    %label
-      Show Archived Rules
-      = check_box_tag(:view_archived)
+  .btn.btn-link
+    %i.fa.fa-sort
+    Sort Order
+  %span.muted
+    \|
+  .btn.btn-link
+    %i.fa.fa-archive
+    View Archived Rules
 .clear
 %br/
 
 %table.table.table-striped
   %tr
-    %th Service provider
-    %th Last Updated
-    %th
-    %th
+    %th{style: 'width:16%'} Service Provider
+    %th{style: 'width:16%'} Offices
+    %th{style: 'width:16%'} Work Hours
+    %th{style: 'width:16%'} Break Hours
+    / %th{style: 'width:20%'} Last Updated
+    %th.actions{style: 'width:32%'} &nbsp; Actions
     %th
   - if @schedule_rules.empty?
     %tr
@@ -29,10 +37,35 @@
           %p Click the button below to easily add a new Schedule Rule.
   - @schedule_rules.each do |schedule_rule|
     %tr
-      %td= schedule_rule.service_provider.display_name
-      %td= schedule_rule.updated_at
-      %td= link_to 'Show', business_schedule_rule_path(@business, schedule_rule)
-      %td= link_to 'Destroy', business_schedule_rule_path(@business, schedule_rule), :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %td{ colspan: 100 }
+        .schedule-rule-entry
+          .row
+            .col-lg-2
+              = schedule_rule.service_provider.display_name
+            .col-lg-2
+              All
+            .col-lg-2
+              = schedule_rule.work_hours
+              hr
+              %span.muted /week
+
+            .col-lg-2{class: (schedule_rule.break_hours == 0) ? 'red' : '' }
+              = schedule_rule.break_hours
+              hr
+              - if schedule_rule.break_hours > 0
+                %span.muted /week
+
+            .actions.col-lg-4.pull-right
+              / .last-updated
+              /   = time_ago_in_words schedule_rule.updated_at
+              /   ago
+
+              = link_to business_schedule_rule_path(@business, schedule_rule), :method => :delete, :data => { :confirm => 'Are you sure you want to DELETE this Rule?' }, class: 'pull-right delete btn btn-xs btn-link' do
+                %i.fa.fa-trash-o.red
+              = link_to 'View Timesheets', business_schedule_rule_path(@business, schedule_rule), class: 'btn btn-xs btn-default pull-right open'
+
+
+
 
 %br
 %hr

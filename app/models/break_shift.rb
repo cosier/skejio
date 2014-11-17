@@ -47,5 +47,9 @@ class BreakShift < ActiveRecord::Base
     day.first.to_s.titleize if day.length > 0
   end
 
+  def hours
+    (end_hour - start_hour) + (end_minute - start_minute)
+  end
+
 
 end

@@ -1,0 +1,41 @@
+.schedule_rules {
+  .action-index {
+
+    .view-archived {
+      top:10px;
+      position: relative;
+      .btn {
+        font-size:12px;
+      }
+    }
+
+    td {
+      overflow:hidden;
+      border-left:1px solid #e1e1e1;
+      border-right:1px solid #e1e1e1;
+    }
+
+    td:hover {
+      border:$green 1px solid;
+    }
+
+    .schedule-rule-entry {
+      .btn.open {
+        margin-right:20px;
+      }
+
+      .last-updated {
+        font-size:12px;
+        color:#999;
+        display:inline-block;
+      }
+
+      .actions {
+        // border-top:1px solid #e1e1e1;
+        padding-top:5px;
+        padding-bottom:5px;
+        // margin-top:15px;
+      }
+    }
+  }
+}

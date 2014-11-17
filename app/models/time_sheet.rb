@@ -18,4 +18,8 @@ class TimeSheet < ActiveRecord::Base
   has_many :time_sheet_services
   has_many :time_entries
 
+  def entry_hours
+    time_entries.map(&:hours).sum
+  end
+
 end
