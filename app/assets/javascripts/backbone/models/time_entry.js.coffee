@@ -5,6 +5,22 @@ class Scplanner.Models.TimeEntry extends Backbone.Model
 
   constructor: (options)->
     super(options)
+
+    if not sm = @get('start_meridian')
+      if @hour('start') > 12
+        @set 'start_meridian', 'pm'
+        @set 'start_hour', @hour('start') - 12
+      else
+        @set 'start_meridian', 'am'
+
+    if not em = @get('end_meridian')
+      if @hour('end') > 12
+        @set 'end_meridian', 'pm'
+        @set 'end_hour', @hour('end') - 12
+      else
+        @set 'end_meridian', 'am'
+
+
     console.debug "TimeEntry: constructed", @
 
   office: ->
@@ -17,6 +33,13 @@ class Scplanner.Models.TimeEntry extends Backbone.Model
       v = "0#{v}"
 
     v
+
+  hour: (type)->
+    parseInt @get("#{type}_hour")
+
+  minute: (type)->
+    parseInt @get("#{type}_minute")
+
 class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
   model: Scplanner.Models.TimeEntry
   url: '/api/time_entries'

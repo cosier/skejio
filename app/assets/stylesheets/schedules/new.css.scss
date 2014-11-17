@@ -1,6 +1,40 @@
 .schedule_rules {
+
+  .creator {}
+  .creator.closed {
+    .btn-open-creator {
+      display:block;
+    }
+    hr,
+    .row,
+    .group-day,
+    .btn-add-entry {
+      display:none;
+    }
+  }
+
+  .creator.open {
+    .btn-add-entry {
+      display:block;
+    }
+    .btn-open-creator {
+      display:none;
+    }
+  }
+
+  .help:hover {
+    color:#000;
+    text-decoration: underline;
+  }
+  .help {
+    padding:5px;
+    font-size:12px;
+    color:#999;
+  }
   label[for="schedule_rule_is_schedule_public"] {
-    font-size:23px;
+    font-size:18px;
+    top:7px;
+    color:$blue;
   }
   .breaks.row {
     margin-left:0;
@@ -13,6 +47,10 @@
     font-size:12px;
     color:#999;
   }
+  #schedule_rule_service_provider_id + .bootstrap-select {
+    max-width:100%;
+  }
+
   h4.breaks {
     background:#fff;
     border:1px solid $blue;
@@ -131,6 +169,8 @@
     }
   }
 
+  .action-show,
+  .action-edit,
   .action-new {
 
     .service-providers {
@@ -143,7 +183,7 @@
       }
     }
 
-    .service-entries.row {
+    .top-time-sheet-entries.row {
       margin-left:0;
       margin-right:0;
     }
@@ -261,6 +301,11 @@
         .edit-validity {
           display:none;
         }
+      }
+
+      .btn-open-creator,
+      .btn-add-entry {
+        max-width:200px;
       }
 
       .validity.closed {
@@ -415,9 +460,21 @@
       font-weight:normal;
     }
 
-    .btn-add-time-sheet {
-      display:inline-block;
+    .btn-add-time-sheet + .clear {
+      margin-bottom:0px;
     }
+
+    .form-inputs .nav-tabs a {
+      font-size: 20px;
+    }
+
+    .btn-add-time-sheet {
+      position:relative;
+      top:-45px;
+      display:inline-block;
+      border:1px solid #e1e1e1;
+    }
+
 
   } // end .action-new
 }

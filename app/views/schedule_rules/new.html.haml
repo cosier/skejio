@@ -16,9 +16,5 @@
 
 - content_for :javascript do
   :coffeescript
-    window.Scp ||= {}
-
-    Scp.Data =
-      services: #{@services.to_json}
-      offices: #{@offices.to_json}
-      providers: #{@service_providers.to_json}
+    # Start the ScheduleForm UI
+    $ -> window['view'] = new Scplanner.Views.Schedules.NewView()

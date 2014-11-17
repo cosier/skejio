@@ -197,9 +197,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
       @$('.numeric').numeric()
 
-      console.debug "Select[multiple]", @$('select[multiple]')
       @$('select[multiple]').each (i, select)->
-        console.debug 'select[multiple]', select
+        # console.log 'select[multiple]', select
         select = $(select)
         select_all_option = true
         if select.attr('data-select-all') == 'false'

@@ -65,7 +65,12 @@
   %hr/
 
   .actions.well.row
-    .col-lg-12
+    - if Scp.Preload
+      - creator_class = 'closed'
+    - else
+      - creator_class = 'open'
+
+    .col-lg-12.creator{ class: creator_class }
       .row
         .col-lg-5.col-md-6
           %h5 Work Days
@@ -107,7 +112,11 @@
           %option{selected:true} PM
 
       %hr/
-      .group.group-day
-        .btn.btn-add-entry.btn-success
+      .group
+        .btn.btn-open-creator.btn-default
           %i.fa.fa-plus
-          Add Time Entry
+          New Time Entry
+
+        .btn.btn-add-entry.btn-success
+          %i.fa.fa-save
+          Save Time Entry

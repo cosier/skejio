@@ -1,7 +1,76 @@
-%h1 Editing schedule_rule
+%p#notice= notice
 
-= render 'form'
+%p
+  %b Service provider:
+  = @schedule_rule.service_provider.display_name
+%hr/
+%h4
+  Time entries
 
-= link_to 'Show', @schedule_rule
-\|
-= link_to 'Back', schedule_rules_path
+%table.table.table-horizontal.table-striped
+  %thead
+    %tr
+      %th DAY
+      %th START HOUR
+      %th START MINUTE
+      %th END HOUR
+      %th END MINUTE
+      %th OFFICE
+  %tbody
+    - @schedule_rule.time_sheets.each do |time_sheet|
+      - time_sheet.time_entries.each do |entry|
+        %tr
+          %td= entry.day_title
+          %td= entry.start_hour
+          %td= entry.start_minute
+          %td= entry.end_hour
+          %td= entry.end_minute
+          - if entry.office
+            %td= entry.office.name
+          - else
+            %td All Offices
+
+%hr/
+%h4
+  Break entries
+
+%table.table.table-horizontal.table-striped
+  %thead
+    %tr
+      %th DAY
+      %th START HOUR
+      %th START MINUTE
+      %th END HOUR
+      %th END MINUTE
+      %th FLOAT
+      %th OFFICE
+      %th SERVICES
+  %tbody
+    - @schedule_rule.break_shifts.each do |entry|
+      %tr
+        %td= entry.day_title
+        %td= entry.start_hour
+        %td= entry.start_minute
+        %td= entry.end_hour
+        %td= entry.end_minute
+        %td= entry.floating_break
+        - if entry.office
+          %td= entry.office.name
+        - else
+          %td All Offices
+
+        - if entry.break_services.empty?
+          %td All Services
+        - else
+          %td
+            - entry.break_services.each do |service|
+              .label.label-success
+                =service.service.name
+%br/
+%br/
+%pre
+  Full details and Live Editor (based on the create form) coming soon
+  %br/
+
+%hr/
+= link_to 'Back', business_schedule_rules_path(@business)

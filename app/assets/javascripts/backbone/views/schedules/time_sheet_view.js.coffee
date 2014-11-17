@@ -16,14 +16,23 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     "click .save-services" :   "save_services"
     "click .edit-services" :   "edit_services"
 
+    "click .btn-open-creator" :   "open_creator"
+
   constructor: (options) ->
     super(options)
 
-    @entries = new Scplanner.Collections.TimeEntriesCollection()
     @timesheet_services = new Scplanner.Collections.ServicesCollection()
+    @entries = new Scplanner.Collections.TimeEntriesCollection()
 
     @services = Scp.Co.Services
     @offices  = Scp.Co.Offices
+
+    if Scp.Preload
+      models = Scp.Preload.time_entries.where(time_sheet_id: parseInt(@model.id))
+      console.debug "TimeSheetView(#{@model.id}): Preloading Time Sheet with Data", models
+
+      @entries.reset models
+      @timesheet_services.reset Scp.Preload.time_sheet_services.where(time_sheet_id: parseInt(@model.id))
 
     @$el.attr('service-id', @model.id)
     @$el.data('view', @)
@@ -38,6 +47,16 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       console.debug 'bind:add', entry
       @render_entry(entry)
       @update_tab_count()
+
+  open_creator: ->
+    console.debug 'open_creator'
+    @$('.creator').addClass('open')
+    @$('.creator').removeClass('closed')
+
+  close_creator: ->
+    console.debug 'close_creator'
+    @$('.creator').addClass('closed')
+    @$('.creator').removeClass('open')
 
   update_tab_count: =>
     console.debug 'model.trigger:update_tab_count'
@@ -79,7 +98,15 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @model.trigger('destroy')
     @remove()
 
+  add_all_entries: =>
+    console.debug "TimeSheetView: Adding All Entries", @entries
+    @entries.each (entry)=>
+      console.debug "TimeSheetView: Adding ->", entry
+      @render_entry(entry)
+
+
   add_entry: ->
+    console.debug "TimeSheetView:add_entry()"
     end_hour      = parseInt @$('select.end').val().split(':')[0]
     end_minute    = parseInt @$('select.end').val().split(':')[1]
     start_hour    = parseInt @$('select.start').val().split(':')[0]
@@ -99,6 +126,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
 
     @process_entry_empty_state()
     console.debug 'add_entry', @entries
+    @close_creator()
 
   process_entry_empty_state: ->
     if @entries.models.length > 0
@@ -135,29 +163,13 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     select.selectpicker('refresh')
 
 
-  insert_option_intervals: ->
-    start = @$('select.start')
-    end   = @$('select.end')
-
-    html = []
-    selected = false
-
-    for hour in [1...13] by 1
-      selected = 'selected' if hour == 9 and not selected
-      for min in [0...59] by 5
-        if min < 10
-          min = "0#{min}"
-
-        html.push "<option value='#{hour}:#{min}' #{selected}>#{hour}:#{min}</option>"
-        selected = false
-
-    html = html.join('')
-
-    # console.debug "HTML", html
-    start.html(html)
-    end.html(html)
+  render_all_entries: =>
+    console.debug 'TimeSheetView:render_all_entries()'
+    @entries.each (entry)=>
+      @render_entry entry
 
   render_entry: (entry)->
+    console.debug "TimeSheetView:render_entry()"
     container = @$('table.entries tbody')
 
     entry.bind 'destroy', =>
@@ -203,10 +215,15 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
           entry.toJSON()
 
   render: =>
+    console.debug "TimeSheetView:render()"
     @$el.html @template
       model:    @model.toJSON()
       services: @services
       offices:  @offices
+
+    @render_all_entries()
+    @update_tab_count()
+    @process_entry_empty_state()
 
     @insert_option_intervals()
     @$('select[multiple]').each (i, select)->
@@ -249,6 +266,39 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
           else
             labels.join(", ") + " "
 
+    # Show the save button for not preload scenarios (new form)
+    @$('.btn-save-everything').removeClass('hidden') if not Scp.Preload
+
+
     $(this).data('view', @)
     @$('*[data-toggle="tooltip"]').tooltip()
     return this
+  #####################################
+  # end @render
+
+
+
+
+
+  insert_option_intervals: ->
+    start = @$('select.start')
+    end   = @$('select.end')
+
+    html = []
+    selected = false
+
+    for hour in [1...13] by 1
+      selected = 'selected' if hour == 9 and not selected
+      for min in [0...59] by 5
+        if min < 10
+          min = "0#{min}"
+
+        html.push "<option value='#{hour}:#{min}' #{selected}>#{hour}:#{min}</option>"
+        selected = false
+
+    html = html.join('')
+
+    # console.debug "HTML", html
+    start.html(html)
+    end.html(html)
+

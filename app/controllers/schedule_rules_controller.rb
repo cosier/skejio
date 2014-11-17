@@ -4,6 +4,7 @@ class ScheduleRulesController < BusinessesController
   before_filter :set_sidebar
 
   before_filter :provide_create_with_schedule_rule, only: [:create]
+  before_filter :provide_business_basics, only: [:new, :edit, :show]
   skip_load_resource only: [:create]
 
   def index
@@ -16,10 +17,6 @@ class ScheduleRulesController < BusinessesController
   end
 
   def new
-    @service_providers = User.business(@business).service_providers
-    @services = Service.business(@business)
-    @offices = Office.business(@business)
-
     if @service_providers.empty?
       return redirect_to business_users_path,
         alert: "You must have at least one Service Provider before creating a Schedule Rule"
@@ -124,6 +121,12 @@ class ScheduleRulesController < BusinessesController
     end
 
     entry.except(:start_meridian, :end_meridian)
+  end
+
+  def provide_business_basics
+    @service_providers = User.business(@business).service_providers
+    @services = Service.business(@business)
+    @offices = Office.business(@business)
   end
 
   def provide_create_with_schedule_rule

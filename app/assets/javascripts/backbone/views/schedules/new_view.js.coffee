@@ -6,7 +6,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
   events:
     "submit form": "save"
-    "click .btn-add-time-sheet": "add_time_sheet"
+    "click .btn-add-time-sheet": "click_add_time_sheet"
     "click .btn-save-everything": "save"
 
   time_sheets: new Scplanner.Collections.TimeSheetsCollection()
@@ -20,7 +20,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
     self   = @
     @model = new Scplanner.Models.ScheduleRule()
-
+    window.NewView = @
     window.Scp ||= {}
     window.Scp.Co || = {}
 
@@ -37,18 +37,37 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     @brk_man_view = new Scplanner.Views.Schedules.BreakManagerView
       model: communicator
 
-    @add_time_sheet()
-    @render()
+    if Scp.Preload
+      Scp.Preload.time_sheets.each (time_sheet)=>
+        @add_time_sheet(time_sheet)
+    else
+      @add_time_sheet(false)
 
-  add_time_sheet: =>
-    model = new Scplanner.Models.TimeSheet
+    @render()
+    @render_time_sheets()
+
+  click_add_time_sheet: (evt)=>
+    btn = $(evt.target)
+    btn.hide()
+    $('body').animate({ 'scrollTop': $('body').height() })
+
+    setTimeout =>
+
+      @add_time_sheet()
+      @render_time_sheets()
+      setTimeout ->
+        $('body').stop()
+        $('body').animate({ 'scrollTop': $('body').height() })
+      btn.delay(3000).fadeIn()
+    , 200
+
+  add_time_sheet: (model)=>
+    model = new Scplanner.Models.TimeSheet() if not model or model.target
 
     model.bind 'destroy', =>
       @remove_timesheet(model)
 
     @time_sheets.add(model)
-
-    @render_timesheets()
 
     @$('#schedule_rule_services').selectpicker('refresh')
     @$('.date').datetimepicker
@@ -97,15 +116,15 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
 
 
-  render_timesheets: ->
-    current_timesheets = {}
+  render_time_sheets: ->
+    @current_time_sheets ||= {}
 
-    @$('.time-sheet').each (i, el)->
-      current_timesheets[$(el).data('view').model.cid] = true
+    @$('.time-sheet').each (i, el)=>
+      @current_time_sheets[$(el).data('view').model.cid] = true
 
     @time_sheets.each (sheet)=>
-      unless current_timesheets[sheet.cid]
-        @add_timesheet(sheet)
+      unless @current_time_sheets[sheet.cid]
+        @render_time_sheet(sheet)
 
     add_btn = $('.btn-add-time-sheet')
     spinner = $('.time-sheet-spinner')
@@ -114,9 +133,9 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     if add_btn.hasClass 'hidden'
       add_btn.removeClass('hidden')
 
-  add_timesheet: (sheet)->
-    console.debug "Adding Timesheet"
-    container = @$('.service-entries')
+  render_time_sheet: (sheet)->
+    console.debug "TimeSheetView:render_time_sheet()"
+    container = @$('.top-time-sheet-entries')
     self = @
 
     # Watch for updates on entries — so we can update the tab count

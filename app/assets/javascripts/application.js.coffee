@@ -43,6 +43,14 @@
 #= require_tree .
 #
 
+# Prestate our namespace
+window['Scp'] ||=
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
+  Services: {}
+
 # Function queue for iterative page loading
 window['ready'] ||= []
 
