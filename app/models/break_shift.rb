@@ -20,7 +20,7 @@
 
 class BreakShift < ActiveRecord::Base
   belongs_to :schedule_rule
-  belongs_to :office_id
+  belongs_to :office
   belongs_to :business
 
   bitmask :day, :as => [

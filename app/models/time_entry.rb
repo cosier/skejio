@@ -38,7 +38,6 @@ class TimeEntry < ActiveRecord::Base
   validates_presence_of :start_minute
   validates_presence_of :end_hour
   validates_presence_of :end_minute
-  validates_presence_of :schedule_rule
   validates_presence_of :business
 
 

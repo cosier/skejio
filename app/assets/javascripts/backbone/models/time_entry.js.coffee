@@ -27,9 +27,9 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
       @add
         day: day
         start_hour: data.start_hour
-        start_min: data.start_min
+        start_minute: data.start_minute
         start_meridian: data.start_meridian
         end_hour: data.end_hour
-        end_min:  data.end_min
+        end_minute:  data.end_minute
         end_meridian: data.end_meridian
         office_id: data.office_id
