@@ -45,8 +45,43 @@ class ScheduleRulesController < BusinessesController
     @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
     @schedule_rule.business_id = @business.id
 
-    # @schedule_rule.save
-    respond_with(@business, @schedule_rule)
+    if @schedule_rule.save
+      @s = @schedule_rule # shortcut it
+      @bid = @business.id
+
+      sheets = params[:schedule_rule][:sheets] and params[:schedule_rule][:sheets].dup
+
+      # Create TimeSheet(s) on the ScheduleRule
+      sheets.each do |sheet|
+        time_sheet = @s.time_sheets.create(business_id: @bid)
+
+        # Create TimeSheetServices if any services were specified
+        sheet[:services].each do |service|
+            time_sheet.time_sheet_services.create(service_id: service, business_id: @bid)
+        end if sheet[:services].present?
+
+        # Create Time Sheet Entries
+        sheet[:entries].each do |entry|
+          entry[:business_id] = @bid
+          entry[:time_sheet_id] = time_sheet.id
+
+          entry = convert_meridians(entry)
+
+          time_sheet.time_entries.create entry.permit!
+        end
+      end if sheets
+
+      # Create BreakShift(s) on the ScheduleRule
+      params[:schedule_rule][:breaks].each do |brk|
+        brk = convert_meridians(brk)
+        @s.break_shifts.create brk.permit!
+      end if params[:schedule_rule][:breaks].present?
+
+    end
+
+    respond_with(@business, @schedule_rule) do |format|
+      format.js { render json: @schedule_rule }
+    end
   end
 
   def update
@@ -61,9 +96,25 @@ class ScheduleRulesController < BusinessesController
 
   private
 
+  def convert_meridians(entry)
+    # convert meridians into 24 time
+    if entry[:start_meridian].downcase == "pm"
+      entry[:start_hour] = entry[:start_hour].to_i + 12
+    end
+
+    if entry[:end_meridian].downcase == "pm"
+      entry[:end_hour] = entry[:end_hour].to_i + 12
+    end
+
+    entry.delete :start_meridian
+    entry.delete :end_meridian
+
+    entry
+  end
+
   def provide_create_with_schedule_rule
     if authorize! :create, ScheduleRule
-      @schedule_rule = ScheduleRule.new 
+      @schedule_rule = ScheduleRule.new
       @schedule_rule.attributes = schedule_rule_params.dup
     end
   end
