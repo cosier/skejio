@@ -1,4 +1,4 @@
-.col-lg-12.time-sheet-container
+.col-lg-12.time-sheet-container{ data: {id: @model.id } }
   .time-sheet-destroy.destroy{ data: { toggle: 'tooltip' }, title: 'Delete Timesheet'}
     %i.fa.fa-remove
 
@@ -14,25 +14,34 @@
     .from
       .label.label-default.noselect Valid From
       .input-group#valid-from
-        %input.date.form-control{placeholder: 'Now', :type => "text", value: 'Now'}
+        %input.date.form-control{placeholder: 'Now', :type => "text", value: @raw.valid_from_label()}
 
     .until
       .label.label-default.noselect Valid Until
       .input-group#valid-until
-        %input.date.form-control{:type => "text", placeholder: 'Forever', value: 'Forever' }
+        %input.date.form-control{:type => "text", placeholder: 'Forever', value: @raw.valid_until_label() }
   - if @services.length > 1
     .time-sheet-services.closed
       .label.label-default For:
       .input-group#time-sheet-service-selector
         .message.noselect
-          %span.txt All Services
+          %span.txt
+            - if @model.services and @model.services.length > 0
+              - for id in @model.services
+                = Scp.Co.Services.where(id: id)[0].get('name')
+            - else
+              All Services
           %span.edit-services.btn
             %i.fa.fa-edit
 
         .selection
           %select{multiple: true, 'total' => @services.models.length, 'label-count' => 'Services', 'button-width' => '200', class: 'form-input services-selection', label: 'All Services' }
             - for service in @services.models
-              %option{value: service.id}= service.get('name')
+              - selected = false
+              - console.debug "service:#{service.id}"
+              - if @model.services and @model.services.indexOf(parseInt(service.id)) >= 0
+                - selected = true
+              %option{value: service.id, selected: selected}= service.get('name')
 
           %span.save-services.btn
             %i.fa.fa-save

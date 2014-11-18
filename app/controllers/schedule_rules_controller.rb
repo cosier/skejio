@@ -7,6 +7,9 @@ class ScheduleRulesController < BusinessesController
   before_filter :provide_business_basics, only: [:new, :edit, :show]
   skip_load_resource only: [:create]
 
+  include EntryHelper
+  helper :entry
+
   def index
     @schedule_rules = ScheduleRule.all
     respond_with(@schedule_rules)
@@ -108,20 +111,6 @@ class ScheduleRulesController < BusinessesController
   end
 
   private
-
-  def convert_meridians(entry)
-    entry = entry.dup
-    # convert meridians into 24 time
-    if entry[:start_meridian].downcase == "pm"
-      entry[:start_hour] = entry[:start_hour].to_i + 12
-    end
-
-    if entry[:end_meridian].downcase == "pm"
-      entry[:end_hour] = entry[:end_hour].to_i + 12
-    end
-
-    entry.except(:start_meridian, :end_meridian)
-  end
 
   def provide_business_basics
     @service_providers = User.business(@business).service_providers

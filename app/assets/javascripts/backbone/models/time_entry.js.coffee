@@ -42,7 +42,8 @@ class Scplanner.Models.TimeEntry extends Backbone.Model
 
 class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
   model: Scplanner.Models.TimeEntry
-  url: '/api/time_entries'
+  url: ->
+    "/businesses/#{Scp.business_id}/time_entries"
 
   add_batch: (data)->
     console.debug 'add_batch', data

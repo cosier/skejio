@@ -20,7 +20,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
 
   constructor: (options) ->
     super(options)
-
+    @schedule_rule = options.schedule_rule
     @timesheet_services = new Scplanner.Collections.ServicesCollection()
     @entries = new Scplanner.Collections.TimeEntriesCollection()
 
@@ -81,8 +81,10 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
   save_services: =>
     @$('.time-sheet-services').removeClass('open')
     @$('.time-sheet-services').addClass('closed')
-
-    @$('.message .txt').html $('.selection button.multiselect').text()
+    label_text = @$('.selection button.multiselect').text()
+    console.debug 'label_text', label_text
+    @$('.message .txt').html label_text
+    @save()
 
   edit_validity: =>
     @$('.validity').removeClass('closed')
@@ -91,11 +93,25 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
   save_validity: =>
     @$('.validity').removeClass('open')
     @$('.validity').addClass('closed')
+    @save()
+
+  save: ->
+    console.debug 'TimeSheetView:save()', @schedule_rule
+    if @schedule_rule.id
+      @model.set @payload()
+      @model.save {},
+        success: (entry)->
+          console.debug('TimeSheetView:save Success', entry)
+        error: (entry)->
+          console.error('TimeSheetView:save Error', entry)
+          console.error entry.errors
+
 
   destroy: =>
     console.debug "Destroying View", @
     @model.trigger 'update_tab_count'
     @model.trigger('destroy')
+    @model.destroy()
     @remove()
 
   add_all_entries: =>
@@ -214,10 +230,33 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
         @entries.map (entry)->
           entry.toJSON()
 
+  insert_option_intervals: ->
+    start = @$('select.start')
+    end   = @$('select.end')
+
+    html = []
+    selected = false
+
+    for hour in [1...13] by 1
+      selected = 'selected' if hour == 9 and not selected
+      for min in [0...59] by 5
+        if min < 10
+          min = "0#{min}"
+
+        html.push "<option value='#{hour}:#{min}' #{selected}>#{hour}:#{min}</option>"
+        selected = false
+
+    html = html.join('')
+
+    # console.debug "HTML", html
+    start.html(html)
+    end.html(html)
+
   render: =>
-    console.debug "TimeSheetView:render()"
+    console.debug "TimeSheetView:render()", @model.toJSON()
     @$el.html @template
       model:    @model.toJSON()
+      raw:      @model
       services: @services
       offices:  @offices
 
@@ -277,28 +316,4 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
   # end @render
 
 
-
-
-
-  insert_option_intervals: ->
-    start = @$('select.start')
-    end   = @$('select.end')
-
-    html = []
-    selected = false
-
-    for hour in [1...13] by 1
-      selected = 'selected' if hour == 9 and not selected
-      for min in [0...59] by 5
-        if min < 10
-          min = "0#{min}"
-
-        html.push "<option value='#{hour}:#{min}' #{selected}>#{hour}:#{min}</option>"
-        selected = false
-
-    html = html.join('')
-
-    # console.debug "HTML", html
-    start.html(html)
-    end.html(html)
 

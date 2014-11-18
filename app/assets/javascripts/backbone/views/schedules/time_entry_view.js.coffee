@@ -26,10 +26,10 @@ class Scplanner.Views.Schedules.TimeEntryView extends Backbone.View
 
   save: =>
     @state = 'normal'
-    end_hour   = parseInt @$('select.edit-end').val().split(':')[0]
-    end_min    = parseInt @$('select.edit-end').val().split(':')[1]
-    start_hour = parseInt @$('select.edit-start').val().split(':')[0]
-    start_min  = parseInt @$('select.edit-start').val().split(':')[1]
+    end_hour       = parseInt @$('select.edit-end').val().split(':')[0]
+    end_minute     = parseInt @$('select.edit-end').val().split(':')[1]
+    start_hour     = parseInt @$('select.edit-start').val().split(':')[0]
+    start_minute   = parseInt @$('select.edit-start').val().split(':')[1]
     start_meridian = @$('select.edit-start-meridian').val()
     end_meridian   = @$('select.edit-end-meridian').val()
 
@@ -38,10 +38,12 @@ class Scplanner.Views.Schedules.TimeEntryView extends Backbone.View
       office_id: parseInt(@$('select.edit-office').val())
       start_meridian: start_meridian
       start_hour: start_hour
-      start_min: start_min
+      start_minute: start_minute
       end_meridian: end_meridian
       end_hour: end_hour
-      end_min: end_min
+      end_minute: end_minute
+
+    @model.save() if @model.id
 
     console.debug "Saving TimeEntry", @
     @render()
@@ -84,6 +86,7 @@ class Scplanner.Views.Schedules.TimeEntryView extends Backbone.View
   destroy: =>
     console.debug "Destroying TimeEntry", @
     @model.trigger('destroy')
+    @model.destroy()
     @remove()
 
   render: ->

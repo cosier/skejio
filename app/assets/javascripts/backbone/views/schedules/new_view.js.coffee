@@ -19,9 +19,9 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     super(options)
 
     self   = @
-    @model = new Scplanner.Models.ScheduleRule()
+    @model = new Scplanner.Models.ScheduleRule(Scp.Preload.data.schedule_rule)
+    
     window.NewView = @
-    window.Scp ||= {}
     window.Scp.Co || = {}
 
     Scp.Co.Providers = new Scplanner.Collections.ProvidersCollection(Scp.Data.providers)
@@ -143,6 +143,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
       self.render_tab_counts()
 
     view = new Scplanner.Views.Schedules.TimeSheetView
+      schedule_rule: @model
       model: sheet
 
     @time_sheet_views.add({view: view})

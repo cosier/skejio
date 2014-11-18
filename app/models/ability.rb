@@ -27,28 +27,27 @@ class Ability
 
       # Can manage Users belonging to the same Business
       can :manage, User, { business_id: user.business_id }
+    end
 
-      # Can manage Users belonging to the same Business
+    if user.roles? :schedule_manager, :admin
       can :manage, ScheduleRule, { business_id: user.business_id }
+      can :manage, TimeEntry, { business_id: user.business_id }
 
-      # Can manage 
+      can :manage, TimeSheet, { business_id: user.business_id }
+      can :manage, TimeSheetService, { business_id: user.business_id }
+
       can :manage, BreakShift, { business_id: user.business_id }
+      can :manage, BreakOffice, { business_id: user.business_id }
     end
 
-    if user.roles? :schedule_manager
-      can :manage, ScheduleRule, { business_id: user.business_id }
-    end
-
-    if user.roles? :schedule_viewer
+    if user.roles? :schedule_viewer, :admin
       can :read, ScheduleRule, { business_id: user.business_id }
     end
 
-    if user.roles? :appointment_manager
-      can :manage, BreakShift, { business_id: user.business_id }
+    if user.roles? :appointment_manager, :admin
     end
 
-    if user.roles? :appointment_viewer
-      can :read, BreakShift, { business_id: user.business_id }
+    if user.roles? :appointment_viewer, :admin
     end
 
     # Users can all read their own Business

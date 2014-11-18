@@ -20,6 +20,7 @@
       providers: #{@service_providers.to_json}
 
     Scp.Preload = new Scp.Services.PreloadService
+      schedule_rule: #{@schedule_rule.to_json}
       time_sheets: #{@schedule_rule.time_sheets.to_json}
       time_sheet_services: #{@schedule_rule.time_sheets.map(&:time_sheet_services).map { |tss| tss.map(&:id) }}
       time_entries: #{@schedule_rule.time_sheets.map(&:time_entries).map{ |te| te.all }.flatten.to_json }
