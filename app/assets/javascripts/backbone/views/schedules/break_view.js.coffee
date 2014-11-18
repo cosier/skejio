@@ -17,12 +17,15 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
 
     @services = Scp.Co.Services
     @offices  = Scp.Co.Offices
+    @schedule_rule = options.schedule_rule
 
     @$el.data('view', @)
+    @$el.attr('data-id', @model and @model.id)
 
   destroy: =>
     console.debug "Destroying TimeEntry", @
     @model.trigger('destroy')
+    @model.destroy()
     @remove()
 
   save: ->
@@ -36,6 +39,7 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
     end_meridian   = @$('select.edit-end-meridian').val()
 
     @model.set
+      schedule_rule_id: @schedule_rule and @schedule_rule.id
       day: @$('select.edit-day').val()
       start_meridian: start_meridian
       start_hour: start_hour
@@ -44,13 +48,12 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
       end_hour: end_hour
       end_minute: end_minute
 
-    if @model.id
-      @model.save {},
-        success: (brk)->
-          console.debug('BreakView:save --> Success', brk)
-        error: (brk)->
-          console.error('BreakView:save --> Error', brk)
-          console.error brk.errors
+    @model.save {},
+      success: (brk)->
+        console.debug('BreakView:save --> Success', brk)
+      error: (brk)->
+        console.error('BreakView:save --> Error', brk)
+        console.error brk.errors
 
     @render()
 

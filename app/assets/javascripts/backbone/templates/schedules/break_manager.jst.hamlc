@@ -94,17 +94,17 @@
                   %i.fa.fa-list-alt
                   Which Service: All Services
 
+          - if @offices.length > 1
+            .configure-office.state-view.closed
+              .state-open
+                %select.choose-break-office{ multiple: true, data: { normal: true, empty: 'All Offices Apply', 'select-all': 'false' } }
+                  - for office in context.offices.models
+                    %option{value: office.id }= office.get('name')
 
-          .configure-office.state-view.closed
-            .state-open
-              %select.choose-break-office{ multiple: true, data: { normal: true, empty: 'All Offices Apply', 'select-all': 'false' } }
-                - for office in context.offices.models
-                  %option{value: office.id }= office.get('name')
-
-            .state-closed
-              .btn.btn-link.open
-                %i.fa.fa-map-marker
-                All Offices
+              .state-closed
+                .btn.btn-link.open
+                  %i.fa.fa-map-marker
+                  All Offices
 
       %hr/
       .group.group-day

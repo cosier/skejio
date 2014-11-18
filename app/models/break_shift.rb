@@ -23,8 +23,11 @@ class BreakShift < ActiveRecord::Base
   belongs_to :office
   belongs_to :business
 
-  has_many :break_services
-  has_many :break_offices
+  has_many :break_services,
+    :dependent => :destroy
+
+  has_many :break_offices,
+    :dependent => :destroy
 
   bitmask :day, :as => [
     :sunday,

@@ -184,12 +184,12 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
 
 
   render_all_entries: =>
-    console.debug 'TimeSheetView:render_all_entries()'
+    #console.debug 'TimeSheetView:render_all_entries()'
     @entries.each (entry)=>
       @render_entry entry
 
   render_entry: (entry)->
-    console.debug "TimeSheetView:render_entry()"
+    #console.debug "TimeSheetView:render_entry()"
     container = @$('table.entries tbody')
 
     entry.bind 'destroy', =>

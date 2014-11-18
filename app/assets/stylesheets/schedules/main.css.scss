@@ -4,7 +4,12 @@
 @import "./show";
 
 .schedule_rules {
-
+  .action-show {
+    // disabel time sheet destruction during edit, for now
+    .time-sheet-destroy {
+      display:none;
+    }
+  }
 
 
 ///////////////////////////

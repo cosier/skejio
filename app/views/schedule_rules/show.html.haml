@@ -27,7 +27,7 @@
       time_sheet_services: #{@schedule_rule.time_sheets.map(&:time_sheet_services).map { |tss| tss.map(&:id) }.to_json }
       time_entries:   #{@schedule_rule.time_sheets.map(&:time_entries).map{ |te| te.all }.flatten.to_json }
       break_shifts:   #{@schedule_rule.break_shifts.to_json}
-      break_services: #{@schedule_rule.break_shifts.map(&:break_services).map { |bs| bs.map(&:service).map { |office| office.id if office }.select(&:present?) }.to_json }
+      break_services: #{@schedule_rule.break_services.to_json}
       break_offices:  #{@schedule_rule.break_shifts.map(&:break_offices).map { |bo| bo }.to_json }
 
     Scp.Preload.go()

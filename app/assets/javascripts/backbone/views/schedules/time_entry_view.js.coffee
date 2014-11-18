@@ -22,7 +22,7 @@ class Scplanner.Views.Schedules.TimeEntryView extends Backbone.View
   constructor: (options) ->
     super(options)
     @offices = Scp.Co.Offices
-    console.debug "TimeEntryView: constructor()", options
+    #console.debug "TimeEntryView: constructor()", options
 
   save: =>
     @state = 'normal'

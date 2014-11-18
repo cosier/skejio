@@ -7,23 +7,19 @@ class BusinessesController < SecureController
   before_action :set_current_sidebar
 
   layout 'business_console'
-  @@sidebar = :dashboard
+  sidebar :dashboard
+
+  def index
+    @@sidebar = :dashboard
+  end
+
   def show
-    @@sidebar ||= :dashboard
+    @@sidebar = :dashboard
   end
 
   def pending
-    @@sidebar ||= :pending
+    @@sidebar = :pending
     redirect_to business_path(@business) if @business.is_active?
   end
-
-  def self.sidebar(target)
-    @@sidebar = (target and target.to_s.downcase.to_sym)
-  end
-
-  def set_current_sidebar(target = false)
-    @current_sidebar = target || @@sidebar
-  end
-  # sidebar  :dashboard
 
 end

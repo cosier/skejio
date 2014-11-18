@@ -45,6 +45,30 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
   url: ->
     "/businesses/#{Scp.business_id}/time_entries"
 
+  DAYS:
+    monday: 1
+    tuesday: 2
+    wednesday: 3
+    thursday: 4
+    friday: 5
+    saturday: 6
+    sunday: 7
+
+  # Sort by the day, which is an array containing a single element (the day)
+  comparator: (a,b)->
+    a_index = @DAYS[a.get('day')[0].toLowerCase()]
+    b_index = @DAYS[b.get('day')[0].toLowerCase()]
+
+    console.debug 'comparator', a_index, b_index
+    if a_index < b_index
+      -1
+    else if a_index > b_index
+      1
+    else if a_index == b_index
+      0
+
+      
+
   add_batch: (data)=>
     console.debug 'add_batch', data
 

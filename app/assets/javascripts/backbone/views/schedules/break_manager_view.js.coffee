@@ -13,7 +13,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     "click .configure-service-specification .close":  "disable_service_specification"
     "click .configure-rule-expiration .open":  "enable_rule_expiration"
     "click .configure-rule-expiration .close":  "disable_rule_expiration"
-    "focus .valid_dates input":  "show_picker"
+    "focus .valid_dates input":  "picker_activated"
+    "change .valid_dates input":  "picker_changed"
 
   breaks: new Scplanner.Collections.BreaksCollection()
 
@@ -50,7 +51,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
             console.debug 'Break: saved successfully'
           error: (brk)->
             console.error 'Break: was not saved', brk
-            alert """
+            console.error """
             Oops, something happened trying to save the Break entry.
             Please refresh the page and try again— or contact support"""
 
@@ -63,11 +64,17 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       $('#valid_from').datetimepicker({pickTime: false})
     , 1000
 
-  show_picker: (e)->
+  picker_changed: (e)->
+    el  = $(e.target)
+    val = el.val().toLowerCase()
+    if val == ''
+      el.val el.attr('data-empty-value') || 'forever'
+
+  picker_activated: (e)->
     el  = $(e.target)
     val = el.val().toLowerCase()
 
-    if val.indexOf('forever') or val.indexOf('now')
+    if val.indexOf('forever') >= 0 or val.indexOf('now') >= 0
       el.val('')
 
     console.debug 'show_picker', e
@@ -119,6 +126,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     container = @$('table tbody')
     view = new Scplanner.Views.Schedules.BreakView
       model: brk
+      schedule_rule: @schedule_rule
 
     brk.bind 'destroy', =>
       @remove_break(brk)
@@ -133,6 +141,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     start_minute  = parseInt @$('select.start').val().split(':')[1]
 
     @breaks.add_batch
+      schedule_rule_id: @schedule_rule and @schedule_rule.id
       days: @$('select.entry-days[multiple]').val()
       services: @$('select.choose-break-service').val() || []
       offices: @$('select.choose-break-office').val() || []
@@ -158,6 +167,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
         self.breaks.remove(brk)
 
       view = new Scplanner.Views.Schedules.BreakView
+        schedule_rule: @schedule_rule
         model: brk
 
       container.append(view.render().el)

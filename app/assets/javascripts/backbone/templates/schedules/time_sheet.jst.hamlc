@@ -26,18 +26,24 @@
       .input-group#time-sheet-service-selector
         .message.noselect
           %span.txt
-            - if @model.services and @model.services.length > 0
-              - count = 0
-              - if @model.services.length == Scp.Co.Services.length
-                All Services
-              - else
-                - for id in @model.services
-                  - count++
-                  = Scp.Co.Services.where(id: id)[0].get('name')
-                  - if count < @model.services.length
-                    ,
-            - else
+            - services = @raw.services()
+            - services_co = new Backbone.Collection()
+            - services_co.reset(services)
+
+            - if services.length == 0
               All Services
+
+            - else if _.isEqual(services_co.pluck('id'), Scp.Co.Services.pluck('id'))
+              All Services
+
+            - else
+              - count = 0
+              - for service in services
+                - count++
+                = service.get('name')
+                - if count < services.length
+                  ,
+
           %span.edit-services.btn
             %i.fa.fa-edit
 

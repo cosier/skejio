@@ -18,8 +18,12 @@ class ScheduleRule < ActiveRecord::Base
     foreign_key: 'service_provider_id'
 
   has_many :break_shifts
+  has_many :break_services,
+    :through => :break_shifts
 
-  has_many :time_sheets
+  has_many :time_sheets,
+    :dependent => :destroy
+
   has_many :time_entries,
     :through => :time_sheets
 

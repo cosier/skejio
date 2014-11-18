@@ -15,10 +15,11 @@ class TimeSheet < ActiveRecord::Base
   belongs_to :schedule_rule
   belongs_to :business
 
-  has_many :time_sheet_services
-  has_many :time_entries
+  has_many :time_sheet_services,
+    :dependent => :destroy
+  has_many :time_entries,
+    :dependent => :destroy
 
-  has_many :time_sheet_services
 
   has_many :services,
     :through => :time_sheet_services

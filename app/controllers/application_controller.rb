@@ -9,4 +9,12 @@ class ApplicationController < ActionController::Base
     session[:previous_url] || root_path
   end
 
+  def self.sidebar(target)
+    @@sidebar = (target and target.to_s.downcase.to_sym)
+  end
+
+  def set_current_sidebar(target = false)
+    @current_sidebar = target || @@sidebar
+  end
+
 end

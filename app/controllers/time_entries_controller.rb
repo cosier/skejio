@@ -41,6 +41,7 @@ class TimeEntriesController < BusinessesController
     p = params.require(:time_entry).permit!
     p[:business_id] = params[:business_id]
     p = convert_meridians(p)
+    p = convert_date_ranges(p)
     p.dup
   end
 end

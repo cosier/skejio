@@ -27,7 +27,7 @@ class Scplanner.Models.Break extends Backbone.Model
       if service_matches.length > 0
         ids = []
         for service in service_matches
-          ids << serice.id
+          ids.push service.id
         @set 'services', ids
 
   pretty: (key)->
@@ -118,14 +118,24 @@ class Scplanner.Models.Break extends Backbone.Model
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
       return '- -'
 
+    from = moment(from).format("MM/DD/YYYY")
+    unt  = moment(unt).format("MM/DD/YYYY")
     "#{from} - #{unt}"
 
   services: ->
     co = []
     model_services = @get('services') || []
-    for service in model_services
-      co.push Scp.Co.Services.findWhere
-        id: parseInt(service)
+    for id in model_services
+      break_service = Scp.Preload.break_services.findWhere({ id: id })
+
+      service_id = break_service and break_service.get('service_id') || id
+      service = Scp.Co.Services.findWhere id: parseInt(service_id)
+
+      if service
+        co.push service 
+        console.debug "Service found: #{id}"
+      else
+        console.debug "Service not found: #{id}", @get('services'), break_service
 
     co
 
@@ -145,10 +155,35 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
   url: ->
     "/businesses/#{Scp.business_id}/break_shifts"
 
+  DAYS:
+    monday: 1
+    tuesday: 2
+    wednesday: 3
+    thursday: 4
+    friday: 5
+    saturday: 6
+    sunday: 7
+
+  # Sort by the day, which is an array containing a single element (the day)
+  comparator: (a,b)->
+    a_index = @DAYS[a.get('day')[0].toLowerCase()]
+    b_index = @DAYS[b.get('day')[0].toLowerCase()]
+
+    console.debug 'comparator', a_index, b_index
+    if a_index < b_index
+      -1
+    else if a_index > b_index
+      1
+    else if a_index == b_index
+      0
+
+      
+
   add_batch: (data)->
     console.debug 'add_batch', data
     for day in data.days
       @add
+        schedule_rule_id: data.schedule_rule_id
         day: day
         services: data.services
         offices: data.offices

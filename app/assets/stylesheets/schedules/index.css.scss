@@ -1,5 +1,8 @@
 .schedule_rules {
   .action-index {
+    tr:last-child td {
+      border-bottom:1px solid #e1e1e1;
+    }
 
     .view-archived {
       top:10px;

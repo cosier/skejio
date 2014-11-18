@@ -13,4 +13,11 @@ module EntryHelper
     entry.except(:start_meridian, :end_meridian)
   end
 
+  def convert_date_ranges(entry)
+    entry = entry.dup
+    entry[:valid_from_at] = Chronic.parse(entry[:valid_from_at]) if entry[:valid_from_at]
+    entry[:valid_until_at] = Chronic.parse(entry[:valid_until_at]) if entry[:valid_until_at]
+    entry
+  end
+
 end

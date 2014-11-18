@@ -17,13 +17,14 @@ class TimeSheetsController < BusinessesController
     d[:valid_from_at]  = Chronic.parse d[:valid_from_at]
     d[:valid_until_at] = Chronic.parse d[:valid_until_at]
 
-    d[:services].map { |id| Service.find(id) }.map { |service|
-      if not @time_sheet.services.where(id: service.id).first
+    if d[:services]
+      @time_sheet.time_sheet_services.destroy_all
+      d[:services].map { |id| Service.find(id) }.map do |service|
         @time_sheet.time_sheet_services.create!(
           service_id: service.id,
-          business_id: @business.id)
+          business_id: @business.id)      
       end
-    }if d[:services]
+    end
 
     @time_sheet.update(d.except(:services, :entries, :time_sheet_services))
     respond_with(@time_sheet, location: business_time_sheet_path(@business, @time_sheet))
