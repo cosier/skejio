@@ -60,10 +60,3 @@
       .btn.btn-save-everything.btn-default.pull-right.btn-lg.hidden
         %i.fa.fa-check
         Save Schedule
-
-- content_for :javascript do
-  :coffeescript
-    Scp.Data =
-      services: #{@services.to_json}
-      offices: #{@offices.to_json}
-      providers: #{@service_providers.to_json}

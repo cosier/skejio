@@ -38,6 +38,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
     @brk_man_view = new Scplanner.Views.Schedules.BreakManagerView
       model: communicator
+      schedule_rule: @model
 
     if Scp.Preload
       Scp.Preload.time_sheets.each (time_sheet)=>
@@ -184,7 +185,8 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
       view = model.get('view')
       av_count += view.get_time_entry_count()
 
-    brk_count += @brk_man_view.get_time_entry_count()
+    if @brk_man_view
+      brk_count += @brk_man_view.get_time_entry_count()
 
     $('#availability-tab .count').html("(#{av_count})")
     $('#breaks-tab .count').html("(#{brk_count})")

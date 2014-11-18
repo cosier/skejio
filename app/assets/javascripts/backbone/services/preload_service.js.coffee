@@ -15,3 +15,8 @@ class Scp.Services.PreloadService
     @break_shifts.reset   data.break_shifts
     @break_services.reset data.break_services
     @break_offices.reset  data.break_offices
+
+
+  go: ->
+    @break_shifts.map (brk)->
+      brk.preload()

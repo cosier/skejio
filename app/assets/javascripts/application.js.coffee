@@ -44,12 +44,13 @@
 #
 
 # Prestate our namespace
-window['Scp'] ||=
-  Models: {}
-  Collections: {}
-  Routers: {}
-  Views: {}
-  Services: {}
+window['Scp'] ||= {}
+
+window.Scp.Models = {}
+window.Scp.Collections = {}
+window.Scp.Routers = {}
+window.Scp.Views = {}
+window.Scp.Services = {}
 
 # Function queue for iterative page loading
 window['ready'] ||= []

@@ -21,6 +21,48 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     enable_date_validity: false
     enable_service_specification: false
 
+  constructor: (options) ->
+    super(options)
+    self = @
+
+    @services = Scp.Co.Services
+    @offices  = Scp.Co.Offices
+
+    @schedule_rule = options.schedule_rule
+
+    @$el.data('view', @)
+
+    @breaks.bind 'destroy', (brk)=>
+      self.model.trigger 'update_tab_count'
+
+    @breaks.bind 'remove', (brk)=>
+      self.model.trigger 'update_tab_count'
+
+    @breaks.bind 'add', (brk)=>
+      self.model.trigger 'update_tab_count'
+
+      $('tr.pregame').addClass 'hidden'
+      self.add_break(brk)
+
+      if @schedule_rule.id and not brk.id
+        brk.save {},
+          success: (brk)->
+            console.debug 'Break: saved successfully'
+          error: (brk)->
+            console.error 'Break: was not saved', brk
+            alert """
+            Oops, something happened trying to save the Break entry.
+            Please refresh the page and try again— or contact support"""
+
+    if Scp.Preload
+      Scp.Preload.break_shifts.each (entry)=>
+        @breaks.add(entry)
+
+    setInterval ->
+      $('#valid_until').datetimepicker({pickTime: false})
+      $('#valid_from').datetimepicker({pickTime: false})
+    , 1000
+
   show_picker: (e)->
     el  = $(e.target)
     val = el.val().toLowerCase()
@@ -29,32 +71,6 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       el.val('')
 
     console.debug 'show_picker', e
-
-  constructor: (options) ->
-    super(options)
-    self = @
-
-    @services = Scp.Co.Services
-    @offices  = Scp.Co.Offices
-
-    @$el.data('view', @)
-
-    @breaks.bind 'destroy', (brk)->
-      self.model.trigger 'update_tab_count'
-
-    @breaks.bind 'remove', (brk)->
-      self.model.trigger 'update_tab_count'
-
-    @breaks.bind 'add', (brk)->
-      self.model.trigger 'update_tab_count'
-
-      $('tr.pregame').addClass 'hidden'
-      self.add_break(brk)
-
-    setInterval ->
-      $('#valid_until').datetimepicker({pickTime: false})
-      $('#valid_from').datetimepicker({pickTime: false})
-    , 1000
 
   get_time_entry_count: =>
     parseInt @breaks.length

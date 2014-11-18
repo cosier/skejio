@@ -1,7 +1,34 @@
 class Scplanner.Models.Break extends Backbone.Model
-  paramRoot: 'break'
+  paramRoot: 'break_shift'
 
   defaults: {}
+
+  constructor: (options)->
+    super(options)
+
+    if not sm = @get('start_meridian')
+      if @hour('start') > 12
+        @set 'start_meridian', 'pm'
+        @set 'start_hour', @hour('start') - 12
+      else
+        @set 'start_meridian', 'am'
+
+    if not em = @get('end_meridian')
+      if @hour('end') > 12
+        @set 'end_meridian', 'pm'
+        @set 'end_hour', @hour('end') - 12
+      else
+        @set 'end_meridian', 'am'
+
+  preload: ->
+    if @id
+      service_matches = Scp.Preload.break_services.where(break_shift_id: parseInt(@id))
+
+      if service_matches.length > 0
+        ids = []
+        for service in service_matches
+          ids << serice.id
+        @set 'services', ids
 
   pretty: (key)->
     v = parseInt(@get(key))
@@ -15,6 +42,12 @@ class Scplanner.Models.Break extends Backbone.Model
       return "#{f}min"
     else
       '- -'
+
+  hour: (type)->
+    parseInt @get("#{type}_hour")
+
+  minute: (type)->
+    parseInt @get("#{type}_minute")
 
   offices: ->
     ids = @get('offices')
@@ -37,9 +70,9 @@ class Scplanner.Models.Break extends Backbone.Model
   duration: ->
     mins = 0
     start_hour = parseInt @get('start_hour')
-    start_min  = parseInt @get('start_min')
+    start_min  = parseInt @get('start_minute')
     end_hour   = parseInt @get('end_hour')
-    end_min    = parseInt @get('end_min')
+    end_min    = parseInt @get('end_minute')
 
     start_pm = (@get('start_meridian').toLowerCase() == 'pm') ? true : false
     end_pm = (@get('end_meridian').toLowerCase() == 'pm') ? true : false
@@ -64,11 +97,13 @@ class Scplanner.Models.Break extends Backbone.Model
       console.debug 'start_min > end_min', start_min, end_min
       mins = mins + ((end_min + 60) - start_min) - 60
 
-    if mins < 60
+    if mins == 0
+      "<span class='red'>0</span>"
+    else if mins < 60
       "#{mins} minutes"
     else if mins == 60
       "1 hour"
-    else if mins > (60 * 12)
+    else if mins > (60 * 12) or mins == 0
       "<span class='red'>#{@hourize(mins)} hours</span>"
     else if mins > 60
       "#{@hourize(mins)} hours"
@@ -77,6 +112,9 @@ class Scplanner.Models.Break extends Backbone.Model
     from = @get('valid_from_at')
     unt  = @get('valid_until_at')
 
+    if not from and not unt
+      return '- -'
+
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
       return '- -'
 
@@ -84,7 +122,8 @@ class Scplanner.Models.Break extends Backbone.Model
 
   services: ->
     co = []
-    for service in @get('services')
+    model_services = @get('services') || []
+    for service in model_services
       co.push Scp.Co.Services.findWhere
         id: parseInt(service)
 
@@ -103,7 +142,8 @@ class Scplanner.Models.Break extends Backbone.Model
 
 class Scplanner.Collections.BreaksCollection extends Backbone.Collection
   model: Scplanner.Models.Break
-  url: '/api/breaks'
+  url: ->
+    "/businesses/#{Scp.business_id}/break_shifts"
 
   add_batch: (data)->
     console.debug 'add_batch', data

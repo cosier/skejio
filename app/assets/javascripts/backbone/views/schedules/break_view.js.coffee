@@ -44,6 +44,14 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
       end_hour: end_hour
       end_minute: end_minute
 
+    if @model.id
+      @model.save {},
+        success: (brk)->
+          console.debug('BreakView:save --> Success', brk)
+        error: (brk)->
+          console.error('BreakView:save --> Error', brk)
+          console.error brk.errors
+
     @render()
 
   edit: ->
@@ -61,7 +69,7 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
     selected = false
 
     model_hour = parseInt @model.get("#{type}_hour")
-    model_min  = parseInt @model.get("#{type}_min")
+    model_min  = parseInt @model.get("#{type}_minute")
     console.debug 'model_hour', model_hour
     console.debug 'model_min', model_min
 

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     resources :time_sheets
     resources :time_entries
     resources :schedule_rules
+    resources :break_shifts
     resources :services
     resources :offices
     resources :numbers

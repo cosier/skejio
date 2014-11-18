@@ -27,8 +27,15 @@
         .message.noselect
           %span.txt
             - if @model.services and @model.services.length > 0
-              - for id in @model.services
-                = Scp.Co.Services.where(id: id)[0].get('name')
+              - count = 0
+              - if @model.services.length == Scp.Co.Services.length
+                All Services
+              - else
+                - for id in @model.services
+                  - count++
+                  = Scp.Co.Services.where(id: id)[0].get('name')
+                  - if count < @model.services.length
+                    ,
             - else
               All Services
           %span.edit-services.btn
