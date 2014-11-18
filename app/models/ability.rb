@@ -29,7 +29,7 @@ class Ability
       can :manage, User, { business_id: user.business_id }
     end
 
-    if user.roles? :schedule_manager, :admin
+    if user.roles? :schedule_manager or user.roles? :admin
       can :manage, ScheduleRule, { business_id: user.business_id }
       can :manage, TimeEntry, { business_id: user.business_id }
 
@@ -40,14 +40,14 @@ class Ability
       can :manage, BreakOffice, { business_id: user.business_id }
     end
 
-    if user.roles? :schedule_viewer, :admin
+    if user.roles? :schedule_viewer or user.roles? :admin
       can :read, ScheduleRule, { business_id: user.business_id }
     end
 
-    if user.roles? :appointment_manager, :admin
+    if user.roles? :appointment_manager or user.roles? :admin
     end
 
-    if user.roles? :appointment_viewer, :admin
+    if user.roles? :appointment_viewer or user.roles? :admin
     end
 
     # Users can all read their own Business

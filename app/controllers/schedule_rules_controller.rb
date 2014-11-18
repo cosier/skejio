@@ -81,6 +81,8 @@ class ScheduleRulesController < BusinessesController
 
     end
 
+    flash[:success] = "Schedule Rule saved"
+
     respond_with(@business, @schedule_rule) do |format|
       format.js { render json: @schedule_rule }
     end
@@ -103,11 +105,14 @@ class ScheduleRulesController < BusinessesController
     @services = Service.business(@business)
     @offices = Office.business(@business)
 
-    @service_providers << User.where(id: @schedule_rule.service_provider_id).first if @schedule_rule
+    if params[:action] == "show"
+      existing_provider = User.where(id: @schedule_rule.service_provider_id).first
+      @service_providers << existing_provider if @schedule_rule and existing_provider
+    end
   end
 
   def validate_requirements
-    if @service_providers.empty? and params[:action] == "new"
+    if @service_providers.empty? and params[:action] != "show"
       return redirect_to business_users_path,
         alert: "You must have at least one AVAILABLE Service Provider before creating a Schedule Rule"
     end

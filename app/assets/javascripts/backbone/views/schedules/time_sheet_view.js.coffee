@@ -47,7 +47,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       console.debug 'bind:add', entry
       @render_entry(entry)
       @update_tab_count()
-      entry.save()
+      entry.save() if @schedule_rule.id
 
   open_creator: ->
     console.debug 'open_creator'
@@ -308,9 +308,6 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
               "#{labels.length} #{select.attr('label-count')}"
           else
             labels.join(", ") + " "
-
-    # Show the save button for not preload scenarios (new form)
-    @$('.btn-save-everything').removeClass('hidden') if not Scp.Preload
 
 
     $(this).data('view', @)

@@ -1,18 +1,18 @@
 / %td.c-check
 /   %input{type: 'checkbox'}
+- if Scp.Co.Offices.length > 1
+  %td.c-office
+    - if context.state == 'edit'
+      %select.edit-office
+        - for office in context.offices.models
+          %option{value: office.id, selected: (this.model.get('office_id') == office.id) ? 'true' : 'false' }
+            = office.get('name').toUpperCase()
 
-%td.c-office
-  - if context.state == 'edit'
-    %select.edit-office
-      - for office in context.offices.models
-        %option{value: office.id, selected: (this.model.get('office_id') == office.id) ? 'true' : 'false' }
-          = office.get('name').toUpperCase()
-
-  - else
-    - if this.model.office()
-      = this.model.office().get('name')
     - else
-      All Offices
+      - if this.model.office()
+        = this.model.office().get('name')
+      - else
+        All Offices
 
 %td.c-day
   - if context.state == 'edit'

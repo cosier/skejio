@@ -87,13 +87,19 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     e.preventDefault()
     e.stopPropagation()
     self = @
+    service_provider_id = @$("select#schedule_rule_service_provider_id").val()
 
     payload =
-      service_provider_id: @$('select#schedule_rule_service_provider_id').val()
+      service_provider_id: service_provider_id
       sheets: []
       breaks: []
 
     validation_fail = false
+
+    if not service_provider_id or service_provider_id.length == 0
+      validation_fail = true
+      alert "You must select at least once *Available/Free* Service Provider."
+      return false
 
     @$('.time-sheet.row').each (i, el)->
       sheet = $(el).data('view')
@@ -101,6 +107,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
       validation_fail = true unless sheet_payload
       payload.sheets.push sheet_payload
+
 
     # bail early if we have validation inconsistencies
     payload.breaks = @$('.breaks').data('view').payload()
@@ -183,5 +190,9 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     $('#breaks-tab .count').html("(#{brk_count})")
 
   render: ->
-    $('.break-entries').html(@brk_man_view.render().el)
+    @$('.break-entries').html(@brk_man_view.render().el)
+
+    # Show the save button for not preload scenarios (new form)
+    @$('.btn-save-everything').removeClass('hidden') if not Scp.Preload
+
     return this
