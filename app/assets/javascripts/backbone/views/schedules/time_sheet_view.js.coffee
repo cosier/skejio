@@ -47,6 +47,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       console.debug 'bind:add', entry
       @render_entry(entry)
       @update_tab_count()
+      entry.save()
 
   open_creator: ->
     console.debug 'open_creator'
@@ -129,6 +130,7 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     start_minute  = parseInt @$('select.start').val().split(':')[1]
 
     @entries.add_batch
+      time_sheet_id: @model.id
       office_id: parseInt(@$('select.office').val())
       days:  @$('select.entry-days[multiple]').val()
 
@@ -139,6 +141,8 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
       start_minute:  start_minute
       end_hour:      end_hour
       end_minute:    end_minute
+      save: true
+
 
     @process_entry_empty_state()
     console.debug 'add_entry', @entries

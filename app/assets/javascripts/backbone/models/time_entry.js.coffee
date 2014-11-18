@@ -45,8 +45,9 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
   url: ->
     "/businesses/#{Scp.business_id}/time_entries"
 
-  add_batch: (data)->
+  add_batch: (data)=>
     console.debug 'add_batch', data
+
     for day in data.days
       @add
         day: day
@@ -57,3 +58,4 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
         end_minute:  data.end_minute
         end_meridian: data.end_meridian
         office_id: data.office_id
+        time_sheet_id: data.time_sheet_id
