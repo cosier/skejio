@@ -9,4 +9,5 @@ class Scplanner.Models.ScheduleRule extends Backbone.Model
 
 class Scplanner.Collections.ScheduleRulesCollection extends Backbone.Collection
   model: Scplanner.Models.ScheduleRule
-  url: '/api/schedule_rules'
+  url: ->
+    "/businesses/#{Scp.business_id}/schedule_rules"

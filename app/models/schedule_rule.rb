@@ -28,6 +28,8 @@ class ScheduleRule < ActiveRecord::Base
   validates_presence_of :service_provider
   validates_presence_of :business
 
+  validates_uniqueness_of :service_provider_id
+
   def work_hours
     @work_hours_cache ||= time_sheets.map(&:entry_hours).sum
   end

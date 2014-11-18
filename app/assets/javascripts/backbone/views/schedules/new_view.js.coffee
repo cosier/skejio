@@ -8,6 +8,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     "submit form": "save"
     "click .btn-add-time-sheet": "click_add_time_sheet"
     "click .btn-save-everything": "save"
+    "change #schedule_rule_service_provider_id": 'change_update_service_provider'
 
   time_sheets: new Scplanner.Collections.TimeSheetsCollection()
   services:    new Scplanner.Collections.ServicesCollection()
@@ -19,8 +20,9 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     super(options)
 
     self   = @
-    @model = new Scplanner.Models.ScheduleRule(Scp.Preload.data.schedule_rule)
-    
+    preload_schedule = Scp.Preload and Scp.Preload.data.schedule_rule || {}
+    @model = new Scplanner.Models.ScheduleRule(preload_schedule)
+
     window.NewView = @
     window.Scp.Co || = {}
 
@@ -45,6 +47,12 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
     @render()
     @render_time_sheets()
+
+  change_update_service_provider: (e)=>
+    console.debug 'Updating Service Provider'
+    id = $(e.target).val()
+    @model.set(service_provider_id: id)
+    @model.save()
 
   click_add_time_sheet: (evt)=>
     btn = $(evt.target)

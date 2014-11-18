@@ -64,16 +64,16 @@ class Scplanner.Views.Schedules.TimeEntryView extends Backbone.View
     selected = false
 
     model_hour = parseInt @model.get("#{type}_hour")
-    model_min  = parseInt @model.get("#{type}_min")
+    model_minute  = parseInt @model.get("#{type}_minute")
     console.debug 'model_hour', model_hour
-    console.debug 'model_min', model_min
+    console.debug 'model_minute', model_minute
 
     for hour in [1...13] by 1
       for min in [0...59] by 5
         if min < 10
           min = "0#{min}"
 
-        selected = 'selected' if parseInt(hour) == model_hour and parseInt(min) == model_min
+        selected = 'selected' if parseInt(hour) == model_hour and parseInt(min) == model_minute
 
         html.push "<option value='#{hour}:#{min}' #{selected}>#{hour}:#{min}</option>"
         selected = false

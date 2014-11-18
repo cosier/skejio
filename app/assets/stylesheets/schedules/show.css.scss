@@ -1,11 +1,10 @@
 @import "../colors";
-@import "./new";
-@import "./index";
-@import "./show";
 
-.schedule_rules {
+.schedule_rules .action-show {
 
-
+  .btn-add-time-sheet {
+    display:none;
+  }
 
 ///////////////////////////
 } // end .schedule_rules

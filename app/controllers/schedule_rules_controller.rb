@@ -1,14 +1,15 @@
 class ScheduleRulesController < BusinessesController
 
-  sidebar :schedule_rules
   before_filter :set_sidebar
 
   before_filter :provide_create_with_schedule_rule, only: [:create]
   before_filter :provide_business_basics, only: [:new, :edit, :show]
+  before_filter :validate_requirements, only: [:new, :edit, :show]
   skip_load_resource only: [:create]
 
   include EntryHelper
   helper :entry
+  sidebar :schedule_rules
 
   def index
     @schedule_rules = ScheduleRule.all
@@ -20,21 +21,6 @@ class ScheduleRulesController < BusinessesController
   end
 
   def new
-    if @service_providers.empty?
-      return redirect_to business_users_path,
-        alert: "You must have at least one Service Provider before creating a Schedule Rule"
-    end
-
-    if @services.empty?
-      return redirect_to business_services_path,
-        alert: "You must have at least one Service before creating a Schedule Rule"
-    end
-
-    if @offices.empty?
-      return redirect_to business_offices_path,
-        alert: "You must have at least one Office before creating a Schedule Rule"
-    end
-
     respond_with(@business, @schedule_rule)
   end
 
@@ -113,9 +99,28 @@ class ScheduleRulesController < BusinessesController
   private
 
   def provide_business_basics
-    @service_providers = User.business(@business).service_providers
+    @service_providers = User.business(@business).service_providers.select(&:available_for_scheduling?)
     @services = Service.business(@business)
     @offices = Office.business(@business)
+
+    @service_providers << User.where(id: @schedule_rule.service_provider_id).first if @schedule_rule
+  end
+
+  def validate_requirements
+    if @service_providers.empty? and params[:action] == "new"
+      return redirect_to business_users_path,
+        alert: "You must have at least one AVAILABLE Service Provider before creating a Schedule Rule"
+    end
+
+    if @services.empty?
+      return redirect_to business_services_path,
+        alert: "You must have at least one Service before creating a Schedule Rule"
+    end
+
+    if @offices.empty?
+      return redirect_to business_offices_path,
+        alert: "You must have at least one Office before creating a Schedule Rule"
+    end
   end
 
   def provide_create_with_schedule_rule
