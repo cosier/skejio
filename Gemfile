@@ -84,6 +84,7 @@ gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootst
 gem 'bootstrap3-datetimepicker-rails', '~> 3.1.3'
 gem 'bootstrap-multiselect-rails'
 gem 'devise-bootstrap-views'
+gem "bower-rails", "~> 0.9.1"
 
 # Natural language processing
 gem 'chronic'

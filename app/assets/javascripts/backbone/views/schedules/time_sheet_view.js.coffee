@@ -267,7 +267,10 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     @render_all_entries()
     @update_tab_count()
     @process_entry_empty_state()
-
+    
+    Scp.datetimepicker @$('input.time-sheet-valid-until')
+    Scp.datetimepicker @$('input.time-sheet-valid-from') 
+      
     @insert_option_intervals()
     @$('select[multiple]').each (i, select)->
       select = $(select)

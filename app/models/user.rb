@@ -44,6 +44,9 @@ class User < ActiveRecord::Base
   has_one :schedule_rule,
     foreign_key: 'service_provider_id'
 
+
+  attr_accessor :can_schedule
+
   # Check the roles bitmask like this:
   # user.roles?(:admin)
   #
@@ -92,6 +95,14 @@ class User < ActiveRecord::Base
   end
 
   def available_for_scheduling?
-    true unless schedule_rule.present?
+    if schedule_rule.present?
+      self.can_schedule = false
+    else
+      self.can_schedule = true
+    end
+  end
+
+  def not_available_for_scheduling
+    return self if not available_for_scheduling?
   end
 end

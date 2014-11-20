@@ -117,9 +117,15 @@ class Scplanner.Models.Break extends Backbone.Model
 
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
       return '- -'
+    
+    from = moment(from).format("MM/DD/YYYY") if from
+    unt  = moment(unt).format("MM/DD/YYYY") if unt
 
-    from = moment(from).format("MM/DD/YYYY")
-    unt  = moment(unt).format("MM/DD/YYYY")
+    if not from
+      from = "<span class='muted'>Now</span>"
+    if not unt
+      unt = "<span class='muted'>Forever</span>"
+
     "#{from} - #{unt}"
 
   services: ->

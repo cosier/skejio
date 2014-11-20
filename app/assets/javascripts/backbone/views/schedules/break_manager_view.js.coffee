@@ -60,8 +60,8 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
         @breaks.add(entry)
 
     setInterval ->
-      $('#valid_until').datetimepicker({pickTime: false})
-      $('#valid_from').datetimepicker({pickTime: false})
+      Scp.datetimepicker($('#valid_from'))
+      Scp.datetimepicker($('#valid_until'))
     , 1000
 
   picker_changed: (e)->
@@ -84,7 +84,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
 
   enable_rule_expiration: =>
     console.debug 'enable_rule_expiration'
-    $('.date').datetimepicker pickTime: false
+    Scp.datetimepicker $('.date')
     @$('.configure-rule-expiration.state-view').removeClass('closed')
     @$('.configure-rule-expiration.state-view').addClass('open')
     @hooks()
@@ -95,7 +95,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     @$('.configure-rule-expiration.state-view').addClass('closed')
 
   enable_service_specification: =>
-    $('.date').datetimepicker pickTime: false
+    Scp.datetimepicker $('.date')
     console.debug 'enable_service_specification'
     @$('.configure-service-specification.state-view').removeClass('closed')
     @$('.configure-service-specification.state-view').addClass('open')
@@ -205,8 +205,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
       enable_date_validity: @view_vars.enable_date_validity
       enable_service_specification: @view_vars.enable_service_specification
 
-    $('.date').datetimepicker
-      pickTime: false
+    Scp.datetimepicker $('.date')
 
     @add_break_entries()
     @insert_option_intervals('start', 11)
@@ -218,8 +217,7 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
   hooks: ->
     setTimeout =>
 
-      $('.date').datetimepicker
-        pickTime: false
+      Scp.datetimepicker $('.date')
 
       @$('.numeric').numeric()
 

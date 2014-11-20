@@ -11,3 +11,11 @@ window.Scplanner =
   Routers: {}
   Views: {}
   Services: {}
+
+
+window.Scp ||= {}
+
+Scp.datetimepicker = (element, opts)->
+  element.datetimepicker
+    timepicker: false
+    format: 'm/d/Y'

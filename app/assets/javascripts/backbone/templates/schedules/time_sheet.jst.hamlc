@@ -14,12 +14,13 @@
     .from
       .label.label-default.noselect Valid From
       .input-group#valid-from
-        %input.date.form-control{placeholder: 'Now', :type => "text", value: @raw.valid_from_label()}
+        %input.form-control{ class: 'time-sheet-valid-from', placeholder: 'now', :type => "text", value: @raw.valid_from_label()}
 
     .until
       .label.label-default.noselect Valid Until
       .input-group#valid-until
-        %input.date.form-control{:type => "text", placeholder: 'Forever', value: @raw.valid_until_label() }
+        %input.form-control{ class: 'time-sheet-valid-until', :type => "text", placeholder: 'forever', value: @raw.valid_until_label() }
+
   - if @services.length > 1
     .time-sheet-services.closed
       .label.label-default For:

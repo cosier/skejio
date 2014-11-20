@@ -53,7 +53,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     console.debug 'Updating Service Provider'
     id = $(e.target).val()
     @model.set(service_provider_id: id)
-    @model.save()
+    @model.save() if @model.id
 
   click_add_time_sheet: (evt)=>
     btn = $(evt.target)
@@ -79,9 +79,8 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     @time_sheets.add(model)
 
     @$('#schedule_rule_services').selectpicker('refresh')
-    @$('.date').datetimepicker
-      pickTime: false
 
+    Scp.datetimepicker @$('.date')
 
   save: (e) =>
     console.debug 'Saving Everything'
@@ -99,7 +98,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
 
     if not service_provider_id or service_provider_id.length == 0
       validation_fail = true
-      alert "You must select at least once *Available/Free* Service Provider."
+      alert "You must select a *Available/Free* Service Provider."
       return false
 
     @$('.time-sheet.row').each (i, el)->

@@ -39,11 +39,11 @@ class ScheduleRulesController < BusinessesController
 
       # Create TimeSheet(s) on the ScheduleRule
       sheets.each do |sheet|
-        time_sheet = @s.time_sheets.create(business_id: @bid)
+        time_sheet = @s.time_sheets.create!(business_id: @bid)
 
         # Create TimeSheetServices if any services were specified
         sheet[:services].each do |service|
-            ss = TimeSheetService.create(service_id: service, business_id: @bid, time_sheet_id: time_sheet.id)
+            ss = TimeSheetService.create!(service_id: service, business_id: @bid, time_sheet_id: time_sheet.id)
         end if sheet[:services].present?
 
         # Create Time Sheet Entries
@@ -53,7 +53,7 @@ class ScheduleRulesController < BusinessesController
 
           entry = convert_meridians(entry)
 
-          te = TimeEntry.create entry.permit!
+          te = TimeEntry.create! entry.permit!
           raise te.errors.to_json if not te.persisted?
 
         end if sheet[:entries]
@@ -65,15 +65,15 @@ class ScheduleRulesController < BusinessesController
         brk[:schedule_rule_id] = @s.id
 
         brk = convert_meridians(brk)
-        bs = @s.break_shifts.create brk.except(:services, :offices).permit!
+        bs = @s.break_shifts.create! brk.except(:services, :offices).permit!
         raise bs.errors.to_json if not bs.persisted?
 
         brk[:services].each do |service_id|
-          bs.break_services.create(break_shift_id: bs.id, service_id: service_id, business_id: @bid)
+          bs.break_services.create!(break_shift_id: bs.id, service_id: service_id, business_id: @bid)
         end if brk[:services].present?
 
         brk[:offices].each do |office_id|
-          bs.break_offices.create(break_shift_id: bs.id, office_id: office_id, business_id: @bid)
+          bs.break_offices.create!(break_shift_id: bs.id, office_id: office_id, business_id: @bid)
         end if brk[:offices].present?
 
 
@@ -101,14 +101,9 @@ class ScheduleRulesController < BusinessesController
   private
 
   def provide_business_basics
-    @service_providers = User.business(@business).service_providers.select(&:available_for_scheduling?)
+    @service_providers = User.business(@business).service_providers
     @services = Service.business(@business)
     @offices = Office.business(@business)
-
-    if params[:action] == "show"
-      existing_provider = User.where(id: @schedule_rule.service_provider_id).first
-      @service_providers << existing_provider if @schedule_rule and existing_provider
-    end
   end
 
   def validate_requirements
@@ -140,7 +135,7 @@ class ScheduleRulesController < BusinessesController
   end
 
   def schedule_rule_params
-    params.require(:schedule_rule)
+    params.require(:schedule_rule).except(:sheets, :offices)
     .permit(:service_provider_id, :business_id)
   end
 end

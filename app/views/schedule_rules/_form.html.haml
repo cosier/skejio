@@ -18,7 +18,8 @@
         .col-lg-3.left
           = f.label :is_schedule_public, 'Service Provider'
         .col-lg-9.right
-          = f.collection_select :service_provider_id, @service_providers, :id, :display_name, { selected: @schedule_rule.service_provider_id }, class: 'bootstrap-select', data: { style: 'btn-info', width: '300px' }
+          - unavailable_providers = @service_providers.select(&:not_available_for_scheduling).map(&:id)
+          = f.collection_select :service_provider_id, @service_providers, :id, :display_name, { prompt: "Select a Service Provider (User Staff)", selected: @schedule_rule.service_provider_id, disabled: unavailable_providers }, class: 'bootstrap-select', data: { style: 'btn-info', width: '300px', unavailable: unavailable_providers, placeholder: "Select a Provider" }
         .col-lg-12.right
           %br/
           .help

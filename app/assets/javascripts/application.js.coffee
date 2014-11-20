@@ -20,6 +20,7 @@
 #= require jquery.fileupload
 #= require vendor/jquery.rumble
 #= require twitter/bootstrap
+#= require bower_components/datetimepicker/jquery.datetimepicker
 #
 #= require underscore
 #= require backbone
@@ -27,7 +28,6 @@
 #= require backbone_datalink
 
 #= require moment
-#= require bootstrap-datetimepicker
 #= require bootstrap_select/bootstrap-select
 #= require bootstrap-multiselect
 #= require select2
