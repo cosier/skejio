@@ -41,6 +41,9 @@ module BusinessHelper
     when :schedule_rules
       business_schedule_rules_path(@business)
 
+    when :settings
+      business_settings_path(@business)
+
     else
       default_path
     end
