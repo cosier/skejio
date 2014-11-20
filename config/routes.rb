@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     post '/send_sms', to: 'businesses#send_sms', as: :send_sms
     post '/make_a_call', to: 'businesses#make_a_call', as: :make_a_call
 
+    resources :settings
     resources :time_sheets
     resources :time_entries
     resources :schedule_rules
