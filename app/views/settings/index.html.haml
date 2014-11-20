@@ -1,0 +1,17 @@
+
+%p#notice= notice
+%ol.breadcrumb
+  %li
+    = link_to 'Settings', business_settings_path
+  %li.active Directory
+%br/
+
+.row
+  %a.col-lg-3.col-md-3.block{ href: business_service_selection_setting_path(@business) }
+    %h3 Service Selection
+
+  %a.col-lg-3.col-md-3.block{ href: business_user_selection_setting_path(@business) }
+    %h3 User Selection
+
+  %a.col-lg-3.col-md-3.block{ href: business_user_priority_setting_path(@business) }
+    %h3 User Priority

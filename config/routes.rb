@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     post '/make_a_call', to: 'businesses#make_a_call', as: :make_a_call
 
     resources :settings
+    get '/settings/service_selection', to: :service_selection_setting, as: :service_selection_setting
+    get '/settings/user_selection', to: :user_selection_setting, as: :user_selection_setting
+    get '/settings/user_priority', to: :user_priority, as: :user_priority_setting
+
     resources :time_sheets
     resources :time_entries
     resources :schedule_rules
