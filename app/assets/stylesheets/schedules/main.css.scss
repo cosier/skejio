@@ -4,6 +4,12 @@
 @import "./show";
 
 .schedule_rules {
+
+  .floating-editor {
+    max-width:75px;
+    display:inline-block;
+  }
+
   .action-show {
     // disabel time sheet destruction during edit, for now
     .time-sheet-destroy {

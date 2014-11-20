@@ -35,7 +35,11 @@
   != this.model.valid_dates()
 
 %td.c-floating-breaks
-  = @model.floating_break()
+  - if context.state == 'edit'
+    %input.floating-editor{ type: 'text', class: 'numeric', value: @model.floating_break(true) }
+    mins
+  - else
+    = @model.floating_break()
 
 %td.c-valid-services
   - services = this.model.services()

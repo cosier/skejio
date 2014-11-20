@@ -37,8 +37,10 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
     start_minute   = parseInt @$('select.edit-start').val().split(':')[1]
     start_meridian = @$('select.edit-start-meridian').val()
     end_meridian   = @$('select.edit-end-meridian').val()
+    floating_break  = parseInt @$('.floating-editor').val()
 
     @model.set
+      floating_break: floating_break
       schedule_rule_id: @schedule_rule and @schedule_rule.id
       day: @$('select.edit-day').val()
       start_meridian: start_meridian

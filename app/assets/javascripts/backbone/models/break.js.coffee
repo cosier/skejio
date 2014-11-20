@@ -36,12 +36,16 @@ class Scplanner.Models.Break extends Backbone.Model
       v = "0#{v}"
     v
 
-  floating_break: ->
+  floating_break: (editing)->
     f = parseInt(@get 'floating_break')
     if f and f > 0
-      return "#{f}min"
+      return "#{f}"
     else
-      '- -'
+      if editing
+        0
+      else
+        '- -'
+
 
   hour: (type)->
     parseInt @get("#{type}_hour")
