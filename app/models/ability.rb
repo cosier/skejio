@@ -27,6 +27,9 @@ class Ability
 
       # Can manage Users belonging to the same Business
       can :manage, User, { business_id: user.business_id }
+
+      # Can manage Settings belonging to the same Business
+      can :manage, Setting, { business_id: user.business_id }
     end
 
     if user.roles? :schedule_manager or user.roles? :admin

@@ -16,6 +16,7 @@
 #  valid_until_at   :datetime
 #  created_at       :datetime
 #  updated_at       :datetime
+#  floating_break   :integer          default(0)
 #
 
 class BreakShift < ActiveRecord::Base

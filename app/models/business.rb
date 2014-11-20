@@ -24,6 +24,9 @@ class Business < ActiveRecord::Base
   has_many :offices,
     dependent: :destroy
 
+  has_many :settings,
+    dependent: :destroy
+
   has_many :sub_accounts
 
   validates_uniqueness_of :slug
