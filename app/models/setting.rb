@@ -14,5 +14,21 @@
 
 class Setting < ActiveRecord::Base
   belongs_to :business
+
+  validates_presence_of :key
+  validates_presence_of :business
   validates_uniqueness_of :business_id, :scope => :key
+
+
+  def get_or_create(key, opts = {})
+    existing = Setting.where(key: key).first
+    return existing if existing
+
+    raise "business_id is required for first time generation" if opts[:business_id].nil?
+    raise "value is required for first time generation" if opts[:value].nil?
+
+
+    Setting.create(key: key, value: opts[:value], business_id: opts[:business_id])
+  end
+
 end
