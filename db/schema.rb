@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141117054518) do
+ActiveRecord::Schema.define(version: 20141120114619) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -112,6 +112,16 @@ ActiveRecord::Schema.define(version: 20141117054518) do
     t.text     "description"
     t.integer  "priority",    default: 1
     t.integer  "duration",    default: 60
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "settings", force: true do |t|
+    t.integer  "business_id",                null: false
+    t.string   "key",                        null: false
+    t.string   "value",                      null: false
+    t.text     "description"
+    t.boolean  "is_active",   default: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
