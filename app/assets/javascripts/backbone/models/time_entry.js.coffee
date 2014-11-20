@@ -40,6 +40,9 @@ class Scplanner.Models.TimeEntry extends Backbone.Model
   minute: (type)->
     parseInt @get("#{type}_minute")
 
+  url: ->
+    "/businesses/#{Scp.business_id}/time_entries/#{@id}"
+
 class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
   model: Scplanner.Models.TimeEntry
   url: ->

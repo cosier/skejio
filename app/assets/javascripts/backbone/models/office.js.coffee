@@ -5,4 +5,5 @@ class Scplanner.Models.Office extends Backbone.Model
 
 class Scplanner.Collections.OfficesCollection extends Backbone.Collection
   model: Scplanner.Models.Office
-  url: '/api/offices'
+  url: ->
+    "/businesses/#{Scp.business_id}/offices"

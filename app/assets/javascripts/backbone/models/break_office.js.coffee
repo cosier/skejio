@@ -5,4 +5,5 @@ class Scplanner.Models.BreakOffice extends Backbone.Model
 
 class Scplanner.Collections.BreakOfficesCollection extends Backbone.Collection
   model: Scplanner.Models.BreakOffice
-  url: '/api/break_offices'
+  url: ->
+    "/businesses/#{Scp.business_id}/break_services"

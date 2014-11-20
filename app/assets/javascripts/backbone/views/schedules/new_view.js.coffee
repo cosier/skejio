@@ -40,7 +40,7 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
       model: communicator
       schedule_rule: @model
 
-    if Scp.Preload
+    if Scp.Preload and Scp.Preload.time_sheets.length > 0
       Scp.Preload.time_sheets.each (time_sheet)=>
         @add_time_sheet(time_sheet)
     else
@@ -194,6 +194,6 @@ class Scplanner.Views.Schedules.NewView extends Backbone.View
     @$('.break-entries').html(@brk_man_view.render().el)
 
     # Show the save button for not preload scenarios (new form)
-    @$('.btn-save-everything').removeClass('hidden') if not Scp.Preload
+    @$('.btn-save-everything').removeClass('hidden') if not Scp.Preload or Scp.Preload.time_sheets.length == 0
 
     return this

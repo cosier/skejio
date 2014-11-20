@@ -5,4 +5,5 @@ class Scplanner.Models.TimeSheetService extends Backbone.Model
 
 class Scplanner.Collections.TimeSheetServicesCollection extends Backbone.Collection
   model: Scplanner.Models.TimeSheetService
-  url: '/api/time_sheet_services'
+  url: ->
+    "/businesses/#{Scp.business_id}/time_sheet_services"
