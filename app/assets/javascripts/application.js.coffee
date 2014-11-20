@@ -40,7 +40,6 @@
 #= require backbone_rails_sync
 #= require backbone_datalink
 #= require backbone/scplanner
-#= require_tree .
 #
 
 # Prestate our namespace

@@ -3,7 +3,7 @@ class SettingsController < BusinessesController
   load_and_authorize_resource
   skip_load_resource only: [:create]
 
-  sidebar  :settings
+  before_filter :set_current_sidebar
 
   def service_selection
   end
@@ -15,6 +15,10 @@ class SettingsController < BusinessesController
   end
 
   private
+
+  def set_current_sidebar
+    @current_sidebar = :settings
+  end
 
   def get_setting(key, default_value)
     Setting.get_or_create(key, business_id: @business.id, value: default_value)

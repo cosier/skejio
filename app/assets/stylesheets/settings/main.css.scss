@@ -1,0 +1,32 @@
+@import "../colors";
+
+body.settings {
+
+  .nav.nav-tabs a {
+    font-size:20px;
+  }
+
+  .tab-content {
+    padding:40px 20px;
+  }
+
+  a.block:hover {
+    background:$green;
+    color:#fff;
+    border:1px solid darken($green, 10%);
+    cursor:pointer;
+  }
+  a.block {
+    text-decoration: none;
+    border:1px solid #e1e1e1;
+    color:#000;
+    margin:10px;
+    text-align: center;
+    padding:10px 20px;
+
+    h3 {
+      margin:0;
+    }
+  }
+
+}

@@ -40,22 +40,22 @@
       %td{ colspan: 100 }
         .schedule-rule-entry
           .row
-            .col-lg-2
+            .col-lg-2.col-md-2.col-sm-2.col-xs-2
               = schedule_rule.service_provider.display_name
-            .col-lg-2
+            .col-lg-2.col-md-2.col-sm-2.col-xs-2
               All
-            .col-lg-2
+            .col-lg-2.col-md-2.col-sm-2.col-xs-2
               = schedule_rule.work_hours
               hr
               %span.muted /week
 
-            .col-lg-2{class: (schedule_rule.break_hours == 0) ? 'red' : '' }
+            .col-lg-2.col-md-2.col-sm-2.col-xs-2{class: (schedule_rule.break_hours == 0) ? 'red' : '' }
               = schedule_rule.break_hours
               hr
               - if schedule_rule.break_hours > 0
                 %span.muted /week
 
-            .actions.col-lg-4.pull-right
+            .actions.col-lg-4.col-md-4.col-sm-4.col-xs-4.pull-right
               / .last-updated
               /   = time_ago_in_words schedule_rule.updated_at
               /   ago

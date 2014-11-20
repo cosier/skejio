@@ -1,17 +1,21 @@
 
 %p#notice= notice
-%ol.breadcrumb
-  %li
-    = link_to 'Settings', business_settings_path
-  %li.active Directory
-%br/
 
-.row
-  %a.col-lg-3.col-md-3.block{ href: business_service_selection_setting_path(@business) }
-    %h3 Service Selection
+%ul#settingTabs.nav.nav-tabs{:role => "tablist"}
+  %li.active{:role => "presentation"}
+    %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#service_selection_content", :role => "tab"} Service Selection
+  %li{:role => "presentation"}
+    %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#user_selection_content", :role => "tab"} User Selection
+  %li{:role => "presentation"}
+    %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#user_priority_content", :role => "tab"} User Priority
 
-  %a.col-lg-3.col-md-3.block{ href: business_user_selection_setting_path(@business) }
-    %h3 User Selection
+.tab-content
+  #service_selection_content.tab-pane.active{:role => "tabpanel"}
+    Service Selection Content
+  #user_selection_content.tab-pane{:role => "tabpanel"}
+    User Selection Content
+  #user_priority_content.tab-pane{:role => "tabpanel"}
+    User Priority Content
 
-  %a.col-lg-3.col-md-3.block{ href: business_user_priority_setting_path(@business) }
-    %h3 User Priority
+- content_for :javascript do
+  = javascript_include_tag "settings/main"
