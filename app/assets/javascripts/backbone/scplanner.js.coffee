@@ -19,3 +19,6 @@ Scp.datetimepicker = (element, opts)->
   element.datetimepicker
     timepicker: false
     format: 'm/d/Y'
+    scrollInput: false
+    scrollTime: false
+    scrollMonth: false

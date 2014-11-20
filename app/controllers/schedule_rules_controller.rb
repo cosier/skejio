@@ -65,7 +65,9 @@ class ScheduleRulesController < BusinessesController
         brk[:schedule_rule_id] = @s.id
 
         brk = convert_meridians(brk)
+        brk = convert_date_ranges(brk)
         bs = @s.break_shifts.create! brk.except(:services, :offices).permit!
+
         raise bs.errors.to_json if not bs.persisted?
 
         brk[:services].each do |service_id|

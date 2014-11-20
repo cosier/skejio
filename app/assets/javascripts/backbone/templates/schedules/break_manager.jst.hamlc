@@ -34,6 +34,25 @@
               %option{ value: 'saturday', lbl: 'SAT' }  Saturday
               %option{ value: 'sunday', lbl: 'SUN' }    Sunday
 
+          .configure-rule-expiration.state-view.closed
+            .state-open
+              .valid_dates
+                .row
+                  .col-lg-4
+                    %label{for: 'valid_from'} Valid From:
+                  .col-lg-8
+                    %input.date{id: 'valid_from', name: 'valid_from', value: "Now" }
+                .row
+                  .col-lg-4
+                    %label{for: 'valid_until'} Valid Until:
+                  .col-lg-8
+                    %input.date{id: 'valid_until', name: 'valid_until', value: "Forever", placeholder: "Forever."}
+
+            .state-closed
+              .btn.btn-link.open
+                %i.fa.fa-calendar
+                Configure Rule Expiration
+
         .col-lg-6
           .group.group-day
             %label Start Time &nbsp;
@@ -56,27 +75,6 @@
             %input.float.numeric{type: 'text', placeholder: '0'}
       .row
         .col-lg-6
-          .configure-rule-expiration.state-view.closed
-            .state-open
-              .close
-                %i.fa.fa-remove
-              %h5 Configure Rule Expiration Dates
-              .valid_dates
-                .row
-                  .col-lg-4
-                    %label{for: 'valid_from'} Valid From:
-                  .col-lg-8
-                    %input.date{id: 'valid_from', name: 'valid_from', value: "Now" }
-                .row
-                  .col-lg-4
-                    %label{for: 'valid_unit'} Valid Until:
-                  .col-lg-8
-                    %input.date{id: 'valid_until', name: 'valid_until', value: "Forever", placeholder: "Forever."}
-
-            .state-closed
-              .btn.btn-link.open
-                %i.fa.fa-calendar
-                Configure Rule Expiration
 
         .col-lg-6
           - if @services.length > 1

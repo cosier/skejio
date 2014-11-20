@@ -58,6 +58,7 @@ class Scplanner.Views.Schedules.BreakView extends Backbone.View
         console.error brk.errors
 
     @render()
+    @$('.numeric').numeric()
 
   edit: ->
     console.debug 'break_view:edit'

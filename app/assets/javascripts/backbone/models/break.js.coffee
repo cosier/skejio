@@ -115,31 +115,45 @@ class Scplanner.Models.Break extends Backbone.Model
   valid_dates: ->
     from = @get('valid_from_at')
     unt  = @get('valid_until_at')
+    console.debug 'valid_dates', from, unt
 
     if not from and not unt
-      return '- -'
+      return '<span class=infinity>&infin;</span>'
 
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
-      return '- -'
-    
-    from = moment(from).format("MM/DD/YYYY") if from
-    unt  = moment(unt).format("MM/DD/YYYY") if unt
-
-    if not from
+      return '<span class=infinity>&infin;</span>'
+   
+    if from.toLowerCase() == 'now'
       from = "<span class='muted'>Now</span>"
-    if not unt
+    else if from
+      from = moment(from).format("MM/DD/YYYY")
+    else
+      from = '<span class=infinity>&infin;</span>'
+   
+    if unt and unt.toLowerCase() == 'forever'
       unt = "<span class='muted'>Forever</span>"
+    else if unt
+      unt = moment(unt).format("MM/DD/YYYY")
+    else
+      unt = '<span class="infinity">&infin;</span>'
 
-    "#{from} - #{unt}"
+    "#{from} <span class='muted'><i class='fa fa-caret-right'></i></span> #{unt}"
 
   services: ->
     co = []
     model_services = @get('services') || []
-    for id in model_services
-      break_service = Scp.Preload.break_services.findWhere({ id: id })
 
-      service_id = break_service and break_service.get('service_id') || id
-      service = Scp.Co.Services.findWhere id: parseInt(service_id)
+    for id in model_services
+      
+      if Scp.Preload
+        break_service = Scp.Preload.break_services.findWhere({ id: id })
+
+      if break_service
+        service_id = break_service and break_service.get('service_id') || id
+        service = Scp.Co.Services.findWhere id: parseInt(service_id)
+      else
+        service = Scp.Co.Services.findWhere id: parseInt(id)
+
 
       if service
         co.push service 
