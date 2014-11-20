@@ -19,7 +19,17 @@ admin = User.create(
   password: "passme123",
   roles: super_roles)
 
+# Clean our seed SuperAdmin
+qa_admin = User.create(
+  first_name: "Quality",
+  last_name: "Assurance",
+  phone: "+1-555-555-5555",
+  email: "qa@example.com",
+  password: "passme123",
+  roles: super_roles)
+
 raise admin.errors.to_json unless admin.persisted?
+raise qa+admin.errors.to_json unless qa_admin.persisted?
 
 
 puts "--> Finished seeding"
