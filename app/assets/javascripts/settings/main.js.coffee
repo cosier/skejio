@@ -1,3 +1,4 @@
+#= require 'settings/service_selection'
 
 load_page = (page)->
   page = "service-selection" unless page
@@ -9,12 +10,12 @@ load_page = (page)->
 
 $ ->
   console.debug 'Settings/main.js -> init'
-  setTimeout ->
-    $('.alert').fadeOut()
-  , 2000
 
-  $('.service-selections input[type=radio]').change (evt)->
-    console.debug 'Changed!'
+  service_selection_view = new ServiceSelectionView()
+
+  setTimeout ->
+    $('.container-fluid > .alert').fadeOut()
+  , 2000
 
   $(document).on 'shown.bs.tab', 'a', (evt)->
     console.debug 'Tab Changed', evt.target
