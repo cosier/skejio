@@ -14,7 +14,11 @@
 
 class Service < ActiveRecord::Base
   belongs_to :business
-  scope :business, ->(business){ where business_id: business.id  }
+
+  # Allow a Setting(s) to reference a service (polymorphically)
+  has_many :settings, as: :supportable
+
+  scope :business, ->(business) { where business_id: business.id  }
 
   def disabled?
     true

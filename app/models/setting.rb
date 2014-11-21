@@ -15,10 +15,14 @@
 class Setting < ActiveRecord::Base
   belongs_to :business
 
+  belongs_to :supportable, polymorphic: true
+
   validates_presence_of :key
   validates_presence_of :business
   validates_uniqueness_of :business_id, :scope => :key
 
+  # core settings accessors (for simple_form generation)
+  attr_accessor :service_selection_type
 
   def get_or_create(key, opts = {})
     existing = Setting.where(key: key).first

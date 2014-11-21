@@ -2,20 +2,25 @@
 %p#notice= notice
 
 %ul#settingTabs.nav.nav-tabs{:role => "tablist"}
+
   %li.active{:role => "presentation"}
     %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#service_selection_content", :role => "tab"} Service Selection
+
   %li{:role => "presentation"}
     %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#user_selection_content", :role => "tab"} User Selection
+
   %li{:role => "presentation"}
     %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#user_priority_content", :role => "tab"} User Priority
 
 .tab-content
   #service_selection_content.tab-pane.active{:role => "tabpanel"}
-    Service Selection Content
+    = render 'service_selection'
+
   #user_selection_content.tab-pane{:role => "tabpanel"}
-    User Selection Content
+    = render 'user_selection'
+
   #user_priority_content.tab-pane{:role => "tabpanel"}
-    User Priority Content
+    = render 'user_priority'
 
 - content_for :javascript do
   = javascript_include_tag "settings/main"
