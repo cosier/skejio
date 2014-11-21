@@ -89,6 +89,8 @@ gem "bower-rails", "~> 0.9.1"
 # Natural language processing
 gem 'chronic'
 
+# Add bool conversion
+gem 'wannabe_bool'
 
 # Use evented thin server
 gem 'thin'

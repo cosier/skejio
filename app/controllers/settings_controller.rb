@@ -5,14 +5,36 @@ class SettingsController < BusinessesController
 
   before_filter :set_current_sidebar
 
-  def service_selection
+  def index
+    @services = Service.business(@business)
+    @service_selection = Setting.get_or_create :service_selection, 
+      business_id: @business.id, 
+      default_value: :ask
+    
+    # Set the default visual radio input to ask, 
+    # when we will be skipping service selection (< 2)
+    if @services.length < 2
+      @service_selection.value = 'ask'
+    end
+
   end
 
-  def user_selection
+  def update
+    @setting.update! setting_params
+
+    if @setting.errors.empty?
+      flash[:success] = "Settings have been saved successfully"
+    end
+
+    respond_with @business, @setting, location: business_settings_path(@business)
   end
 
-  def user_priority
+  def show
+    respond_with @business, @setting do |format|
+      format.html { redirect_to business_settings_path(@business) }
+    end
   end
+
 
   private
 
@@ -25,6 +47,8 @@ class SettingsController < BusinessesController
   end
 
   def setting_params
-    params[:setting].permit!
+    p = params.dup[:setting]
+    p[:business_id] = @business.id
+    p.permit!
   end
 end

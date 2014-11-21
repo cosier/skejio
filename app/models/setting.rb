@@ -21,18 +21,29 @@ class Setting < ActiveRecord::Base
   validates_presence_of :business
   validates_uniqueness_of :business_id, :scope => :key
 
-  # core settings accessors (for simple_form generation)
-  attr_accessor :service_selection_type
+  class << self
+    def get_or_create(key, opts = {})
+      existing = Setting.where(key: key).first
+      return existing if existing
 
-  def get_or_create(key, opts = {})
-    existing = Setting.where(key: key).first
-    return existing if existing
+      raise "business_id is required for first time generation" if opts[:business_id].nil?
+      raise "value is required for first time generation" if opts[:value].nil? and opts[:default_value].nil?
 
-    raise "business_id is required for first time generation" if opts[:business_id].nil?
-    raise "value is required for first time generation" if opts[:value].nil?
+      Setting.create(key: key, value: opts[:value] || opts[:default_value], business_id: opts[:business_id])
+    end
+  end
 
+  def is(what)
+    value == what
+  end
 
-    Setting.create(key: key, value: opts[:value], business_id: opts[:business_id])
+  def to_b
+    value.to_b
+  end
+
+  def service_selection_type=(type)
+    self.key = 'service_selection'
+    self.value = type
   end
 
 end

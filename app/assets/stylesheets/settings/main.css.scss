@@ -29,5 +29,33 @@ body.settings {
       margin:0;
     }
   }
+  
+  .content-box {
+    .service-selections > div {
+      margin-bottom:40px;
+
+    }
+
+    .selection {
+      display:inline-block;
+      padding-right:10px;
+      margin-right:10px;
+    }
+    .heading {
+      display:inline-block;
+
+      select {
+        min-width:140px;
+        margin-left:10px;
+        margin-right:10px;
+        display:inline-block;
+      }
+
+      p {
+        display:inline-block;
+        font-weight:300;
+      }
+    }
+  }
 
 }

@@ -5,4 +5,49 @@
 
 
 .content-box
+  = simple_form_for [@business, @service_selection], url: business_setting_path(@business, @service_selection) do |f|
+    - disable_selection =  @services.length > 1 ? false : true
+
+    .row.service-selections.no-select
+      - if disable_selection
+        .col-lg-12
+          .alert.alert-info.info
+            Your Business currently has less than 
+            %strong 2 Services,
+            check out the Services page to &nbsp;
+            = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-info'
+
+      .col-lg-12
+        .selection
+          %input{ id: "service-ask", type: :radio, name: "setting[service_selection_type]", value: 'ask', checked: ('ask' == @service_selection.value) }
+        .heading
+          %label{for: "service-ask"}
+            First ask the Customer to Select a Category 
+            %p 
+              — Selection will be skipped if you have less than 2 Services
+              %span.muted — default
+
+      .col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
+        .selection
+          %input{ id: "service-ask-and-assume", type: :radio, name: "setting[service_selection_type]", value: 'ask_and_assume', checked: ('ask_and_assume' == @service_selection.value), disabled: disable_selection }
+        .heading
+          %label{for: "service-ask-and-assume"}
+            Assume it is for
+            = f.collection_select :supportable_id, @services, :id, :name, {}, disabled: disable_selection
+            %p but allow Customers to change the default Service
+
+      .col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
+        .selection
+          %input{ id: "service-assume", type: :radio, name: "setting[service_selection_type]", value: 'assume', checked: ('assume' == @service_selection.value), disabled: disable_selection }
+        .heading
+          %label{for: "service-assume"}
+            Assume it is for
+            = f.collection_select :supportable_id, @services, :id, :name, {}, disabled: disable_selection
+            %p without any option to change
+          
+
+    %hr
+    %button.btn-save-service-selection.btn-default.btn{type: :submit}
+      %i.fa.fa-save
+        Save Preferences
 
