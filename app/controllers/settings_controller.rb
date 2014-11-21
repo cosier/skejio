@@ -12,7 +12,11 @@ class SettingsController < BusinessesController
     # Set the default visual radio input to ask, 
     # when we will be skipping service selection (< 2)
     if @services.length < 2
-      @service_selection.value = 'ask'
+      @service_selection.value = Setting::SERVICE_SELECTION_ASK
+    end
+
+    if @service_providers.length < 2
+      @user_priority.value = Setting::USER_PRIORITY_RANDOM
     end
 
   end

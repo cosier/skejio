@@ -1,4 +1,4 @@
-class ServiceSelectionView extends Backbone.View
+class CustomPriorityListView extends Backbone.View
 
   el: '#service_selection_content'
   events:
@@ -7,7 +7,6 @@ class ServiceSelectionView extends Backbone.View
   constructor: (opts)->
     super(opts)
     @update_state @$('input:checked').closest('.col')
-
 
   changed: (e)=>
     console.debug 'service_selection: input changed'
@@ -19,4 +18,4 @@ class ServiceSelectionView extends Backbone.View
 
 
 # Export namespace to global window
-window.ServiceSelectionView = ServiceSelectionView
+window.CustomPriorityListView = CustomPriorityListView

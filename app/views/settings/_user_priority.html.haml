@@ -9,14 +9,14 @@
     - disable_selection = @service_providers.length < 2
     .row.no-select
       - if disable_selection
-        .col-lg-12
+        .col.col-lg-12
           .alert.alert-danger.info
             Your Business has less than
             %strong 2 Service Providers,
             check out the User Staff page to &nbsp;
             = link_to 'Add more Providers', business_users_path(@business), class: 'btn btn-success'
 
-      .col-lg-12
+      .col.col-lg-12
         .selection
           %input{ id: "user-priority-random", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_RANDOM, checked: (Setting::USER_PRIORITY_RANDOM == @user_priority.value) }
         .heading
@@ -25,18 +25,18 @@
             %p
               %span.muted — default
 
-      .col-lg-12
+      .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "user-priority-automatic", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_AUTOMATIC, checked: (Setting::USER_PRIORITY_AUTOMATIC == @user_priority.value) }
+          %input{ id: "user-priority-automatic", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_AUTOMATIC, checked: (Setting::USER_PRIORITY_AUTOMATIC == @user_priority.value), disabled: disable_selection }
         .heading
           %label{for: "user-priority-automatic"}
             Automatically offer the next available appointment from each user
             %p
               %span.muted &nbsp;
 
-      .col-lg-12
+      .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "user-priority-custom", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_CUSTOM, checked: (Setting::USER_PRIORITY_CUSTOM == @user_priority.value) }
+          %input{ id: "user-priority-custom", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_CUSTOM, checked: (Setting::USER_PRIORITY_CUSTOM == @user_priority.value), disabled: disable_selection }
         .heading
           %label{for: "user-priority-custom"}
             Use a Custom Priority List
