@@ -4,12 +4,10 @@ class SettingsController < BusinessesController
   skip_load_resource only: [:create]
 
   before_filter :set_current_sidebar
+  before_filter :load_settings, only: [:index, :show]
 
   def index
     @services = Service.business(@business)
-    @service_selection = Setting.get_or_create :service_selection, 
-      business_id: @business.id, 
-      default_value: :ask
     
     # Set the default visual radio input to ask, 
     # when we will be skipping service selection (< 2)
@@ -21,12 +19,12 @@ class SettingsController < BusinessesController
 
   def update
     @setting.update! setting_params
+    hash = "##{params[:hash] || "service-selection"}"
 
     if @setting.errors.empty?
-      flash[:success] = "Settings have been saved successfully"
+      flash[:success] = "#{hash.gsub('#','').titleize} Settings have been saved successfully"
     end
-
-    respond_with @business, @setting, location: business_settings_path(@business)
+    respond_with @business, @setting, location: business_settings_path(@business) << hash
   end
 
   def show
@@ -40,6 +38,20 @@ class SettingsController < BusinessesController
 
   def set_current_sidebar
     @current_sidebar = :settings
+  end
+
+  def load_settings
+    @service_selection = Setting.get_or_create Setting::SERVICE_SELECTION, 
+      business_id: @business.id, 
+      default_value: Setting::SERVICE_SELECTION_ASK
+  
+    @user_selection = Setting.get_or_create Setting::USER_SELECTION, 
+      business_id: @business.id, 
+      default_value: Setting::USER_SELECTION_FULL_CONTROL
+  
+    @user_priority = Setting.get_or_create Setting::USER_PRIORITY, 
+      business_id: @business.id, 
+      default_value: Setting::USER_PRIORITY_RANDOM
   end
 
   def get_setting(key, default_value)

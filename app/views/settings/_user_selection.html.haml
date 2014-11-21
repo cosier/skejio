@@ -1,0 +1,94 @@
+%h3.header
+  User Selection for your Business
+
+%hr
+
+
+.content-box.user-selection
+  = simple_form_for [@business, @user_selection], url: business_setting_path(@business, @user_selection) do |f|
+    %input{type: "hidden", name: "hash", value: "user-selection" }/
+    .row.no-select
+      - if false
+        .col-lg-12
+          .alert.alert-info.info
+            Your Business currently has less than
+            %strong 2 Services,
+            check out the Services page to &nbsp;
+            = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-info'
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-full-control", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_FULL_CONTROL, checked: (Setting::USER_SELECTION_FULL_CONTROL == @user_selection.value) }
+
+        .heading
+          %label{for: "user-full-control"}
+            Full Control
+      .col-lg-12.info
+        %p
+          Customer is provided with Service Provider (User) selection first.
+          %br/
+          Then is provided with the next available appointments for that specific user.
+        %p.small
+          Additionally:
+          %br
+          The option to select another User or different Time will also be offered.
+
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-express-1", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_I, checked: (Setting::USER_SELECTION_EXPRESS_I == @user_selection.value) }
+
+        .heading
+          %label{for: "user-express-1"}
+            Express I
+      .col-lg-12.info
+        %p
+          Customer is given the next available appointment (from any Service Provider meeting the criteria).
+          %br/
+          If multiple Service Providers exist for this Category, the Customer will be given the option to choose.
+        %p.small
+          Additionally:
+          Customer will be offered to select a different appointment time.
+
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-express-2", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_II, checked: ( Setting::USER_SELECTION_EXPRESS_II == @user_selection.value) }
+
+        .heading
+          %label{for: "user-express-2"}
+            Express II
+      .col-lg-12.info
+        %p
+          Customer is provided with the next available appointment
+          —
+          %u without any mention of a Service Provider
+        %p.small
+          Additionally:
+          Customer will be offered to select a different appointment time.
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-express-3", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_III, checked: (Setting::USER_SELECTION_EXPRESS_III == @user_selection.value) }
+
+        .heading
+          %label{for: "user-express-3"}
+            Express III
+      .col-lg-12.info
+        %p
+          Customer is provided with the next available appointment for each available Service Providers
+        %p.small
+          Additionally:
+          %br/
+          Customer will be offered to select a different Appointment time.
+          %br/
+          Customer will be offered to select a different Service Provider.
+
+
+
+
+    %hr
+    %button.btn-save-service-selection.btn-default.btn{type: :submit}
+      %i.fa.fa-save
+        Save Preferences
+

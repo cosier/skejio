@@ -1,0 +1,51 @@
+%h3.header
+  When a specific Service Provider is not requested
+%hr
+
+
+.content-box.user-priority
+  = simple_form_for [@business, @user_priority], url: business_setting_path(@business, @user_priority) do |f|
+    %input{type: "hidden", name: "hash", value: "user-priority" }/
+
+    .row.no-select
+      - if false
+        .col-lg-12
+          .alert.alert-info.info
+            Your Business currently has less than
+            %strong 2 Services,
+            check out the Services page to &nbsp;
+            = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-info'
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-priority-random", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_RANDOM, checked: (Setting::USER_PRIORITY_RANDOM == @user_priority.value) }
+        .heading
+          %label{for: "user-priority-random"}
+            The Service Provider will be chosen at Random
+            %p
+              %span.muted — default
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-priority-automatic", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_AUTOMATIC, checked: (Setting::USER_PRIORITY_AUTOMATIC == @user_priority.value) }
+        .heading
+          %label{for: "user-priority-automatic"}
+            Automatically offer the next available appointment from each user
+            %p
+              %span.muted &nbsp;
+
+      .col-lg-12
+        .selection
+          %input{ id: "user-priority-custom", type: :radio, name: "setting[user_priority_type]", value: Setting::USER_PRIORITY_CUSTOM, checked: (Setting::USER_PRIORITY_CUSTOM == @user_priority.value) }
+        .heading
+          %label{for: "user-priority-custom"}
+            Use a Custom Priority List
+            %p
+              %span.muted &nbsp;
+
+
+    %hr
+    %button.btn-save-service-selection.btn-default.btn{type: :submit}
+      %i.fa.fa-save
+        Save Preferences
+

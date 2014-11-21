@@ -21,6 +21,25 @@ class Setting < ActiveRecord::Base
   validates_presence_of :business
   validates_uniqueness_of :business_id, :scope => :key
 
+  # Constants for various option names
+  SERVICE_SELECTION_ASK = 'ask'
+  SERVICE_SELECTION_ASK_AND_ASSUME = 'ask_and_assume'
+  SERVICE_SELECTION_ASSUME = 'assume'
+
+  USER_SELECTION_FULL_CONTROL = 'full_control'
+  USER_SELECTION_EXPRESS_I = 'express_1'
+  USER_SELECTION_EXPRESS_II = 'express_2'
+  USER_SELECTION_EXPRESS_III = 'express_3'
+
+  USER_PRIORITY_RANDOM = 'random'
+  USER_PRIORITY_AUTOMATIC = 'automatic'
+  USER_PRIORITY_CUSTOM = 'custom'
+
+  # Constants for key lookup
+  USER_PRIORITY = 'user_priority'
+  USER_SELECTION = 'user_selection'
+  SERVICE_SELECTION = 'service_selection'
+
   class << self
     def get_or_create(key, opts = {})
       existing = Setting.where(key: key).first
@@ -42,7 +61,17 @@ class Setting < ActiveRecord::Base
   end
 
   def service_selection_type=(type)
-    self.key = 'service_selection'
+    self.key = SERVICE_SELECTION
+    self.value = type
+  end
+
+  def user_selection_type=(type)
+    self.key = USER_SELECTION
+    self.value = type
+  end
+
+  def user_priority_type=(type)
+    self.key = USER_PRIORITY
     self.value = type
   end
 

@@ -30,6 +30,16 @@ body.settings {
     }
   }
   
+  .content-box.user-selection {
+    .heading p {
+      display:block;
+    }
+    .row > .info {
+      padding-left:51px;
+      margin-bottom:30px;
+    }
+  }
+
   .content-box {
     .service-selections > div {
       margin-bottom:40px;
@@ -43,7 +53,7 @@ body.settings {
     }
     .heading {
       display:inline-block;
-
+      
       select {
         min-width:140px;
         margin-left:10px;

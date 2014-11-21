@@ -6,6 +6,7 @@
 
 .content-box
   = simple_form_for [@business, @service_selection], url: business_setting_path(@business, @service_selection) do |f|
+    %input{type: "hidden", name: "hash", value: "service-selection" }/
     - disable_selection =  @services.length > 1 ? false : true
 
     .row.service-selections.no-select

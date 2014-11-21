@@ -1,18 +1,18 @@
 
 %p#notice= notice
 
-%ul#settingTabs.nav.nav-tabs{:role => "tablist"}
+%ul#settingTabs.nav.nav-tabs.hidden{:role => "tablist"}
 
   %li.active{:role => "presentation"}
-    %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#service_selection_content", :role => "tab"} Service Selection
+    %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#service_selection_content", :role => "tab", "data-hash" => "service-selection" } Service Selection
 
   %li{:role => "presentation"}
-    %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#user_selection_content", :role => "tab"} User Selection
+    %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#user_selection_content", :role => "tab", "data-hash" => "user-selection" } User Selection
 
   %li{:role => "presentation"}
-    %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#user_priority_content", :role => "tab"} User Priority
+    %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#user_priority_content", :role => "tab", "data-hash" => "user-priority" } User Priority
 
-.tab-content
+.tab-content.hidden
   #service_selection_content.tab-pane.active{:role => "tabpanel"}
     = render 'service_selection'
 
@@ -24,3 +24,10 @@
 
 - content_for :javascript do
   = javascript_include_tag "settings/main"
+  :coffeescript
+    window.Scp ||= {}
+    window.Scp.Settings = 
+      service_selection: #{@service_selection.to_json}
+      user_selection: #{@user_selection.to_json}
+      user_priority: #{@user_priority.to_json}
+  
