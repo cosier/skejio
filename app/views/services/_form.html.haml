@@ -24,11 +24,14 @@
       = f.label :priority
       .controls
         = f.number_field :priority, class: 'form-control'
-
     .form-group
       = f.label :duration
       .controls
         = f.number_field :duration, class: 'form-control'
+    %hr/
+    .form-group
+      = f.input :is_public, class: 'form-control'
+
     %hr/
     .actions
       = f.submit 'Save Service', class: 'btn btn-success'
