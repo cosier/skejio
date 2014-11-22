@@ -9,6 +9,8 @@
 #  sid            :string(255)
 #  created_at     :datetime
 #  updated_at     :datetime
+#  sms_url        :string(255)
+#  voice_url      :string(255)
 #
 
 class Number < ActiveRecord::Base

@@ -117,7 +117,6 @@ class User < ActiveRecord::Base
   end
 
   def update_ordering
-    binding.pry
     if business
       UserPriority.sort! User.business(business).service_providers
     end

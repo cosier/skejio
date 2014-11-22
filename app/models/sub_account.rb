@@ -21,7 +21,12 @@ class SubAccount < ActiveRecord::Base
 
   def buy_number(number)
     response = Skej::Twilio.buy_number(business, number)
-    numbers.create(sid: response[:sid], number: response[:number])
+    binding.pry
+    numbers.create(
+      sid: response.sid, 
+      number: response.number, 
+      voice_url: "http://#{ENV['host']}/twilio/voice",
+      sms_url:   "http://#{ENV['host']}/twilio/sms")
   end
 
 end
