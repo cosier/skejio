@@ -58,7 +58,8 @@ class Business < ActiveRecord::Base
   private
 
   def check_for_approval_processing
-    if is_active? and sub_accounts.empty?
+    # Don't run this hook in TEST env due to  Twilio credential restrictions
+    if is_active? and sub_accounts.empty? and not Rails.env.test?
       response = Skej::Twilio.create_sub_account(self)
       sub_accounts.create(
         :business_id   => self.id,

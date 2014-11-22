@@ -20,7 +20,7 @@ class Phone < ActiveRecord::Base
   # Getting all subaccount from twillio
 
   def self.all_subaccounts
-    TwillioClient.accounts.list
+    TwilioClient.accounts.list
   end
 
   def create_client_for_subaccount

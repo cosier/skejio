@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   validates_presence_of :last_name
   validates_presence_of :phone
 
-  scope :business, ->(business){ where business_id: business.id  }
+  scope :business, ->(business){ where business_id: business.id }
   scope :service_providers, ->(){ with_roles(:service_provider).order('sort_order desc, last_name asc')  }
 
   has_one :schedule_rule,
@@ -117,6 +117,9 @@ class User < ActiveRecord::Base
   end
 
   def update_ordering
-    UserPriority.sort! User.business(business).service_providers
+    binding.pry
+    if business
+      UserPriority.sort! User.business(business).service_providers
+    end
   end
 end
