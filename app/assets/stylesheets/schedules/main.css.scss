@@ -4,6 +4,9 @@
 @import "./show";
 
 .schedule_rules {
+  .time-sheet-services .label-default {
+    border:none;
+  }
 
   .floating-editor {
     max-width:75px;

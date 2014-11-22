@@ -41,7 +41,10 @@
         .schedule-rule-entry
           .row
             .col-lg-2.col-md-2.col-sm-2.col-xs-2
-              = schedule_rule.service_provider.display_name
+              - if schedule_rule.service_provider
+                = schedule_rule.service_provider.display_name
+              - else
+                %span.red Unavailable
             .col-lg-2.col-md-2.col-sm-2.col-xs-2
               All
             .col-lg-2.col-md-2.col-sm-2.col-xs-2

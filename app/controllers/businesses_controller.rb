@@ -10,15 +10,15 @@ class BusinessesController < SecureController
   sidebar :dashboard
 
   def index
-    @@sidebar = :dashboard
+    @current_sidebar = :dashboard
   end
 
   def show
-    @@sidebar = :dashboard
+    @current_sidebar = :dashboard
   end
 
   def pending
-    @@sidebar = :pending
+    @current_sidebar = :pending
     redirect_to business_path(@business) if @business.is_active?
   end
 

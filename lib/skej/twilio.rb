@@ -32,7 +32,7 @@ module Skej
       # Handle creating sub accounts for a business
       def create_sub_account(business)
         raise "Business must not be nil" if business.nil?
-        client.accounts.create(:friendly_name => "#{business.slug}-#{Random.rand(100..999}", status: 'active')
+        client.accounts.create(:friendly_name => "#{business.slug}-#{Random.rand(100..999)}", status: 'active')
       end
 
       # Lazy load the Twilio REST client

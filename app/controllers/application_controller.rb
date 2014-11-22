@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_sidebar(target = false)
-    @current_sidebar = target || @@sidebar
+    @current_sidebar ||= (target || @@sidebar)
   end
 
 end
