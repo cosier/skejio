@@ -10,8 +10,9 @@ module Skej
       # sid
       # number
       def buy_number(business, number)
-        response = sub_account(business.sub_account).incoming_phone_numbers.create(:phone_number => number)
         binding.pry
+        response = sub_account(business).incoming_phone_numbers.create(:phone_number => number)
+        Rails.logger.info "Skej::Twilio#buy_number(#{business}, #{number}) -> #{response.to_json}"
         response
       end
 
@@ -21,7 +22,7 @@ module Skej
         # Process and format the contains field
         search_params['contains'] = format_containment(search_params['contains'])
 
-        sub_account(business.sub_account)
+        sub_account(business)
         .available_phone_numbers
         .get('US')
         .local
@@ -31,25 +32,32 @@ module Skej
       # Handle creating sub accounts for a business
       def create_sub_account(business)
         raise "Business must not be nil" if business.nil?
-
-        client.accounts.create(:friendly_name => business.slug, status: 'active')
+        client.accounts.create(:friendly_name => "#{business.slug}-#{Random.rand(100..999}", status: 'active')
       end
 
       # Lazy load the Twilio REST client
-      def client
-        @client ||= ::Twilio::REST::Client.new(
-          ENV['TWILIO_ACCOUNT_SID'],
-          ENV['TWILIO_AUTH_TOKEN']
+      def client(sid = nil, auth = nil)
+        ::Twilio::REST::Client.new(
+          sid || ENV['TWILIO_ACCOUNT_SID'],
+          auth || ENV['TWILIO_AUTH_TOKEN']
         )
       end
 
-      # Fetch a Twilio::REST::Account for a Business
-      # SubAccount based on the stored sid
-      def sub_account(sub_account)
-        client.accounts.get(sub_account.sid)
+      # Get the rest client for a given business
+      def sub_client(business)
+        sid = business.sub_account.sid
+        auth = business.sub_account.auth_token
+
+        raise "Unknown Accessor Business: #{business} - #{sid}/#{auth}" unless sid and auth
+        client(sid, auth)
       end
 
-      # Pad up the contains field
+      # Get SubAccount rest api for a given Business
+      def sub_account(business)
+        sub_client(business).account
+      end
+
+      # Pad up the contains field with wildcard asterisk
       def format_containment(contains)
         if contains and contains.length < 11
           pad = ""
@@ -60,7 +68,7 @@ module Skej
           end
 
           contains = "1#{pad}#{contains}"
-        end
+        end 
 
         contains
       end
