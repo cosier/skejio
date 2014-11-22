@@ -8,7 +8,10 @@ class UserPriorityView extends Backbone.View
     console.debug 'UserPriorityView:init'
     super(opts)
     @container = @$("#user-priority-container")
+
     @process_visibility()
+    @build_data_model()
+
     @render()
 
   changed: (e)=>
@@ -22,6 +25,17 @@ class UserPriorityView extends Backbone.View
     else
       @container.addClass 'hidden'
 
+  build_data_model: ->
+    @users = new Scplanner.Collections.UsersCollection()
+
+    # Extract user json from the initial dom
+    @$('.user').each (i, el)=>
+      view = new UserOrderView
+        el: el
+        model: new Scplanner.Models.User $(el).data('user')
+
+      console.debug i, view.model
+      @users.add view.model
 
   render: ->
     console.debug "UserPriorityView:render()"

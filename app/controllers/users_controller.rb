@@ -35,6 +35,8 @@ class UsersController < BusinessesController
       user_data.delete :password_confirmation
     end
 
+    binding.pry
+
     @user.update(user_data)
     respond_with(@business, @user)
   end

@@ -44,12 +44,14 @@
               %span.muted &nbsp;
         #user-priority-container.hidden
           - for user in @service_providers.sort_by(&:sort_order)
-            .row.user.noselect
-              .col.col-xs-9.display_name
-                = user.display_name
+            .row.user.noselect{data: {user: user.to_json }}
+              .col.col-xs-2.sort_order
+                %span.count.label.label-default= user.sort_order
+              .col.col-xs-7.display_name
+                = link_to user.display_name, business_user_path(@business, user)
               .col.col-xs-3.controls
-                %i.fa.fa-chevron-up.up
                 %i.fa.fa-chevron-down.down
+                %i.fa.fa-chevron-up.up
 
 
     %hr

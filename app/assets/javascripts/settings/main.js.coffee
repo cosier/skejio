@@ -1,5 +1,6 @@
-#= require 'settings/service_selection_view'
-#= require 'settings/user_priority_view'
+#= require_tree './views'
+#= require_tree './models'
+#= require_tree './templates'
 
 load_page = (page)->
   page = "service-selection" unless page

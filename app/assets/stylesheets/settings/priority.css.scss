@@ -5,6 +5,24 @@ body.settings .content-box.user-priority {
     margin-top:20px;
   }
 
+  .user[data-user-sort='1'] {
+    .down {
+    }
+    .up {
+      opacity:0.5;
+      color:#c7c7c7;
+      cursor:default;
+    }
+  }
+  .user:last-child {
+    .down {
+      opacity:0.5;
+      color:#c7c7c7;
+      cursor:default;
+    }
+  }
+
+
   .user {
     border: 1px solid #e1e1e1;
     border-bottom:none;
@@ -38,10 +56,21 @@ body.settings .content-box.user-priority {
     cursor:pointer;
     background:#fff;
   }
-
-  .up {
-    border-right:1px solid #e1e1e1;
+  .down {
+    color:$dark-red;
   }
+  .up {
+    color:$green;
+  }
+
+  .controls {
+    text-align:right;
+
+    i:first-child {
+      border-right: 1px solid #e1e1e1;
+    }
+  }
+
 
   .user .col {
     padding:10px 0;
