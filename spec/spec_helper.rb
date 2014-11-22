@@ -50,7 +50,8 @@ RSpec.configure do |config|
   config.before(:suite) do
    DatabaseCleaner.strategy = :transaction
    DatabaseCleaner.clean_with(:truncation)
-   FactoryGirl.lint
+   # Don't lint, due to twilio rest issues
+   #FactoryGirl.lint
   end
 
   config.around(:each) do |example|

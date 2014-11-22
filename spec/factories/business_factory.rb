@@ -20,6 +20,10 @@ FactoryGirl.define do
 
   factory :business, class: 'Business' do
     name Faker::Company.name
+
+    after(:create) do |business|
+      business.sub_accounts << FactoryGirl.create(:sub_account)
+    end
   end
 
 end
