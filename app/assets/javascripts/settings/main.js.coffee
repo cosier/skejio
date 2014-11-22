@@ -1,4 +1,5 @@
-#= require 'settings/service_selection'
+#= require 'settings/service_selection_view'
+#= require 'settings/user_priority_view'
 
 load_page = (page)->
   page = "service-selection" unless page
@@ -12,6 +13,7 @@ $ ->
   console.debug 'Settings/main.js -> init'
 
   service_selection_view = new ServiceSelectionView()
+  user_priority_view = new UserPriorityView()
 
   setTimeout ->
     $('.container-fluid > .alert').fadeOut()

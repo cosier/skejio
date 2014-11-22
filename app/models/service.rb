@@ -10,6 +10,7 @@
 #  duration    :integer          default(60)
 #  created_at  :datetime
 #  updated_at  :datetime
+#  is_public   :boolean          default(TRUE)
 #
 
 class Service < ActiveRecord::Base

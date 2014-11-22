@@ -1,0 +1,54 @@
+body.settings .content-box.user-priority {
+  #user-priority-container {
+    max-width:320px;
+    margin-left:30px;
+    margin-top:20px;
+  }
+
+  .user {
+    border: 1px solid #e1e1e1;
+    border-bottom:none;
+    .sort_order {
+      text-align:center;
+    }
+
+    .display_name {
+      font-size:16px;
+      padding-left:14px !important;
+      padding-top:17px !important;
+    }
+  }
+
+  .user:hover {
+    background:#f7f7f7;
+  }
+  
+  .user:last-child {
+    border-bottom: 1px solid #e1e1e1;
+  }
+
+  .up,.down {
+    display:inline-block;
+    padding:10px;
+  }
+
+  .up:hover,
+  .down:hover {
+    color:red;
+    cursor:pointer;
+    background:#fff;
+  }
+
+  .up {
+    border-right:1px solid #e1e1e1;
+  }
+
+  .user .col {
+    padding:10px 0;
+  }
+
+
+
+}
+
+  

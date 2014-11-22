@@ -42,10 +42,23 @@
             Use a Custom Priority List
             %p
               %span.muted &nbsp;
+        #user-priority-container.hidden
+          - for user in @service_providers.sort_by(&:sort_order)
+            .row.user.noselect
+              .col.col-xs-9.display_name
+                = user.display_name
+              .col.col-xs-3.controls
+                %i.fa.fa-chevron-up.up
+                %i.fa.fa-chevron-down.down
 
 
     %hr
     %button.btn-save-service-selection.btn-default.btn{type: :submit}
       %i.fa.fa-save
         Save Preferences
+
+- content_for :javascript do
+  :coffeescript
+    window.Scp ||= {}
+    window.Scp.Users = #{@service_providers.to_json}
 

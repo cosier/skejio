@@ -2,14 +2,16 @@
 #
 # Table name: settings
 #
-#  id          :integer          not null, primary key
-#  business_id :integer          not null
-#  key         :string(255)      not null
-#  value       :string(255)      not null
-#  description :text
-#  is_active   :boolean          default(TRUE)
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id               :integer          not null, primary key
+#  business_id      :integer          not null
+#  key              :string(255)      not null
+#  value            :string(255)      not null
+#  description      :text
+#  is_active        :boolean          default(TRUE)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  supportable_id   :integer
+#  supportable_type :string(255)
 #
 
 class Setting < ActiveRecord::Base

@@ -24,6 +24,7 @@
 #  created_at             :datetime
 #  updated_at             :datetime
 #  phone                  :string(255)
+#  sort_order             :integer          default(0)
 #
 
 class User < ActiveRecord::Base
@@ -37,13 +38,15 @@ class User < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   validates_presence_of :phone
+  validates_uniqueness_of :sort_order, scope: :business_id
 
   scope :business, ->(business){ where business_id: business.id  }
-  scope :service_providers, ->(){ with_roles(:service_provider)  }
+  scope :service_providers, ->(){ with_roles(:service_provider).order('sort_order desc, last_name asc')  }
 
   has_one :schedule_rule,
     foreign_key: 'service_provider_id'
 
+  after_create :update_ordering
 
   attr_accessor :can_schedule
 
@@ -104,5 +107,17 @@ class User < ActiveRecord::Base
 
   def not_available_for_scheduling
     return self if not available_for_scheduling?
+  end
+
+  def has_sort_order?
+    sort_order and sort_order > 0
+  end
+
+  def has_not_sort_order?
+    not has_sort_order?
+  end
+
+  def update_ordering
+    UserPriority.sort! User.business(business).service_providers
   end
 end

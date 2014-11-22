@@ -57,7 +57,8 @@ class SettingsController < BusinessesController
       business_id: @business.id, 
       default_value: Setting::USER_PRIORITY_RANDOM
     
-    @service_providers = User.business(@business).service_providers
+    @service_providers = UserPriority.sort! User.business(@business).service_providers
+
   end
 
   def get_setting(key, default_value)
