@@ -59,38 +59,35 @@ class NumbersController < BusinessesController
   end
 
   def buy_number
+
     begin
-      @business.sub_account.buy_number(params[:number])
+      @number = @business.sub_account.buy_number(params[:number])
+      @success = true
 
     rescue Twilio::REST::RequestError => e
+      @success = false
       logger.error(e.message)
       return redirect_to new_business_number_path(@business),
         :alert => "Sorry, the Number #{params[:number]} is no longer available."
     end
+    
+    path = business_numbers_path(@business)
 
     respond_to do |format|
-      format.html { redirect_to business_numbers_path(@business) , :notice => "You successfully puchased #{params[:number]}"}
+      format.html { 
+        if @success
+          redirect_to path , :success => "You successfully puchased #{params[:number]}"
+        else
+          redirect_to path , :alert => "Oops, something happened. Please try again or Contact Support, Thanks!"
+        end
+      }
+
+      format.json {
+        render json: { success: @success, number: @number }
+      }
     end
   end
 
-  def send_sms
-    @sub_account = @business.sub_account
-    @sub_account.send_sms(params[:message])
-
-    respond_to do |format|
-      format.html { redirect_to business_subaccounts_path(@business), :notice => "Message has been sent successfully #{params[:message][:to]}"}
-    end
-
-  end
-
-  def make_a_call
-    @sub_account = @business.sub_account
-    @sub_account.make_a_call(params[:info])
-
-    respond_to do |format|
-      format.html {redirect_to business_subaccounts_path(@business), :notice => "Call will be made in few secs to #{params[:info][:to]}"}
-    end
-  end
 
   private
 

@@ -17,9 +17,9 @@ module Skej
           :sms_url      => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/sms",
           :voice_url    => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/voice"
         }
-        binding.pry
         response = sub_account(business).incoming_phone_numbers.create(phone_request)
-        Rails.logger.info "Skej::Twilio#buy_number(#{business}, #{number}) -> #{response.to_json}"
+        Rails.logger.info "Skej::Twilio#buy_number(#{business}, #{number})"
+
         response
       end
 
@@ -28,12 +28,13 @@ module Skej
       def search_available_numbers(business, search_params = {})
         # Process and format the contains field
         search_params['contains'] = format_containment(search_params['contains'])
+        results = sub_account(business)
+          .available_phone_numbers
+          .get('US')
+          .local
+          .list(search_params)
 
-        sub_account(business)
-        .available_phone_numbers
-        .get('US')
-        .local
-        .list(search_params)
+        results
       end
 
       # Handle creating sub accounts for a business
@@ -61,7 +62,8 @@ module Skej
 
       # Get SubAccount rest api for a given Business
       def sub_account(business)
-        sub_client(business).account
+        #sub_client(business).account
+        client.accounts.get(business.sub_account.sid)
       end
 
       # Pad up the contains field with wildcard asterisk
