@@ -38,7 +38,6 @@ class User < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   validates_presence_of :phone
-  validates_uniqueness_of :sort_order, scope: :business_id, unless: ->(u){ not u.persisted? }
 
   scope :business, ->(business){ where business_id: business.id  }
   scope :service_providers, ->(){ with_roles(:service_provider).order('sort_order desc, last_name asc')  }

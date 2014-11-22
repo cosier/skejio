@@ -5,7 +5,7 @@ class Scplanner.Models.User extends Backbone.Model
     sort_order: 0
 
   url: ->
-    "/businesses/#{Scp.business_id}/users"
+    "/businesses/#{Scp.business_id}/users/#{@id}"
 
 class Scplanner.Collections.UsersCollection extends Backbone.Collection
   model: Scplanner.Models.User

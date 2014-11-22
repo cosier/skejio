@@ -35,10 +35,14 @@ class UsersController < BusinessesController
       user_data.delete :password_confirmation
     end
 
-    binding.pry
+    if user_data[:status].nil? or user_data[:status].empty?
+      user_data.delete :status
+    end
 
     @user.update(user_data)
-    respond_with(@business, @user)
+    respond_with(@business, @user) do |format|
+      format.json { render json: @user }
+    end
   end
 
   def destroy
