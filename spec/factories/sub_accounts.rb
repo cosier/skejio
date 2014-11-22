@@ -14,8 +14,8 @@
 FactoryGirl.define do
   factory :sub_account do
     friendly_name "super-friendly-business"
-    sid "AC4cfc5ec9de5735209d9660cf72fcdcfa"
-    auth_token "1010"
+    sid "ACb8a1f1ccacd58addc8110308676f44ef"
+    auth_token "6c735d1db5601b97f4d60b1e51c60c08"
   end
 
 end
