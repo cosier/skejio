@@ -12,7 +12,7 @@ module Scplanner
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.action_mailer.default_url_options = { host: ENV['host'] }
+    config.action_mailer.default_url_options = { host: ENV['HOST'] }
 
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {

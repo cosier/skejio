@@ -6,6 +6,12 @@
 #
 # When you add an ENV VAR to config/application.yml, then also add it here as well.
 # So other developers will have a template for all the required ENV VARs
+# Running on port 80
+# eg. schedule-planner.dev
+# eg. sp-planer-dev.ngrok.com
+#
+HOST: "schedule-planner.ngrok.com" # Change this to your own ngrok
+PROTOCOL: "http"
 
 mailer_sender: "support@schedule-planner.mailgun.org"
 

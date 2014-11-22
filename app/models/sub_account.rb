@@ -25,8 +25,8 @@ class SubAccount < ActiveRecord::Base
     numbers.create(
       sid: response.sid, 
       number: response.number, 
-      voice_url: "http://#{ENV['host']}/twilio/voice",
-      sms_url:   "http://#{ENV['host']}/twilio/sms")
+      voice_url: "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/voice",
+      sms_url:   "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/sms")
   end
 
 end

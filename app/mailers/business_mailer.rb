@@ -6,7 +6,7 @@ class BusinessMailer < BaseMailer
   default from: ENV['mailer_sender'] || "support@schedule-planner.mailgun.org"
 
   def default_url_options
-    { host: ENV['host'] || 'localhost' }
+    { host: ENV['HOST'] || 'localhost' }
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
