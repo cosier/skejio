@@ -1,6 +1,4 @@
 #= require_tree './views'
-#= require_tree './models'
-#= require_tree './templates'
 
 load_page = (page)->
   page = "service-selection" unless page
