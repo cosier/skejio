@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141122225816) do
+ActiveRecord::Schema.define(version: 20141122232941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,12 +66,20 @@ ActiveRecord::Schema.define(version: 20141122225816) do
   create_table "numbers", force: true do |t|
     t.integer  "sub_account_id"
     t.integer  "office_id"
-    t.string   "number"
+    t.string   "phone_number",       null: false
     t.string   "sid"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "sms_url"
     t.string   "voice_url"
+    t.string   "status_url"
+    t.string   "voice_fallback_url"
+    t.string   "sms_fallback_url"
+    t.string   "friendly_name"
+    t.integer  "capabilities"
+    t.string   "account_sid"
+    t.string   "voice_method"
+    t.string   "sms_method"
   end
 
   add_index "numbers", ["office_id"], name: "index_numbers_on_office_id", using: :btree
