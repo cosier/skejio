@@ -61,6 +61,7 @@ class NumbersController < BusinessesController
   def buy_number
     begin
       @business.sub_account.buy_number(params[:number])
+
     rescue Twilio::REST::RequestError => e
       logger.error(e.message)
       return redirect_to new_business_number_path(@business),

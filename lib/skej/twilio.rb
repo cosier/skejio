@@ -10,15 +10,22 @@ module Skej
       # sid
       # number
       def buy_number(business, number)
+        phone_request = {
+          :phone_number => number,
+          :sms_method   => 'GET',
+          :voice_method => 'GET',
+          :sms_url      => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/sms",
+          :voice_url    => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/voice"
+        }
         binding.pry
-        response = sub_account(business).incoming_phone_numbers.create(:phone_number => number)
+        response = sub_account(business).incoming_phone_numbers.create(phone_request)
         Rails.logger.info "Skej::Twilio#buy_number(#{business}, #{number}) -> #{response.to_json}"
         response
       end
 
       # Return a list of Available Incoming Numbers,
       # based on the search params given
-      def search_available_numbers(business, search_params)
+      def search_available_numbers(business, search_params = {})
         # Process and format the contains field
         search_params['contains'] = format_containment(search_params['contains'])
 
@@ -59,7 +66,8 @@ module Skej
 
       # Pad up the contains field with wildcard asterisk
       def format_containment(contains)
-        if contains and contains.length < 11
+        if contains and contains.to_s.length < 11
+          contains = contains.to_s
           pad = ""
 
           # Max length is Ten
