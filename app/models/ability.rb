@@ -13,6 +13,14 @@ class Ability
       can :manage, :all
     end
 
+    if user.roles? :super_business_editor
+      can :manage, Business
+    end
+
+    if user.roles? :super_business_viewer
+      can :read, Business
+    end
+
     ###########################################
     # Business Admin Rules
     if user.roles? :admin
