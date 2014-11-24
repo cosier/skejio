@@ -6,6 +6,7 @@
 
 %br/
 
+
 %table.table.table-striped
   %thead
     %tr
@@ -34,4 +35,8 @@
 %br/
 %hr/
 - if can? :create, Number
-  = link_to 'New Number', new_business_number_path(@business), class: 'btn btn-success'
+  = link_to 'Buy New Number', new_business_number_path(@business), class: 'btn btn-success'
+  %br/
+  %br/
+  %span.muted.small Warning: Twilio will instantly charge your account $1 for each Number purchased.
+

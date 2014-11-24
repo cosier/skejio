@@ -1,3 +1,9 @@
+
+.alert.alert-danger
+  Warning: Twilio will 
+  %strong Instantly 
+  charge your account $1 for each Number purchased.
+%hr/
 .container
   .row
     #loading{:style => "display:none;text-align: center;"}
@@ -12,3 +18,4 @@
         = f.submit 'Search', class: 'btn btn-success'
         = link_to 'Back', business_numbers_path(@business), class: 'btn btn-default'
     #number-search-results.col-md-8
+
