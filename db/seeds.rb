@@ -29,7 +29,7 @@ qa_admin = User.create(
   roles: super_roles)
 
 raise admin.errors.to_json unless admin.persisted?
-raise qa+admin.errors.to_json unless qa_admin.persisted?
+raise qa_admin.errors.to_json unless qa_admin.persisted?
 
 
 puts "--> Finished seeding"
