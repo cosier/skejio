@@ -40,3 +40,6 @@
   %br/
   %span.muted.small Warning: Twilio will instantly charge your account $1 for each Number purchased.
 
+- content_for :javascript do
+  :coffeescript
+    window.numbers = #{@numbers.to_json}
