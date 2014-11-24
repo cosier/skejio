@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141122232941) do
+ActiveRecord::Schema.define(version: 20141124061330) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,20 @@ ActiveRecord::Schema.define(version: 20141122232941) do
     t.string   "friendly_name"
     t.string   "auth_token"
     t.string   "sid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "system_logs", force: true do |t|
+    t.integer  "parent_id"
+    t.integer  "business_id"
+    t.integer  "customer_id"
+    t.integer  "session_id"
+    t.integer  "session_tx_id"
+    t.integer  "log_type"
+    t.string   "from"
+    t.string   "to"
+    t.text     "meta"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
