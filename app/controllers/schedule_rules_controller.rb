@@ -12,7 +12,7 @@ class ScheduleRulesController < BusinessesController
   sidebar :schedule_rules
 
   def index
-    @schedule_rules = ScheduleRule.all
+    @schedule_rules = ScheduleRule.where(business_id: @business.id)
     respond_with(@schedule_rules)
   end
 
