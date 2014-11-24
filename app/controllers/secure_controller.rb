@@ -7,6 +7,7 @@ class SecureController < ApplicationController
 
   rescue_from CanCan::AccessDenied do |exception|
     path = root_path
+    Rails.logger.error "User(#{current_user and current_user.display_name}) CanCan::AccessDenied: #{exception.message}"
 
     if current_user and current_user.roles? :super_admin
       path = manage_dashboard_path

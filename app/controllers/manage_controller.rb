@@ -1,4 +1,4 @@
-class ManageController < ApplicationController
+class ManageController < SecureController
 
   before_filter :authenticate_user!
   before_filter :ensure_super_powers!
