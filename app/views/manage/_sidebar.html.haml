@@ -5,6 +5,11 @@
         Super Console
     %li
       = link_to 'Dashboard', manage_dashboard_path, class: manage_sidebar_active(:dashboard)
+
     - if can? :read, Business
       %li= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses)
+
+    - if can? :read, SystemLog
+      %li= link_to 'System Logs', system_logs_path, class: manage_sidebar_active(:system_logs)
+
     = render 'shared/sidebar_user'

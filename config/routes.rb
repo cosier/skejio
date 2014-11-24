@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   scope :manage do
     resources :manage_businesses, path: 'businesses'
+    resources :system_logs, only: [:index, :show]
+
     get '/businesses', to: 'manage_businesses#index', as: :businesses
     get '/', to: 'manage#dashboard', as: :manage_dashboard
   end
