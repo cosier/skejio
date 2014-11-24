@@ -23,6 +23,8 @@ class Setting < ActiveRecord::Base
   validates_presence_of :business
   validates_uniqueness_of :business_id, :scope => :key
 
+  scope :business, ->(business) { where business_id: business.id }
+
   # Constants for various option names
   SERVICE_SELECTION_ASK = 'ask'
   SERVICE_SELECTION_ASK_AND_ASSUME = 'ask_and_assume'
@@ -44,7 +46,7 @@ class Setting < ActiveRecord::Base
 
   class << self
     def get_or_create(key, opts = {})
-      existing = Setting.where(key: key).first
+      existing = Setting.where(key: key, business_id: opts[:business_id]).first
       return existing if existing
 
       raise "business_id is required for first time generation" if opts[:business_id].nil?
