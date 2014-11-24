@@ -1,16 +1,21 @@
 %p#notice= notice
 %p
-  %strong Sub account:
-  = @number.sub_account
+  %h1 Designated Office:
+  %h3
+    - if @number.office
+      = @number.office.name
+    - else
+      All Offices
+
+%hr/
 %p
   %strong Number:
-  = @number.number
+  = @number.phone_number
 %p
-  %strong Sid:
+  %strong SID:
   = @number.sid
-%p
-  %strong Sauth token:
-  = @number.sauth_token
-= link_to 'Edit', edit_business_number_path(@business, @number)
-|
-\#{link_to 'Back', business_numbers_path(@business)}
+
+%hr
+= link_to 'Back', business_numbers_path(@business), class: 'btn btn-default'
+&nbsp;
+= link_to 'Edit', edit_business_number_path(@business, @number), class: 'btn btn-warning'

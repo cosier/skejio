@@ -8,12 +8,14 @@ class NumbersController < BusinessesController
   sidebar  :numbers
 
   def index
-    @numbers = Number.all
-    respond_with(@numbers)
+    @numbers = Number.business(@business)
+    authorize! :read, Number
+
+    respond_with(@business, @numbers)
   end
 
   def show
-    respond_with(@number)
+    respond_with(@business, @number)
   end
 
   def new
@@ -29,17 +31,17 @@ class NumbersController < BusinessesController
   def create
     @number = Number.new(number_params)
     @number.save
-    respond_with(@number)
+    respond_with(@business, @number)
   end
 
   def update
     @number.update(number_params)
-    respond_with(@number)
+    respond_with(@business, @number)
   end
 
   def destroy
     @number.destroy
-    respond_with(@number)
+    respond_with(@business, @number)
   end
 
   def search
@@ -92,6 +94,6 @@ class NumbersController < BusinessesController
   private
 
   def number_params
-    params.require(:number).permit(:sub_account_id, :number, :sid, :sauth_token)
+    params.require(:number).permit(:sub_account_id, :sid, :auth_token, :office_id)
   end
 end

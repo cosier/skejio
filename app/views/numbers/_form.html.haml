@@ -1,7 +1,15 @@
 = simple_form_for([@business,@number]) do |f|
   = f.error_notification
   .form-inputs
-    = f.association :sub_account
-    = f.input :number
+    = f.input :phone_number, input_html: { disabled: true }
+    %br/
+    %span.small.muted
+      Editing of Inbound Numbers is currently not supported.
+      %br/
+      However you are free to create a new Number.
+    %hr
+  .form-inputs
+    = f.association :office, collection: Office.business(@business), prompt: 'All Offices', label: 'Specific Office Designation'
+    %hr/
   .form-actions
-    = f.button :submit
+    = f.button :submit, class: 'btn btn-success'
