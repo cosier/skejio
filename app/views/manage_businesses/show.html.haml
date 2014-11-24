@@ -28,6 +28,26 @@
   .col-lg-12= (@business.is_active?).to_s.upcase
 %hr/
 .row
+  .col-lg-12.field-name SubAccount:
+  .col-lg-12
+    - if @business.sub_account
+      %p 
+        SID:
+        = @business.sub_account.sid
+      %p
+        Numbers:
+        - if @business.sub_account.numbers.empty?
+          %span.muted No Numbers currently registered to this Sub Account
+        - @business.sub_account.numbers.each do |number|
+          = number.phone_number
+      
+    - else
+      No 
+      %strong SubAccount
+      found..
+
+%hr/
+.row
   .col-lg-12.field-name Offices and Locations:
   .col-lg-12
     - if @business.offices.length == 0
