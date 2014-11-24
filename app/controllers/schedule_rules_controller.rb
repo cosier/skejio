@@ -6,7 +6,7 @@ class ScheduleRulesController < BusinessesController
   before_filter :provide_business_basics, only: [:new, :edit, :show]
   before_filter :validate_requirements, only: [:new, :edit, :show]
   skip_load_resource only: [:create]
-
+  
   include EntryHelper
   helper :entry
   sidebar :schedule_rules
@@ -134,6 +134,7 @@ class ScheduleRulesController < BusinessesController
 
   def set_sidebar
     set_current_sidebar :schedule_rules
+    @current_sidebar = :schedule_rules
   end
 
   def schedule_rule_params
