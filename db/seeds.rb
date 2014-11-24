@@ -3,6 +3,7 @@ puts "------------------------"
 
 # Clean the existing entry, since this task should be repeatable
 User.where(email: "admin@example.com").destroy_all
+User.where(email: "qa@example.com").destroy_all
 
 super_roles = [
   :super_admin,
