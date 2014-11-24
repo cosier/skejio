@@ -6,7 +6,7 @@ class SecureController < ApplicationController
   skip_load_resource :only => :dashboard
 
   rescue_from CanCan::AccessDenied do |exception|
-    binding.pry
+
     path = root_path
     Rails.logger.error "User(#{current_user and current_user.display_name}) CanCan::AccessDenied: #{exception.message}"
 
@@ -23,7 +23,6 @@ class SecureController < ApplicationController
   private
 
   def validate_business
-    binding.pry
     # Check for invalid businesses
     if @business.nil?
       return redirect_to "/", alert: "Business not found"
