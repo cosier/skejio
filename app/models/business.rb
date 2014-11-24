@@ -28,6 +28,8 @@ class Business < ActiveRecord::Base
     dependent: :destroy
 
   has_many :sub_accounts
+  has_many :numbers,
+    :through => :sub_accounts
 
   validates_uniqueness_of :slug
   validates_presence_of :slug
@@ -35,6 +37,7 @@ class Business < ActiveRecord::Base
   before_validation :ensure_unique_slug
 
   after_save :check_for_approval_processing
+  
 
   # Formal display name for this entity
   def display_name

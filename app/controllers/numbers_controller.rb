@@ -8,9 +8,8 @@ class NumbersController < BusinessesController
   sidebar  :numbers
 
   def index
-    @numbers = Number.business(@business)
     authorize! :read, Number
-
+    @numbers = @business.numbers
     respond_with(@business, @numbers)
   end
 

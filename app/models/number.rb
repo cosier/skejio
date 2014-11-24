@@ -27,4 +27,5 @@ class Number < ActiveRecord::Base
 
   validates_presence_of :sub_account
   validates_presence_of :sid
+
 end
