@@ -7,7 +7,12 @@ class ManageController < SecureController
   skip_load_resource
 
   def dashboard
+    @sub_accounts = Skej::Twilio.sub_accounts status: 'active'
     @current_sidebar = :dashboard
+  end
+
+  def show_twilio_account
+    @account = Skej::Twilio.sub_account(params[:sid])
   end
 
   private

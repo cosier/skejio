@@ -1,0 +1,41 @@
+%h1 Sub Account
+%h2= @account.friendly_name
+\/—
+%span.sid
+  = @account.sid
+
+%hr/
+
+%h4 Registered Inbound Numbers
+%table.table.table-striped
+  %thead
+    %th Number
+    %th SID
+    %th Endpoints
+    %th Methods
+    %th Date Created
+  
+  %tbody
+    - @account.incoming_phone_numbers.list.each do |number|
+      %tr
+        %td= number.phone_number
+        %td= number.sid
+        %td
+          Voice:
+          = number.voice_url
+          %br/
+          SMS:
+          = number.sms_url
+        %td
+          SMS:
+          = number.sms_method
+          %br/
+          VOICE:
+          = number.voice_method
+        %td
+          = number.date_created
+
+
+%hr/
+
+= link_to 'Back to Dashboard', manage_dashboard_path

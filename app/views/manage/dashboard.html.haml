@@ -2,4 +2,26 @@
   .col-lg-12
     %h1 Super Console Dashboard
     %hr/
-    %p Welcome to the Super console dashboard.
+.block
+  %h3 
+    Twilio Sub Accounts 
+    %span.muted LIVE API Results
+  - cache_expiry = Rails.env.production? ? 5.seconds : 15.minutes
+  = cache :twilio_sub_accounts, expiry: cache_expiry do
+    %table.table.table-striped
+      %thead
+        %th Friendly Name
+        %th SID
+        %th Inbound Numbers
+        %th Status
+        %th.actions
+          %i.fa.fa-cogs
+      %tbody
+        - @sub_accounts.each do |account|
+          %tr
+            %td= account.friendly_name
+            %td= account.sid
+            %td= account.incoming_phone_numbers.list.count
+            %td= account.status
+            %td
+              = link_to 'View', show_twilio_account_path(sid: account.sid), class: 'btn btn-xs btn-default'

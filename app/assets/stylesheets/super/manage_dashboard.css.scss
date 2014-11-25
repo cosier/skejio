@@ -1,0 +1,17 @@
+@import "../colors";
+
+body.manage {
+  .block {
+    border: 1px solid #e1e1e1;
+    background: #FEFFF0;
+
+    .table-striped > tbody > tr:nth-child(odd) {
+      background-color: #F7F9E7;
+    }
+
+    > h3 {
+      padding-left:20px;
+    }
+  }
+}
+

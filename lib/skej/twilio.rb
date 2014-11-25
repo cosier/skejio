@@ -61,9 +61,15 @@ module Skej
       end
 
       # Get SubAccount rest api for a given Business
-      def sub_account(business)
+      def sub_account(accessor)
+        if accessor.kind_of? String
+          sid = accessor
+        else
+          sid = accessor.sub_account.sid
+        end
+
         #sub_client(business).account
-        client.accounts.get(business.sub_account.sid)
+        client.accounts.get(sid)
       end
 
       # Get all Sub Accounts
