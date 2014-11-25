@@ -40,10 +40,11 @@ class ManageBusinessesController < ManageController
     @business = Business.where(id: params[:id]).first
     authorize! :destroy, @business
     if @business.present?
+      flash[:success] = "Business (#{@business.display_name}) successfully deleted"
       @business.destroy
-      respond_with(@business, location: manage_businesses_path(@business))
+      redirect_to manage_businesses_path
     else
-      redirect_to :index
+      redirect_to manage_dashboard_path
     end
   end
 
