@@ -6,8 +6,7 @@
   %h3 
     Twilio Sub Accounts 
     %span.muted LIVE API Results
-  - cache_expiry = Rails.env.production? ? 5.seconds : 15.minutes
-  = cache :twilio_sub_accounts, expiry: cache_expiry do
+  = cache :twilio_sub_accounts, expiry: 30.minutes do
     %table.table.table-striped
       %thead
         %th Friendly Name
