@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :manage_businesses, path: 'businesses'
     resources :system_logs, only: [:index, :show]
     get '/twilio/sub_account/:sid', to: 'manage#show_twilio_account', as: :show_twilio_account
+    get '/twilio/test_client', to: 'manage#show_test_client', as: :manage_test_client
     get '/businesses', to: 'manage_businesses#index', as: :businesses
     get '/', to: 'manage#dashboard', as: :manage_dashboard
   end

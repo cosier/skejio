@@ -20,4 +20,8 @@ class Office < ActiveRecord::Base
   validates_presence_of :location
 
   scope :business, ->(business){ where business_id: business.id  }
+
+  def display_name
+    "#{business.display_name} - #{name}"
+  end
 end

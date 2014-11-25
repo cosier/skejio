@@ -12,10 +12,28 @@ class ManageController < SecureController
   end
 
   def show_twilio_account
+    @current_sidebar = :dashboard
     @account = Skej::Twilio.sub_account(params[:sid])
   end
 
+  def show_test_client
+    @numbers = Number.all
+    @current_sidebar = :simulator
+
+    @twilio_token = create_twilio_capability
+  end
+
   private
+
+  def create_twilio_capability
+    Rails.cache.fetch "twilio_capability_for_#{current_user.id}_v1", :expires_in => 1.hour do
+      app_sid = Skej::Twilio.application.sid
+      capability = Skej::Twilio.create_capability
+      capability.allow_client_outgoing app_sid
+      capability.allow_client_incoming "simulator-#{current_user}"
+      capability.generate
+    end
+  end
 
   def ensure_super_powers!
     unless current_user.roles? :super_admin

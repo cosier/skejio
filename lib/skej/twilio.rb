@@ -6,6 +6,15 @@ module Skej
 
     class << self
 
+      def application
+        if Rails.env.production?
+          friendly_name = "schedule_planner_production"
+        else
+          friendly_name = "schedule_planner_dev"
+        end
+        client.account.applications.list(friendly_name: friendly_name).first
+      end
+
       # Returns a newly purchased number's
       # sid
       # number
@@ -41,6 +50,10 @@ module Skej
       def create_sub_account(business)
         raise "Business must not be nil" if business.nil?
         client.accounts.create(:friendly_name => "#{business.slug}-#{business.id}", status: 'active')
+      end
+
+      def create_capability(opts = {})
+        ::Twilio::Util::Capability.new opts[:sid] || ENV['TWILIO_ACCOUNT_SID'], opts[:auth_token] || ENV['TWILIO_AUTH_TOKEN']
       end
 
       # Lazy load the Twilio REST client

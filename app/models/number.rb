@@ -28,4 +28,8 @@ class Number < ActiveRecord::Base
   validates_presence_of :sub_account
   validates_presence_of :sid
 
+  def display_name
+    org = (office and office.display_name) || sub_account.business.display_name
+    "#{org} / #{phone_number}"
+  end
 end

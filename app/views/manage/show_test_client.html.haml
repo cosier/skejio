@@ -1,0 +1,33 @@
+%h1 Test Client— Web RTC
+%span.muted /— Chrome is recommended.
+
+%hr/
+= simple_form_for(:simulator) do |f|
+  .input-group
+    %label{for: ""} Business / Office Number:
+    .controls
+      = f.collection_select :call_number, @numbers, :phone_number, :display_name, {}, class: 'select2 selectpicker'
+
+  .simulator-box
+
+
+- content_for :stylesheets do
+  = stylesheet_link_tag 'simulator/main'
+
+- content_for :javascript do
+  = javascript_include_tag '//static.twilio.com/libs/twiliojs/1.2/twilio.min.js' 
+  = javascript_include_tag 'simulator/main'
+  :coffeescript
+    $ -> 
+      window.simulator = new SimulatorView
+        twilio_token: "#{@twilio_token}"
+
+      $('.simulator-box').html(simulator.render().el)
+      $('select').selectpicker
+        width: '100%'
+    
+
+      
+    
+
+

@@ -9,6 +9,8 @@ Rails.application.config.assets.precompile += %w(
   business/main.css
   settings/main.js
   settings/main.css
+  simulator/main.js
+  simulator/main.css
   super/main.css
   super/manage_businesses.css
 )

@@ -1,0 +1,33 @@
+.action-show_test_client {
+  .input-group {
+    display:block;
+    width:100%;
+  }
+
+  .bootstrap-select {
+    min-width:100%;
+    max-width:100%;
+  }
+
+  .simulator-box {
+    margin-top:30px;
+  }
+  .tab-pane {
+    padding:14px;
+  }
+  .nav-tabs a {
+    font-size: 20px;
+  }
+
+  .message-log {
+    border:1px solid #e1e1e1;
+    min-height:100px;
+  }
+
+  .send-a-message {
+    border:1px solid #e1e1e1;
+    display:block;
+    width:100%;
+    margin-bottom:10px;
+  }
+}

@@ -1,0 +1,24 @@
+/ Nav tabs
+%ul.nav.nav-tabs{:role => "tablist"}
+
+  %li.active{:role => "presentation"}
+    %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#sms", :role => "tab"} SMS
+
+  %li{:role => "presentation"}
+    %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#voice", :role => "tab"} VOICE
+
+/ Tab panes
+.tab-content
+  #sms.tab-pane.active{:role => "tabpanel"}
+    .row
+      .col-sm-6
+        %h5 Send a Message
+        %input.send-a-message{placeholder: "10:00am please!"}
+        .btn.btn-save.btn-default
+          Send
+      .col-sm-6
+        %h5 Message Log
+        .message-log
+
+  #voice.tab-pane{:role => "tabpanel"}
+    VOICE
