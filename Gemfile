@@ -91,6 +91,8 @@ gem "bower-rails", "~> 0.9.1"
 # Natural language processing
 gem 'chronic'
 
+gem 'statesman'
+
 # Add bool conversion
 gem 'wannabe_bool'
 
