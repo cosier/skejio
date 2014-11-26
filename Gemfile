@@ -47,9 +47,6 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # For awesome fonts
 gem "font-awesome-rails"
 
-# Use unicorn as the app server
-gem 'unicorn'
-
 # Application ENV configurator
 gem 'figaro'
 
@@ -99,6 +96,7 @@ gem 'wannabe_bool'
 
 # Use evented thin server
 gem 'thin'
+gem 'request_store'
 
 group :development, :test do
   # Enable pry and
