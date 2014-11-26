@@ -9,9 +9,15 @@
 #  updated_at  :datetime
 #
 
-class Session < ActiveRecord::Base
+class SchedulerSession < ActiveRecord::Base
+  include Statesman::Adapters::ActiveRecordQueries
+
+  has_many :scheduler_session_transitions
 
   validates_uniqueness_of :customer_id, :scope => :business_id
+
+  # expose the state machine more naturally
+  delegate :current_state, :trigger!, :available_events, to: :state_machine
 
   class << self
     def load(customer, business)
@@ -30,8 +36,20 @@ class Session < ActiveRecord::Base
       # seshion is now ready for use!
       sesh
     end
+
+    def transition_class
+      SessionTransition
+    end
+
+    def initial_state
+      :handshake
+    end
   end
 
+
+  def state_machine
+    SessionStateMachine.new(self, transition_class: SessionTransition)
+  end
 
   private
 
