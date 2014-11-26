@@ -22,9 +22,8 @@
     %tr.spacer
       %td{colspan:100}
     - @system_logs.each_with_index do |log, index|
-      - if index.odd?
-        %tr.spacer
-          %td{colspan:100}
+      %tr.spacer
+        %td{colspan:100}
       %tr.entry
         %td.id= "##{log.id}"
         %td.business= log.business.display_name
