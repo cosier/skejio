@@ -21,4 +21,3 @@
         .message-log
 
   #voice.tab-pane{:role => "tabpanel"}
-    VOICE
