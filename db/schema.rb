@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141126060221) do
+ActiveRecord::Schema.define(version: 20141126062629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,17 @@ ActiveRecord::Schema.define(version: 20141126060221) do
     t.text     "billing_address"
     t.boolean  "is_listed",       default: true
     t.boolean  "is_active",       default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "customers", force: true do |t|
+    t.string   "phone_number"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.boolean  "sms_verified",      default: false
+    t.boolean  "voice_verified",    default: false
+    t.string   "verification_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
