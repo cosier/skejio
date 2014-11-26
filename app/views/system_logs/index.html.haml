@@ -1,4 +1,3 @@
-%p#notice= notice
 %ol.breadcrumb
   %li
     = link_to 'System Logs', system_logs_path
@@ -8,20 +7,11 @@
 
 
 %table.table.table-striped
-  %thead
-    %tr
-      %th ID
-      %th Type
-      %th Message
-      %th Data
-      %th Time
-      %th.actions{:colspan => "3"}
-        %i.fa.fa-cogs
   %tbody
     - if @system_logs.empty?
       %tr
         %td.muted{:colspan => "100"}
-          Nothing has happened.
+          Nothing has happened yet...
 
     - @system_logs.each do |log|
       %tr
@@ -32,3 +22,5 @@
           = link_to 'Show',    system_log_path(@business, log), class: 'btn btn-default btn-xs'
           = link_to 'Edit',    edit_system_log_path(@business, log), class: 'btn btn-warning btn-xs'
           = link_to 'Destroy', business_number_path(@business, log), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs'
+%hr/
+= link_to 'Clear Logs', clear_system_logs_path, class: 'btn btn-danger btn-xs pull-right'

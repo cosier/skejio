@@ -9,6 +9,11 @@ class SystemLogsController < ManageController
   def show
   end
 
+  def clear_logs
+    SystemLog.destroy_all
+    redirect_to system_logs_path, notice: 'System Logs Cleared'
+  end
+
   private
 
   def set_current_sidebar

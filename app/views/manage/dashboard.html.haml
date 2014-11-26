@@ -20,7 +20,14 @@
           %tr
             %td= account.friendly_name
             %td= account.sid
-            %td= account.incoming_phone_numbers.list.count
+            %td
+              - numbers = account.incoming_phone_numbers.list
+              - if numbers.empty?
+                0
+              - numbers.each do |num|
+                .number
+                  = num.phone_number
+
             %td= account.status
             %td
               = link_to 'View', show_twilio_account_path(sid: account.sid), class: 'btn btn-xs btn-default'
