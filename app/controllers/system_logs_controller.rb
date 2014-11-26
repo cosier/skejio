@@ -3,6 +3,7 @@ class SystemLogsController < ManageController
   before_filter :set_current_sidebar
 
   def index
+    @system_logs = @system_logs.order(id: :desc)
     respond_with(@business, @system_logs)
   end
 
@@ -11,7 +12,12 @@ class SystemLogsController < ManageController
 
   def clear_logs
     SystemLog.destroy_all
-    redirect_to system_logs_path, notice: 'System Logs Cleared'
+    redirect_to system_logs_path, notice: 'System Logs Cleared— Have a nice day!'
+  end
+
+  def clear_sessions
+    Session.destroy_all
+    redirect_to system_logs_path, notice: 'Customer Session(s) Cleared— Have a nice day!'
   end
 
   private

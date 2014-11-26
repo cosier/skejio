@@ -6,21 +6,56 @@
 %br/
 
 
-%table.table.table-striped
+%table.table
   %tbody
+    %thead
+      %th ID
+      %th Business
+      %th Customer
+      %th Inbound Number
+      %th Time
     - if @system_logs.empty?
       %tr
         %td.muted{:colspan => "100"}
           Nothing has happened yet...
 
-    - @system_logs.each do |log|
-      %tr
-        %td= log.id
-        %td= log.id
-        %td= log.id
-        %td.actions
-          = link_to 'Show',    system_log_path(@business, log), class: 'btn btn-default btn-xs'
-          = link_to 'Edit',    edit_system_log_path(@business, log), class: 'btn btn-warning btn-xs'
-          = link_to 'Destroy', business_number_path(@business, log), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs'
+    %tr.spacer
+      %td{colspan:100}
+    - @system_logs.each_with_index do |log, index|
+      - if index.odd?
+        %tr.spacer
+          %td{colspan:100}
+      %tr.entry
+        %td.id= "##{log.id}"
+        %td.business= log.business.display_name
+        %td.customer= log.customer.display_name
+        %td.inbound= log.to
+        %td.time
+          = time_ago_in_words log.created_at
+          ago
+      %tr.facts
+        %td{colspan: 100}
+          .row
+            .col-sm-1
+              Actions:
+            .col-sm-11
+              - log.facts.each_with_index do |fact, index|
+                .fact.row
+                  .col.col-md-1.index
+                    = index + 1
+                  .col.col-md-2.title
+                    = fact.title
+                    \:
+                    = fact.type
+                  .col.col-md-6.title= fact.payload
+
 %hr/
-= link_to 'Clear Logs', clear_system_logs_path, class: 'btn btn-danger btn-xs pull-right'
+.btn-group.pull-right
+  = link_to 'Reset Sessions', 
+    clear_sessions_system_logs_path, 
+    class: 'btn btn-warning btn-sm', 
+    data: { confirm: "Are you sure you want to clear All SESSIONS?" }
+  = link_to 'Reset Logs', 
+    clear_system_logs_path, 
+    class: 'btn btn-danger btn-sm', 
+    data: { confirm: "Are you sure you want to clear All LOGS?" }

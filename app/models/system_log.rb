@@ -17,4 +17,20 @@
 #
 
 class SystemLog < ActiveRecord::Base
+  belongs_to :business
+  belongs_to :customer
+  belongs_to :session
+
+  has_many :facts
+
+  class << self
+
+    def fact(opts = {})
+      log = RequestStore.store[:log]
+      raise 'No SystemLog Found / Available for this Request' if log.nil?
+      log.facts.create! opts
+    end
+
+  end
+
 end

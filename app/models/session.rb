@@ -15,7 +15,24 @@ class Session < ActiveRecord::Base
 
   class << self
     def load(customer, business)
-      Session.first_or_create(customer_id: customer.id, business_id: business.id)
+      sesh = false
+      query = { customer_id: customer.id, business_id: business.id }
+
+      existing = Session.where(query).first
+      if existing
+        sesh = existing
+        SystemLog.fact(title: 'session_loaded', payload: "SESSION:#{sesh.id}")
+      else
+        sesh = Session.create! query
+        SystemLog.fact(title: 'session_created', payload: "SESSION:#{sesh.id}")
+      end
+
+      # seshion is now ready for use!
+      sesh
     end
   end
+
+
+  private
+
 end

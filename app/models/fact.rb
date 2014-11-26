@@ -14,6 +14,6 @@
 class Fact < ActiveRecord::Base
   belongs_to :system_log
   
-  enum type: %w(response)
+  enum type: %w(response request transition)
 
 end
