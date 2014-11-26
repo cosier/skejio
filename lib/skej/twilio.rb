@@ -32,6 +32,11 @@ module Skej
         response
       end
 
+      def update_number(opts)
+        number = sub_account(opts[:sub_account_sid]).incoming_phone_numbers.get(opts[:sid])
+        number.update(opts)
+      end
+
       # Return a list of Available Incoming Numbers,
       # based on the search params given
       def search_available_numbers(business, search_params = {})

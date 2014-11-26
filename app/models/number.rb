@@ -28,8 +28,21 @@ class Number < ActiveRecord::Base
   validates_presence_of :sub_account
   validates_presence_of :sid
 
+  after_save :update_remote_source
+
   def display_name
     org = (office and office.display_name) || sub_account.business.display_name
     "#{org} / #{phone_number}"
+  end
+
+  def update_remote_source
+    Skej::Twilio.update_number(sid: sid,
+                               sub_account_sid: sub_account.sid,
+                               sms_url: sms_url, 
+                               voice_url: voice_url, 
+                               status_url: status_url,
+                               friendly_name: friendly_name, 
+                               sms_method: sms_method, 
+                               voice_method: voice_method)
   end
 end
