@@ -14,6 +14,12 @@
 %p
   %strong SID:
   = @number.sid
+%p
+  %strong SMS Endpoint:
+  = @number.sms_url
+%p
+  %strong Voice Endpoint:
+  = @number.voice_url
 
 %hr
 = link_to 'Back', business_numbers_path(@business), class: 'btn btn-default'
