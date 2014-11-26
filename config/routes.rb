@@ -15,6 +15,11 @@ Rails.application.routes.draw do
     get '/', to: 'manage#dashboard', as: :manage_dashboard
   end
 
+  controller :twilio do
+    get '/twilio/voice', to: :voice, as: :twilio_voice
+    get '/twilio/sms',   to: :sms, as: :twilio_sms
+  end
+
   get '/businesses/:id/pending', to: 'businesses#pending', as: :business_pending
   get '/businesses/:id/dashboard', to: 'businesses#dashboard', as: :business_dashboard
 
