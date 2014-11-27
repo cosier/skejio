@@ -6,29 +6,19 @@ class TwilioController < ApplicationController
   before_filter :register_session
 
   def voice
-    twiml = Twilio::TwiML::Response.new do |r|
-      message = "Sorry we're not available at the moment, please try again later."
-      SystemLog.fact(title: 'audio_reply', payload: message)
-      r.Say message
-    end
-
-    render xml: twiml.text
+    render xml: Skej::Reply.voice({session: session, input: params.dup})
   end
 
   def sms
-    SystemLog.fact(title: 'received_msg_body', payload: params['Body'])
-
-    twiml = Twilio::TwiML::Response.new do |r|
-      message = "Hello, we'll be right back."
-
-      SystemLog.fact(title: 'text_reply', payload: message)
-      r.Message message
-    end
-
-    render xml: twiml.text
+    reply = Skej::Reply.sms({ session: session, input: params.dup})
+    render xml: reply
   end
   
   private
+
+  def session
+    @session
+  end
   
   def register_business
     number = Number.where(phone_number: params['To']).first
@@ -43,7 +33,7 @@ class TwilioController < ApplicationController
   end
 
   def register_session
-    @session = Session.load(@customer, @business)
+    @session = SchedulerSession.load(@customer, @business)
     @log.update(session_id: @session.id)
   end
 

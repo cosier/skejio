@@ -30,10 +30,10 @@ class Customer < ActiveRecord::Base
       existing = Customer.where(query).first
       if existing
         customer = existing
-        SystemLog.fact(title: 'customer_loaded', payload: "CUSTOMER:#{customer.id}")
+        SystemLog.fact(title: 'customer_loaded', payload: "##{customer.id}")
       else
         customer = Customer.create! query
-        SystemLog.fact(title: 'customer_created', payload: "CUSTOMER:#{customer.id}")
+        SystemLog.fact(title: 'customer_created', payload: "##{customer.id}")
       end
 
       customer
@@ -49,7 +49,7 @@ class Customer < ActiveRecord::Base
     name_sum << first_name if first_name.present?
     name_sum << " " if first_name.present? and last_name.present?
     name_sum << last_name if last_name.present?
-    name_sum << "Unknown(#{id})" if name_sum.empty?
+    name_sum << "Unknown(##{id})" if name_sum.empty?
     name_sum
   end
 

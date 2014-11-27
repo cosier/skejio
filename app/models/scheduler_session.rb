@@ -24,13 +24,13 @@ class SchedulerSession < ActiveRecord::Base
       sesh = false
       query = { customer_id: customer.id, business_id: business.id }
 
-      existing = Session.where(query).first
+      existing = SchedulerSession.where(query).first
       if existing
         sesh = existing
-        SystemLog.fact(title: 'session_loaded', payload: "SESSION:#{sesh.id}")
+        SystemLog.fact(title: 'scheduler_session_loaded', payload: "##{sesh.id}")
       else
-        sesh = Session.create! query
-        SystemLog.fact(title: 'session_created', payload: "SESSION:#{sesh.id}")
+        sesh = SchedulerSession.create! query
+        SystemLog.fact(title: 'scheduler_session_created', payload: "##{sesh.id}")
       end
 
       # seshion is now ready for use!
@@ -48,7 +48,7 @@ class SchedulerSession < ActiveRecord::Base
 
 
   def state_machine
-    SessionStateMachine.new(self, transition_class: SessionTransition)
+    SchedulerSessionStateMachine.new(self, transition_class: SchedulerSessionTransition)
   end
 
   private
