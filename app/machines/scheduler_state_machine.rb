@@ -12,20 +12,28 @@ class SchedulerStateMachine < BaseMachine
   # loopback state
   state :retry
 
+
+  #############################################################
+  # Global before / after hooks
+  
   before_transition do |session, transition|
     log "transitioning from: #{session.current_state}"
   end
 
   after_transition do |session, transition|
     log "transitioned to: #{session.current_state}"
-    session.clear_twiml
+    session.install_twiml_reply
   end
+
+  #############################################################
+  # Specific transformation and transition logic
 
   after_transition :to => :initial_decode do |session, transition|
     if session.type == :sms
-      msg = Chronic.parse(session.input[:Body])
-      if msg
-        log "parsed date: #{msg}"
+      log "sms session detected— engaging Chronic.parse(#{session.input[:Body]})"
+      date = Chronic.parse(session.input[:Body])
+      if date
+        log "date extracted: #{date}"
       else
         log "no valid date detected: #{session.input[:Body]}"
       end
@@ -33,11 +41,11 @@ class SchedulerStateMachine < BaseMachine
       log "voice call initiate date decoding is not supported"
     end
 
-    transition_to! :customer_registration
+    session.transition_to! :customer_registration
   end
 
   after_transition :to => :customer_registration do |session, transition|
-    session.install_twiml_reply(:initial_decode)
+    session.install_twiml_reply
   end
 
   after_transition :to => :office_selection do |session, transition|
@@ -62,8 +70,8 @@ class SchedulerStateMachine < BaseMachine
 
   # Retry catch all and loop back kicker
   after_transition :to => :retry do |session, transition|
-    log "retrying -> #{session.state_machine.last_state}"
-    transition_to! session.last_transition.to_state
+    log "retrying -> #{session.state_machine.last_transition.to_state}"
+    session.transition_to! session.state_machine.last_transition.to_state
   end
 
 end

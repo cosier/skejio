@@ -32,7 +32,7 @@ class TwilioController < ApplicationController
   def register_session
     @session = SchedulerSession.load(@customer, @business)
     @log.update(session_id: @session.id)
-
+    @session.type = params[:action].to_sym
     @session.input = params.dup
     @session.state_machine.process_state!
   end

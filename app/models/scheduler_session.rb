@@ -22,7 +22,7 @@ class SchedulerSession < ActiveRecord::Base
   validates_uniqueness_of :customer_id, :scope => :business_id
 
   # expose the state machine more naturally
-  delegate :current_state, :trigger!, :available_events, to: :state_machine
+  delegate :current_state, :transition_to!, :trigger!, :available_events, to: :state_machine
 
   enum type: [:voice, :sms]
 
@@ -62,6 +62,17 @@ class SchedulerSession < ActiveRecord::Base
   def clear_twiml
     self.twiml_sms = Skej::Reply::SMSReply.new.twiml
     self.twiml_voice = Skej::Reply::VoiceReply.new.twiml
+  end
+
+  def install_twiml_reply
+    case self.type.to_sym
+    when :sms
+      self.twiml_sms = 
+        Skej::Reply::SMSReply.new(state: self.current_state, input: input).twiml
+    when :sms
+      self.twiml_voice = 
+        Skej::Reply::VoiceReply.new(state: self.current_state, input: input).twiml
+    end
   end
 
   private
