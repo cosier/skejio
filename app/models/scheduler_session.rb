@@ -11,6 +11,7 @@
 
 class SchedulerSession < ActiveRecord::Base
   include Statesman::Adapters::ActiveRecordQueries
+  has_paper_trail
 
   has_many :scheduler_session_transitions
 
@@ -25,6 +26,7 @@ class SchedulerSession < ActiveRecord::Base
       query = { customer_id: customer.id, business_id: business.id }
 
       existing = SchedulerSession.where(query).first
+
       if existing
         sesh = existing
         SystemLog.fact(title: 'scheduler_session_loaded', payload: "##{sesh.id}")

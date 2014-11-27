@@ -64,7 +64,6 @@ gem 'twilio-ruby', '~> 3.12'
 gem 'rollbar', '~> 1.2.6'
 
 # Model auditing and record keeping
-gem 'paper_trail', '~> 3.0.6'
 
 # UI/Form handling
 gem 'simple_form'
@@ -92,6 +91,7 @@ gem "bower-rails", "~> 0.9.1"
 gem 'chronic'
 
 gem 'statesman'
+gem 'paper_trail', '~> 3.0.6'
 
 # Add bool conversion
 gem 'wannabe_bool'
