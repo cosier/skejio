@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: sessions
+# Table name: scheduler_sessions
 #
 #  id          :integer          not null, primary key
 #  business_id :integer
@@ -29,10 +29,10 @@ class SchedulerSession < ActiveRecord::Base
 
       if existing
         sesh = existing
-        SystemLog.fact(title: 'scheduler_session_loaded', payload: "##{sesh.id}")
+        SystemLog.fact(title: 'scheduler_session', payload: "loaded -> SchedulerSession:###{sesh.id}")
       else
         sesh = SchedulerSession.create! query
-        SystemLog.fact(title: 'scheduler_session_created', payload: "##{sesh.id}")
+        SystemLog.fact title: 'scheduler_session', payload: "created -> SchedulerSession:##{id}"
       end
 
       # seshion is now ready for use!
@@ -40,7 +40,7 @@ class SchedulerSession < ActiveRecord::Base
     end
 
     def transition_class
-      SessionTransition
+      ::SchedulerSessionTransition
     end
 
     def initial_state
@@ -50,7 +50,7 @@ class SchedulerSession < ActiveRecord::Base
 
 
   def state_machine
-    SchedulerSessionStateMachine.new(self, transition_class: SchedulerSessionTransition)
+    ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
   end
 
   private
