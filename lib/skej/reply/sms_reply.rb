@@ -3,14 +3,18 @@ module Skej
     class SMSReply < BaseReply
 
       def build!
+
+        twiml = build_twiml(@session)
+        twiml.text
+      end
+
+      def build_twiml(opts = {})
         twiml = ::Twilio::TwiML::Response.new do |r|
           message = "Hello, we'll be right back."
 
-          SystemLog.fact(title: 'text_reply', payload: message)
+          SystemLog.fact(title: 'reply:text', payload: message)
           r.Message message
         end
-
-        twiml.text
       end
 
     end
