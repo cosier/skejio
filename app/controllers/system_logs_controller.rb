@@ -3,7 +3,7 @@ class SystemLogsController < ManageController
   before_filter :set_current_sidebar
 
   def index
-    @system_logs = @system_logs.order(id: :desc)
+    @system_logs = @system_logs.order(id: :desc).includes(:facts).limit(10)
     respond_with(@business, @system_logs)
   end
 
