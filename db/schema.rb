@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141127035025) do
+ActiveRecord::Schema.define(version: 20141127041340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,16 +137,13 @@ ActiveRecord::Schema.define(version: 20141127035025) do
   end
 
   create_table "scheduler_session_transitions", force: true do |t|
-    t.string   "to_state",                  null: false
-    t.text     "metadata",   default: "{}"
-    t.integer  "sort_key",                  null: false
-    t.integer  "session_id",                null: false
+    t.string   "to_state",                            null: false
+    t.text     "metadata",             default: "{}"
+    t.integer  "sort_key",                            null: false
+    t.integer  "scheduler_session_id",                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "scheduler_session_transitions", ["session_id"], name: "index_scheduler_session_transitions_on_session_id", using: :btree
-  add_index "scheduler_session_transitions", ["sort_key", "session_id"], name: "index_scheduler_session_transitions_on_sort_key_and_session_id", unique: true, using: :btree
 
   create_table "scheduler_sessions", force: true do |t|
     t.integer  "business_id"
