@@ -13,6 +13,8 @@ class SchedulerSession < ActiveRecord::Base
   include Statesman::Adapters::ActiveRecordQueries
   has_paper_trail
 
+  attr_accessor :input, :twiml_sms, :twiml_voice
+
   has_many :scheduler_session_transitions
 
   validates_uniqueness_of :customer_id, :scope => :business_id
@@ -32,7 +34,7 @@ class SchedulerSession < ActiveRecord::Base
         SystemLog.fact(title: 'scheduler_session', payload: "loaded -> SchedulerSession:###{sesh.id}")
       else
         sesh = SchedulerSession.create! query
-        SystemLog.fact title: 'scheduler_session', payload: "created -> SchedulerSession:##{id}"
+        SystemLog.fact title: 'scheduler_session', payload: "created -> SchedulerSession:##{sesh.id}"
       end
 
       # seshion is now ready for use!
@@ -51,6 +53,11 @@ class SchedulerSession < ActiveRecord::Base
 
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
+  end
+
+  def clear_twiml
+    self.twiml_sms = Skej::Reply::SMSReply.new.twiml
+    self.twiml_voice = Skej::Reply::VoiceReply.new.twiml
   end
 
   private

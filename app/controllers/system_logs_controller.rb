@@ -16,7 +16,7 @@ class SystemLogsController < ManageController
   end
 
   def clear_sessions
-    Session.destroy_all
+    SchedulerSession.destroy_all
     redirect_to system_logs_path, notice: 'Customer Session(s) Cleared— Have a nice day!'
   end
 
