@@ -7,6 +7,8 @@
 #  customer_id :integer
 #  created_at  :datetime
 #  updated_at  :datetime
+#  meta        :text
+#  type        :integer
 #
 
 class SchedulerSession < ActiveRecord::Base
@@ -21,6 +23,8 @@ class SchedulerSession < ActiveRecord::Base
 
   # expose the state machine more naturally
   delegate :current_state, :trigger!, :available_events, to: :state_machine
+
+  enum type: [:voice, :sms]
 
   class << self
     def load(customer, business)

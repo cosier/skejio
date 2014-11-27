@@ -2,13 +2,13 @@
 #
 # Table name: scheduler_session_transitions
 #
-#  id         :integer          not null, primary key
-#  to_state   :string(255)      not null
-#  metadata   :text             default("{}")
-#  sort_key   :integer          not null
-#  session_id :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
+#  id                   :integer          not null, primary key
+#  to_state             :string(255)      not null
+#  metadata             :text             default("{}")
+#  sort_key             :integer          not null
+#  scheduler_session_id :integer          not null
+#  created_at           :datetime
+#  updated_at           :datetime
 #
 
 class SchedulerSessionTransition < ActiveRecord::Base

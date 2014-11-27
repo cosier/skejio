@@ -42,10 +42,8 @@
                 .fact.row
                   .col.col-md-1.index
                     = index + 1
-                  .col.col-md-2.title
-                    = fact.title
-                    \:
-                    = fact.type
+                  .col.col-md-3.title
+                    %strong= fact.title
                   .col.col-md-6.title= fact.payload
 
 %hr/

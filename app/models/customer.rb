@@ -30,10 +30,10 @@ class Customer < ActiveRecord::Base
       existing = Customer.where(query).first
       if existing
         customer = existing
-        SystemLog.fact(title: 'customer_loaded', payload: "##{customer.id}")
+        SystemLog.fact(title: 'customer_loaded', payload: customer.display_name)
       else
         customer = Customer.create! query
-        SystemLog.fact(title: 'customer_created', payload: "##{customer.id}")
+        SystemLog.fact(title: 'customer_created', payload: customer.display_name)
       end
 
       customer

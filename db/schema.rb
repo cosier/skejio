@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141127041340) do
+ActiveRecord::Schema.define(version: 20141127121719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "break_offices", force: true do |t|
     t.integer  "break_shift_id"
@@ -150,6 +151,8 @@ ActiveRecord::Schema.define(version: 20141127041340) do
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "meta"
+    t.integer  "type"
   end
 
   create_table "services", force: true do |t|
