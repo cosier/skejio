@@ -66,10 +66,6 @@ class BaseMachine
     transition_to target
   end
 
-  def think!
-    @session.thinker
-  end
-
   private
 
   def current_state_priority

@@ -13,7 +13,6 @@ class BaseSession < ActiveRecord::Base
     :can_transition_to?, 
     :transition_next!, 
     :transition_to!, 
-    :trigger!, 
     :available_events,
     :think!,
     to: :state_machine
@@ -73,6 +72,10 @@ class BaseSession < ActiveRecord::Base
 
   def process_logic
     self.send "process_#{device_type.to_s}_logic"
+  end
+
+  def think!
+    logic_engine(device_type.to_sym).thinker
   end
 
   private

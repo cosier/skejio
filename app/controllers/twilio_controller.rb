@@ -4,7 +4,7 @@ class TwilioController < ApplicationController
   before_filter :register_business
   before_filter :register_customer
   before_filter :register_session
-  #before_filter :prepare_twiml
+  before_filter :prepare_twiml
 
   def voice
     log @twiml.text
