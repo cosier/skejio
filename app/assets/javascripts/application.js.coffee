@@ -21,6 +21,7 @@
 #= require vendor/jquery.rumble
 #= require twitter/bootstrap
 #= require bower_components/datetimepicker/jquery.datetimepicker
+#= require vkbeautify
 #
 #= require underscore
 #= require backbone

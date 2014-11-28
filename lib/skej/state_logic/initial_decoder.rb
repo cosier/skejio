@@ -15,11 +15,11 @@ module Skej
 
 
       def parse_date_and_store!
-        log "sms session detected— engaging Chronic.parse(#{@session.input[:Body]})"
+        log "sms session detected— engaging Chronic.parse(<strong>#{@session.input[:Body]}</strong>)"
         date = Chronic.parse(@session.input[:Body])
 
         if date
-          log "date extracted: #{date}"
+          log "date extracted: <strong>#{date}</strong>"
           @session.store! :message_date, date
         else
           log "no valid date detected: #{session.input[:Body]}"

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       collection do
         get '/clear/logs', to: :clear_logs, as: :clear
         get '/clear/sessions', to: :clear_sessions, as: :clear_sessions
+        get '/clear/everything', to: :clear_everything, as: :clear_everything
       end
     end
 

@@ -52,7 +52,7 @@ class BaseSession < ActiveRecord::Base
   end
 
   def store!(key, value)
-    SystemLog.fact(title: self.class.name.underscore, payload:"store!(#{key},#{value})")
+    SystemLog.fact(title: self.class.name.underscore, payload:"saving_session_metadata( <strong>#{key}</strong>, <strong>#{value}</strong> )")
     col = store
     col[key] = value
     @store = col

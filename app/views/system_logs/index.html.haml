@@ -44,15 +44,34 @@
                     = index + 1
                   .col.col-md-3.title
                     %strong= fact.title
-                  .col.col-md-8.payload= fact.payload
+                  .col.col-md-8.payload
+                    - if fact.payload.include? "xml"
+                      %textarea{disabled: true}
+                        = fact.payload
+                    - else
+                      = fact.payload.html_safe
 
 %hr/
 .btn-group.pull-right
   = link_to 'Reset Sessions', 
     clear_sessions_system_logs_path, 
     class: 'btn btn-warning btn-sm', 
-    data: { confirm: "Are you sure you want to clear All SESSIONS?" }
+    data: { confirm: "Are you sure you want to clear all Sessions?" }
+
   = link_to 'Reset Logs', 
     clear_system_logs_path, 
     class: 'btn btn-danger btn-sm', 
-    data: { confirm: "Are you sure you want to clear All LOGS?" }
+    data: { confirm: "Are you sure you want to clear all Logs?" }
+
+  = link_to 'Clear Everything', 
+    clear_everything_system_logs_path, 
+    class: 'btn btn-info btn-sm', 
+    data: { confirm: "Are you sure you want to clear Everything?" }
+
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $('textarea').each (i, t)->
+        $el = $(t)
+        $el.val vkbeautify.xml($el.val())
+        $el.css('min-height', ($el.val().match(/\n/g).length + 1) * 17)

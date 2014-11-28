@@ -46,6 +46,13 @@ body.system_logs {
 
       .payload {
         text-transform:uppercase;
+
+        textarea {
+          border:none;
+          background:none;
+          width:100%;
+          resize:vertical;
+        }
       }
 
     }
