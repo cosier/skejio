@@ -73,7 +73,7 @@ class SchedulerStateMachine < BaseMachine
       log "TRANSITION APPROVED — current_state(#{session.current_state}) is complete"
       true
     else
-      log "TRANSITION DENIED — current_state(#{session-.current_state}) not completed"
+      log "TRANSITION DENIED — current_state(#{session.current_state}) not completed"
       false
     end
   end

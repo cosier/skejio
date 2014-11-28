@@ -20,18 +20,17 @@ class BaseSession < ActiveRecord::Base
   class << self
 
     def load(customer, business)
-      target = self.class
       sesh   = false
       query  = { customer_id: customer.id, business_id: business.id }
 
-      existing = target.where(query).first
-      log_title = self.class.name.underscore
+      existing = self.where(query).first
+      log_title = self.name.underscore
       
       if existing
         sesh = existing
         SystemLog.fact(title: log_title, payload: "loaded -> ID:##{sesh.id}")
       else
-        sesh = target.create! query
+        sesh = self.create! query
         SystemLog.fact title: log_title, payload: "created -> ID:##{sesh.id}"
       end
 
