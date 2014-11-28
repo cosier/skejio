@@ -22,6 +22,7 @@ class SchedulerStateMachine < BaseMachine
   after_transition do |session, transition|
     key = session.current_state
     log "transitioned to: #{key}"
+    session.process_logic
   end
 
   # Guard every transition with a default hash lookup for :complete

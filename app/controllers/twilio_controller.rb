@@ -43,7 +43,6 @@ class TwilioController < ApplicationController
   def prepare_twiml
     SystemLog.fact(title: 'controller', payload: "rendering TwiML:#{session.current_state} response")
     @twiml = session.send("process_#{params[:action]}_logic")
-    
   end
 
   def attach_log_to_request

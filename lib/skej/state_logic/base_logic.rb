@@ -2,6 +2,19 @@ module Skej
   module StateLogic
     class BaseLogic
       
+      @@SKIP_PAYLOAD = {}
+      @@DONT_THINK = {}
+
+      class << self
+        def skip_payload
+          @@SKIP_PAYLOAD[self.name.underscore] = true
+        end
+
+        def dont_think
+          @@DONT_THINK[self.name.underscore] = true
+        end
+      end
+
       def initialize(opts)
         @opts = opts
         @device = opts[:device]
@@ -9,18 +22,31 @@ module Skej
       end
 
       def process!
-        think
-
-        case @device.to_sym
-        when :sms
-          payload = voice
-        when :voice
-          payload = sms
-        else
-          raise "Unknown device type: #{@device}"
-        end
-
+        thinker
         payload
+      end
+
+      def payload
+        if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
+          log "processing twiml payload"
+
+          # Make the dispatch call to the correct method
+          # (using mapped device terminology for the call convention)
+          self.send(@device.to_s) 
+        else
+          log "skipping twiml payload"
+        end
+      end
+
+      # Parent wrapper around the subclass definition
+      # to provide logging and skipping facilities on the *think* method
+      def thinker
+        if @@DONT_THINK[self.class.name.underscore].nil?
+          log "processing business logic"
+          think
+        else
+          log "skipping business logic"
+        end
       end
 
       def think

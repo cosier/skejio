@@ -62,10 +62,7 @@ class BaseMachine
     state_priority = @@PRIORITY_BY_STATE[state] || 0
     target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
 
-    begin
-      transition_to! target
-    rescue Statesman::GuardFailedError => e
-    end
+    transition_to target
   end
 
   private

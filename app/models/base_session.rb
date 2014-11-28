@@ -63,6 +63,12 @@ class BaseSession < ActiveRecord::Base
     (prev and prev.to_state.to_sym) || :handshake
   end
 
+  def process_logic
+    self.send "process_#{device_type.to_s}_logic"
+  end
+
+  private
+
   def process_sms_logic
     logic_engine(:sms).process!
   end
@@ -70,8 +76,6 @@ class BaseSession < ActiveRecord::Base
   def process_voice_logic
     logic_engine(:voice).process!
   end
-
-  private
   
   def logic_engine(device)
     state = self.current_state
