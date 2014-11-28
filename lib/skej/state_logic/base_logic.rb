@@ -68,7 +68,13 @@ module Skej
       private
 
       def twiml(&block)
-        ::Twilio::TwiML::Response.new(&:block)
+        log "processing twiml block"
+        
+        response = ::Twilio::TwiML::Response.new do |r|
+          block.call(r)
+        end
+
+        response
       end
 
       def log(msg)

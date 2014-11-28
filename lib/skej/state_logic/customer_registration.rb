@@ -7,11 +7,18 @@ module Skej
 
       def sms
         twiml do |r|
-          r.Message "Welcome to #{@session.current_state.titleize}"
+          r.Message """
+          Welcome to the Customer Registration step.
+          This step is currently under construction, please check back soon.
+          """
         end
       end
 
       def voice
+        twiml do |r|
+          r.Say "Welcome to the Customer Registration step"
+          r.Say "This step is currently under construction, please check back soon."
+        end
       end
 
     end
