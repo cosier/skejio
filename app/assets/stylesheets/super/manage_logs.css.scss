@@ -26,7 +26,7 @@ body.system_logs {
   }
   tr.facts {
     overflow:hidden;
-
+    
     td {
       overflow:hidden;
       border-bottom: 2px solid $entry-border;
@@ -42,6 +42,10 @@ body.system_logs {
 
       .index {
         max-width:20px;
+      }
+
+      .payload {
+        text-transform:uppercase;
       }
 
     }

@@ -39,6 +39,12 @@ module Skej
         end
       end
 
+      private
+
+      def log(msg)
+        SystemLog.fact(title: self.class.name.underscore, payload: msg)
+      end
+
     end
   end
 end
