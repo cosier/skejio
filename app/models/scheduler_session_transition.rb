@@ -20,7 +20,7 @@ class SchedulerSessionTransition < ActiveRecord::Base
   after_create :log_creation
 
   def log_creation
-    SystemLog.fact title: 'scheduler_session_transition', payload: "created -> SchedulerSession:##{id}"
+    SystemLog.fact title: 'scheduler_session_transition', payload: "created -> Transition:##{id}"
   end
 
 end

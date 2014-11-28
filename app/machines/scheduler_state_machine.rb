@@ -9,9 +9,6 @@ class SchedulerStateMachine < BaseMachine
                 :appointment_selection,
                 :finished
 
-  # loopback state
-  state :retry
-
 
   #############################################################
   # Global before / after hooks
@@ -21,12 +18,19 @@ class SchedulerStateMachine < BaseMachine
   end
 
   after_transition do |session, transition|
-    log "transitioned to: #{session.current_state}"
+    key = session.current_state
+    log "transitioned to: #{key}"
     session.install_twiml_reply
   end
 
   #############################################################
   # Specific transformation and transition logic
+
+  after_transition :to => :handshake do |session, transition|
+    log 'Welcome handshaking'
+    session.store! :initial_decode, :complete
+    session.transition_to! :initial_decode
+  end
 
   after_transition :to => :initial_decode do |session, transition|
     if session.type == :sms
@@ -41,14 +45,15 @@ class SchedulerStateMachine < BaseMachine
       log "voice call initiate date decoding is not supported"
     end
 
+    session.store! :initial_decode, :complete
     session.transition_to! :customer_registration
   end
 
   after_transition :to => :customer_registration do |session, transition|
-    session.install_twiml_reply
   end
 
   after_transition :to => :office_selection do |session, transition|
+    log 'Welcome to office_selection not yet implemented'
   end
 
   after_transition :to => :service_selection do |session, transition|
@@ -63,15 +68,21 @@ class SchedulerStateMachine < BaseMachine
   after_transition :to => :finished do |session, transition|
   end
 
-  guard_transition :from => :customer_registration, :to => :office_selection do |object|
-    log 'denying transition to :office_selection — reason: not yet implemented'
-    false
+  guard_transition do |session|
+    if session.store[session.current_state.to_sym] == "complete"
+      log "TRANSITION APPROVED — current_state(#{session.current_state}) is complete"
+      true
+    else
+      log "TRANSITION DENIED — current_state(#{session-.current_state}) not completed"
+      false
+    end
   end
 
   # Retry catch all and loop back kicker
   after_transition :to => :retry do |session, transition|
-    log "retrying -> #{session.state_machine.last_transition.to_state}"
-    session.transition_to! session.state_machine.last_transition.to_state
+    binding.pry
+    log "retrying -> #{session.last_available_state}"
+    session.transition_to! session.last_available_state
   end
 
 end

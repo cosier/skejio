@@ -6,7 +6,8 @@ ruby '2.1.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 gem 'rails_12factor', group: :production
-
+# Error reporting
+gem 'rollbar', group: :production
 gem 'dalli'
 
 
@@ -59,9 +60,6 @@ gem 'bitmask_attributes'
 
 # API toolkits
 gem 'twilio-ruby', '~> 3.12'
-
-# Error reporting
-gem 'rollbar', '~> 1.2.6'
 
 # Model auditing and record keeping
 

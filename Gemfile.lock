@@ -322,7 +322,7 @@ DEPENDENCIES
   rails-backbone!
   rails_12factor
   request_store
-  rollbar (~> 1.2.6)
+  rollbar
   rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
