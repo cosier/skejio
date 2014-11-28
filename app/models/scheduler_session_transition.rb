@@ -13,7 +13,6 @@
 
 class SchedulerSessionTransition < ActiveRecord::Base
   include Statesman::Adapters::ActiveRecordTransition
-  has_paper_trail
  
   belongs_to :scheduler_session, inverse_of: :scheduler_session_transitions
 

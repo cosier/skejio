@@ -4,13 +4,14 @@ class TwilioController < ApplicationController
   before_filter :register_business
   before_filter :register_customer
   before_filter :register_session
+  before_filter :prepare_twiml
 
   def voice
-    render xml: session.twiml_voice.text
+    render xml: @twiml.text
   end
 
   def sms
-    render xml: session.twiml_sms.text
+    render xml: @twiml.text
   end
   
   private
@@ -34,7 +35,13 @@ class TwilioController < ApplicationController
     @log.update(session_id: @session.id)
     @session.device_type = params[:action].to_sym
     @session.input = params.dup
-    @session.state_machine.process_state!
+    @session.process_state!
+  end
+
+  def prepare_twiml
+    SystemLog.fact(title: 'controller', payload: "rendering TwiML:#{session.current_state} response")
+    @twiml = session.send("process_#{params[:action]}_logic")
+    
   end
 
   def log

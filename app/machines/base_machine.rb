@@ -46,6 +46,10 @@ class BaseMachine
 
   end # End class methods
   #################################
+  
+  def transition_next!
+   transition_to! next_state_by_priority 
+  end
 
   # Delegate to the class method
   def log(*args)
@@ -54,22 +58,28 @@ class BaseMachine
 
   # Engage the next state, or retry the current state upon transition failure
   def process_state!
-    begin
-      target = allowed_transitions.select { |s| s != :retry }.first
-      binding.pry
-      transition_to! target
-    rescue Statesman::GuardFailedError, Statesman::TransitionFailedError => e
-      Rails.logger.error(e)
+    state = @object.current_state.to_sym
+    state_priority = @@PRIORITY_BY_STATE[state] || 0
+    target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
 
-      log 'process_state failure: attempting to transition to :retry'
-      if @object.can_transition_to? :retry
-        @object.transition_to! :retry
-      else
-        log 'retry_transition denied: attempting to transition back to :handshake'
-        @object.transition_to! :handshake
-      end
+    begin
+      transition_to! target
+    rescue Statesman::GuardFailedError => e
     end
   end
 
+  private
+
+  def current_state_priority
+    current_priority = @@PRIORITY_BY_STATE[@object.current_state.to_sym]
+    raise "Priority not matched for: #{@object.current_state}" unless current_priority
+    current_priority
+  end
+
+  def next_state_by_priority
+    state = @@STATES_BY_PRIORITY[current_state_priority + 1]
+    raise "Next State not matched for: #{current_state_priority} / #{@object.current_state}" unless state
+    state
+  end
 
 end
