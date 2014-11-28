@@ -9,7 +9,6 @@ class SettingsController < BusinessesController
   before_filter :load_settings, only: [:index, :show]
   
   rescue_from CanCan::AccessDenied do |exception|
-    binding.pry
 
     path = root_path
     Rails.logger.error "User(#{current_user and current_user.display_name}) CanCan::AccessDenied: #{exception.message}"

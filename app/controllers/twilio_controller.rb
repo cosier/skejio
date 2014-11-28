@@ -7,14 +7,12 @@ class TwilioController < ApplicationController
   #before_filter :prepare_twiml
 
   def voice
-    binding.pry
     log @twiml.text
     render xml: @twiml.text
   end
 
   def sms
-    #log @twiml.text
-    binding.pry
+    log @twiml.text
     render xml: @twiml.text
   end
   
