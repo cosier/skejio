@@ -62,7 +62,12 @@ class BaseMachine
     state_priority = @@PRIORITY_BY_STATE[state] || 0
     target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
 
+    log "attempting to transition to: #{target}"
     transition_to target
+  end
+
+  def think!
+    @session.thinker
   end
 
   private

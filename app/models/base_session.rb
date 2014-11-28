@@ -8,7 +8,15 @@ class BaseSession < ActiveRecord::Base
   enum device_type: [:voice, :sms]
 
   # expose the state machine more naturally
-  delegate :current_state, :process_state!, :can_transition_to?, :transition_next!, :transition_to!, :trigger!, :available_events, to: :state_machine
+  delegate :current_state, 
+    :process_state!, 
+    :can_transition_to?, 
+    :transition_next!, 
+    :transition_to!, 
+    :trigger!, 
+    :available_events,
+    :think!,
+    to: :state_machine
 
 
   before_save :update_meta_store

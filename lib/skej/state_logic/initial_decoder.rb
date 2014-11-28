@@ -22,7 +22,7 @@ module Skej
           log "date extracted: <strong>#{date}</strong>"
           @session.store! :message_date, date
         else
-          log "no valid date detected: #{session.input[:Body]}"
+          log "no valid date detected: #{@session.input[:Body]}"
         end
       end
 

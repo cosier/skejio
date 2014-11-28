@@ -54,18 +54,22 @@ module Skej
       end
 
       def sms
-        ::Twilio::TwiML::Response.new do |r|
+        twiml do |r|
           r.Message "Welcome to #{@session.current_state.titleize}"
         end
       end
 
       def voice
-        ::Twilio::TwiML::Response.new do |r|
+        twiml do |r|
           r.Say "Welcome to #{@session.current_state.titleize}"
         end
       end
 
       private
+      
+      def twiml(&block)
+        ::Twilio::TwiML::Response.new(&:block)
+      end
 
       def log(msg)
         SystemLog.fact(title: self.class.name.underscore, payload: msg)
