@@ -1,7 +1,7 @@
 module Skej
   module StateLogic
     class BaseLogic
-      
+
       @@SKIP_PAYLOAD = {}
       @@DONT_THINK = {}
 
@@ -32,7 +32,7 @@ module Skej
 
           # Make the dispatch call to the correct method
           # (using mapped device terminology for the call convention)
-          self.send(@device.to_s) 
+          self.send(@device.to_s)
         else
           log "skipping twiml payload"
         end
@@ -66,7 +66,7 @@ module Skej
       end
 
       private
-      
+
       def twiml(&block)
         ::Twilio::TwiML::Response.new(&:block)
       end

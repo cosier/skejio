@@ -4,15 +4,17 @@ class TwilioController < ApplicationController
   before_filter :register_business
   before_filter :register_customer
   before_filter :register_session
-  before_filter :prepare_twiml
+  #before_filter :prepare_twiml
 
   def voice
+    binding.pry
     log @twiml.text
     render xml: @twiml.text
   end
 
   def sms
-    log @twiml.text
+    #log @twiml.text
+    binding.pry
     render xml: @twiml.text
   end
   

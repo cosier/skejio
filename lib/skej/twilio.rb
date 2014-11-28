@@ -23,8 +23,8 @@ module Skej
           :phone_number => number,
           :sms_method   => 'GET',
           :voice_method => 'GET',
-          :sms_url      => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/sms",
-          :voice_url    => "#{ENV['PROTOCOL']}://#{ENV['HOST']}/twilio/voice"
+          :sms_url      => "#{ENV['PROTOCOL'].downcase}://#{ENV['HOST']}/twilio/sms",
+          :voice_url    => "#{ENV['PROTOCOL'].downcase}://#{ENV['HOST']}/twilio/voice"
         }
         response = sub_account(business).incoming_phone_numbers.create(phone_request)
         Rails.logger.info "Skej::Twilio#buy_number(#{business}, #{number})"
