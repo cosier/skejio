@@ -8,11 +8,11 @@ class BaseSession < ActiveRecord::Base
   enum device_type: [:voice, :sms]
 
   # expose the state machine more naturally
-  delegate :current_state, 
-    :process_state!, 
-    :can_transition_to?, 
-    :transition_next!, 
-    :transition_to!, 
+  delegate :current_state,
+    :process_state!,
+    :can_transition_to?,
+    :transition_next!,
+    :transition_to!,
     :available_events,
     :think!,
     to: :state_machine
@@ -28,7 +28,7 @@ class BaseSession < ActiveRecord::Base
 
       existing = self.where(query).first
       log_title = self.name.underscore
-      
+
       if existing
         sesh = existing
         SystemLog.fact(title: log_title, payload: "loaded -> ID:##{sesh.id}")
@@ -87,7 +87,7 @@ class BaseSession < ActiveRecord::Base
   def process_voice_logic
     logic_engine(:voice).process!
   end
-  
+
   def logic_engine(device)
     state = self.current_state
     klass = "Skej::StateLogic::#{state.classify}".constantize

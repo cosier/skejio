@@ -3,23 +3,20 @@ module Skej
     class CustomerRegistration < BaseLogic
 
       def think
+        if store[:customer_name]
+        end
       end
 
       def sms
-        twiml do |r|
-          r.Message """
-          Welcome to the Customer Registration step.
-          This step is currently under construction, please check back soon.
-          """
+        if store[:customer_name].nil?
+          twiml_ask_customer_first_name
         end
       end
 
       def voice
-        twiml do |r|
-          r.Say "Welcome to the Customer Registration step"
-          r.Say "This step is currently under construction, please check back soon."
-        end
+        twiml_ask_customer_name
       end
+
 
     end
   end

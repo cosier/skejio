@@ -10,7 +10,7 @@ module Skej
         else
           log "initial date decoding is not supported for: #{@session.device_type || 'unknown-device'}"
         end
-        
+
         log "saving state"
 
         @session.store! :initial_decoder, :complete

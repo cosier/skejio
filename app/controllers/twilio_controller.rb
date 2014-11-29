@@ -15,13 +15,13 @@ class TwilioController < ApplicationController
     log @twiml.text
     render xml: @twiml.text
   end
-  
+
   private
 
   def session
     @session
   end
-  
+
   def register_business
     @business = Number.where(phone_number: params['To']).first.sub_account.business
     @log.update(business_id: @business.id)
@@ -47,12 +47,14 @@ class TwilioController < ApplicationController
 
   def attach_log_to_request
     if params[:log_id]
-      @log = SystemLog.find params[:log_id]
+      @log = SystemLog.find(params[:log_id])
     else
-      @log = SystemLog.create(from: params['From'],
-                              to: params['To'],
-                              log_type: params[:action],
-                              meta: params.to_json)
+      @log = SystemLog.create(
+        from: params['From'],
+        to: params['To'],
+        log_type: params[:action],
+        meta: params.to_json
+      )
     end
 
     RequestStore.store[:log] = @log
