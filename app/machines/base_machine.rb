@@ -13,17 +13,17 @@ class BaseMachine
     # Define states dynamically
     def linear_states(*states)
       @@STATES_AVAILABLE = states
-      
+
       @@STATES_BY_PRIORITY = {}
       @@PRIORITY_BY_STATE = {}
 
-      @@STATES_AVAILABLE.each_with_index {  |state_name, index| 
+      @@STATES_AVAILABLE.each_with_index {  |state_name, index|
         # Create our own reverse look up tables
-        @@STATES_BY_PRIORITY[index] = state_name  
+        @@STATES_BY_PRIORITY[index] = state_name
         @@PRIORITY_BY_STATE[state_name] = index
-        
+
         # Register the state with statesman
-        state state_name, initial: (index == 0 ? true : false) 
+        state state_name, initial: (index == 0 ? true : false)
       }
 
       # chain the transition definition creation
@@ -33,7 +33,7 @@ class BaseMachine
     def load_linear_transitions
       state :retry
       transition from: :retry, to: :retry
-      
+
       @@STATES_AVAILABLE.each_with_index do |state_name, index|
         if next_state = @@STATES_AVAILABLE[index+1]
           transition from: state_name, to: [next_state.to_sym, :retry]
@@ -46,9 +46,17 @@ class BaseMachine
 
   end # End class methods
   #################################
-  
+
   def transition_next!
-   transition_to! next_state_by_priority 
+    begin
+      transition_to! next_state_by_priority
+    rescue Statesman::GuardFailedError => e
+      retry_last_available_state
+    end
+  end
+
+  def retry_last_available_state
+    transition_to! :retry
   end
 
   # Delegate to the class method

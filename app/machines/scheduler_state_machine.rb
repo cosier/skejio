@@ -12,7 +12,7 @@ class SchedulerStateMachine < BaseMachine
 
   #############################################################
   # Global before / after hooks
-  
+
   # Log every transition attempted
   before_transition do |session, transition|
     log "transitioning from: #{session.current_state}"

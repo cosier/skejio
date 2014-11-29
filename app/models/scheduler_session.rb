@@ -8,10 +8,12 @@
 #  created_at  :datetime
 #  updated_at  :datetime
 #  meta        :text
-#  type        :integer
+#  device_type :integer
 #
 
 class SchedulerSession < BaseSession
+
+  belongs_to :customer
 
   #has_paper_trail
   has_many :scheduler_session_transitions

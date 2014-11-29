@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141128090742) do
+ActiveRecord::Schema.define(version: 20141129131200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,11 +68,12 @@ ActiveRecord::Schema.define(version: 20141128090742) do
     t.string   "phone_number"
     t.string   "first_name"
     t.string   "last_name"
-    t.boolean  "sms_verified",      default: false
-    t.boolean  "voice_verified",    default: false
+    t.boolean  "sms_verified",       default: false
+    t.boolean  "voice_verified",     default: false
     t.string   "verification_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "recording_name_url"
   end
 
   create_table "facts", force: true do |t|

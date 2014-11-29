@@ -14,7 +14,6 @@ class BaseSession < ActiveRecord::Base
     :transition_next!,
     :transition_to!,
     :available_events,
-    :think!,
     to: :state_machine
 
 
@@ -51,6 +50,10 @@ class BaseSession < ActiveRecord::Base
 
   end
 
+  def display_name
+    "#{self.class.name.underscore}/##{id}"
+  end
+
   def store
     # Hit the instance variable cache
     # Hit the Json meta field backing store
@@ -63,6 +66,7 @@ class BaseSession < ActiveRecord::Base
     col = store
     col[key] = value
     @store = col
+    self.save!
   end
 
   def last_available_state
@@ -75,7 +79,13 @@ class BaseSession < ActiveRecord::Base
   end
 
   def think!
+    log "activating logic_engine -> behaviour(think!)"
     logic_engine(device_type.to_sym).thinker
+  end
+
+  def clear_input_body!
+    raise "Session input unavailable" if self.input.nil?
+    self.input.delete :Body
   end
 
   private
@@ -97,6 +107,10 @@ class BaseSession < ActiveRecord::Base
 
   def update_meta_store
     self.meta = JSON.generate(store)
+  end
+
+  def log(msg)
+    SystemLog.fact(title: self.class.name.underscore, payload: msg)
   end
 
 end

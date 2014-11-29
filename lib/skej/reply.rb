@@ -1,6 +1,6 @@
 module Skej
   module Reply
-    
+
     class << self
       def sms(opts)
         reply = Skej::Reply::SMSReply.new(opts)

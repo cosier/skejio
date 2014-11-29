@@ -31,6 +31,10 @@ class SystemLog < ActiveRecord::Base
       log.facts.create! opts
     end
 
+    def current_log
+      RequestStore.store[:log]
+    end
+
   end
 
 end
