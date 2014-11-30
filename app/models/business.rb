@@ -37,7 +37,8 @@ class Business < ActiveRecord::Base
   before_validation :ensure_unique_slug
 
   after_save :check_for_approval_processing
-  
+
+  scope :available_offices, ->(){ offices.where(is_schedule_public: true) }
 
   # Formal display name for this entity
   def display_name
