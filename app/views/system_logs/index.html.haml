@@ -32,6 +32,8 @@
         %td.time
           = time_ago_in_words log.created_at
           ago
+          .full.mute.small
+            = log.created_at
       %tr.facts
         %td{colspan: 100}
           .row
