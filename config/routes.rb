@@ -25,8 +25,8 @@ Rails.application.routes.draw do
   end
 
   controller :twilio do
-    get '/twilio/voice', to: :voice, as: :twilio_voice
-    get '/twilio/sms',   to: :sms, as: :twilio_sms
+    match '/twilio/voice', to: :voice, as: :twilio_voice, via: [:get, :post]
+    match '/twilio/sms',   to: :sms, as: :twilio_sms, via: [:get, :post]
   end
 
   get '/businesses/:id/pending', to: 'businesses#pending', as: :business_pending

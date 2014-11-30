@@ -8,7 +8,7 @@ module Skej
 
         # Processing customer input as their name,
         # unless they already have a name
-        process_name unless cust.has_name?
+        process_name(cust) unless cust.has_name?
 
         if get[:customer_name].present? || cust.has_name?
           # Update the session get with customer_registration as completed
@@ -37,7 +37,7 @@ module Skej
 
       private
 
-      def process_name
+      def process_name(cust)
         case @device.to_sym
 
         ##################################################
@@ -80,7 +80,7 @@ module Skej
             get[:customer_name] = recording_url
 
             log "updating session customer with the new name recording"
-            cust.update! :recording_name_url, recording_url
+            cust.update! recording_name_url: recording_url
           end
 
         end
