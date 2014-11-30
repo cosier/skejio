@@ -20,7 +20,13 @@ class SystemLogsController < ManageController
     redirect_to system_logs_path, notice: 'Customer Session(s) Cleared— Have a nice day!'
   end
 
+  def clear_customers
+    Customer.destroy_all
+    redirect_to system_logs_path, notice: 'Customer(s) Cleared— Have a nice day!'
+  end
+
   def clear_everything
+    Customer.destroy_all
     SystemLog.destroy_all
     SchedulerSession.destroy_all
     redirect_to system_logs_path, notice: 'Everything Cleared— Have a nice day!'

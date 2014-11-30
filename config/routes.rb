@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :system_logs, only: [:index, :show] do
       collection do
         get '/clear/logs', to: :clear_logs, as: :clear
+        get '/clear/customers', to: :clear_customers, as: :clear_customers
         get '/clear/sessions', to: :clear_sessions, as: :clear_sessions
         get '/clear/everything', to: :clear_everything, as: :clear_everything
       end

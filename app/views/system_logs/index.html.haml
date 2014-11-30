@@ -55,19 +55,24 @@
 
 %hr/
 .btn-group.pull-right
-  = link_to 'Reset Sessions', 
-    clear_sessions_system_logs_path, 
-    class: 'btn btn-warning btn-sm', 
+  = link_to 'Reset Customers',
+    clear_customers_system_logs_path,
+    class: 'btn btn-danger btn-sm',
+    data: { confirm: "Are you sure you want to clear all Customers?" }
+
+  = link_to 'Reset Sessions',
+    clear_sessions_system_logs_path,
+    class: 'btn btn-warning btn-sm',
     data: { confirm: "Are you sure you want to clear all Sessions?" }
 
-  = link_to 'Reset Logs', 
-    clear_system_logs_path, 
-    class: 'btn btn-danger btn-sm', 
+  = link_to 'Reset Logs',
+    clear_system_logs_path,
+    class: 'btn btn-success btn-sm',
     data: { confirm: "Are you sure you want to clear all Logs?" }
 
-  = link_to 'Clear Everything', 
-    clear_everything_system_logs_path, 
-    class: 'btn btn-info btn-sm', 
+  = link_to 'Clear Everything',
+    clear_everything_system_logs_path,
+    class: 'btn btn-default btn-sm',
     data: { confirm: "Are you sure you want to clear Everything?" }
 
 - content_for :javascript do
