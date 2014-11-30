@@ -22,6 +22,7 @@ class SystemLogsController < ManageController
 
   def clear_customers
     Customer.destroy_all
+    SystemLog.destroy_all
     redirect_to system_logs_path, notice: 'Customer(s) Cleared— Have a nice day!'
   end
 

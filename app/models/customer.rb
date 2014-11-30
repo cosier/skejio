@@ -16,7 +16,8 @@
 
 class Customer < ActiveRecord::Base
 
-  has_many :system_logs
+  has_many :system_logs,
+    :dependent => :destroy
   has_many :scheduler_sessions
 
   validates_uniqueness_of :phone_number
