@@ -20,7 +20,6 @@ class SchedulerStateMachine < BaseMachine
 
   # Log every transition complete
   after_transition do |session, transition|
-    binding.pry
     key = session.current_state.to_sym
     log "transitioned to: <strong>#{key}</strong>"
 

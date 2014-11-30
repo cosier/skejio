@@ -26,4 +26,8 @@ class Service < ActiveRecord::Base
   end
 
   alias_method :disabled, :disabled?
+
+  def display_name
+    "#{id} / #{name} — #{business.display_name}"
+  end
 end

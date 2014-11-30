@@ -14,6 +14,9 @@ module Skej
           # Update the session get with customer_registration as completed
           get[:customer_registration] = :complete
 
+          # Since we utilized the input, we must clear
+          clear_session_input!
+
           # We're ready to go to the next transition
           advance!
         else

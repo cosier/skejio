@@ -9,10 +9,14 @@ module Skej
       end
 
       def text
-        @text ||= build_device_response
+        @text ||= build_device_response.text
       end
 
       private
+
+      def options
+        @opts
+      end
 
       def endpoint(data = {})
         data.reverse_merge! :log_id => SystemLog.current_log.id, method: 'get', sub_request: 'true'

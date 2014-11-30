@@ -78,7 +78,7 @@ class LiveSchedulerController < ApplicationController
   # Step 5 — Final
   def prepare_twiml
     SystemLog.fact(title: 'controller', payload: "rendering TwiML:#{session.current_state} response")
-    @twiml = session.logic.send params[:action].to_s
+    @twiml = session.logic.render
   end
 
   # Normalizes session usage

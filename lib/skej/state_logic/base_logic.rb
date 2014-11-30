@@ -5,14 +5,21 @@ module Skej
       @@SKIP_PAYLOAD = {}
       @@DONT_THINK = {}
 
+      # ::BaseLogic Class methods
       class << self
+
+        # Identifies the sub class as "skippable"
+        # for TwiML Payload Generation   (skip_payload)
         def skip_payload
           @@SKIP_PAYLOAD[self.name.underscore] = true
         end
 
+        # Identifies the sub class as "skippable"
+        # for Behaviour Processing (dont_think)
         def dont_think
           @@DONT_THINK[self.name.underscore] = true
         end
+
       end
 
       def initialize(opts)
@@ -28,9 +35,8 @@ module Skej
         thinker
       end
 
-      def text
-        # Return the payload (Skej::Twiml::BaseTwiml)
-        twiml_payload.text
+      def render
+        twiml_payload
       end
 
       private
@@ -39,9 +45,22 @@ module Skej
         @advanced_state.present?
       end
 
+      # Move the Session forward to the next level / state
       def advance!
         log "advancing to the next transition"
         @advanced_state = @session.state.transition_next!
+      end
+
+      # If you utilize the customer input to perform a permenanent side effect,
+      # then make sure you clear the session input for the next state to behave correctly.
+      #
+      # As the next state may happen instantaneously, and not between http requests—
+      # thus session input must be handled carefully from state to state, as not to get
+      # contaminated.
+      def clear_session_input!
+        log "clearing session input to avoid state contamination"
+        @session.input.delete :Digits
+        @session.input.delete :Body
       end
 
       # Parent wrapper around the subclass definition
@@ -67,7 +86,6 @@ module Skej
 
         if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
           log "processing twiml payload"
-
           if self.respond_to? :sms_and_voice
             t = sms_and_voice
           else
@@ -140,13 +158,25 @@ module Skej
         klass = meth.to_s.gsub("twiml_", "skej/twiml/").classify
         klass = klass.constantize
 
+        data = { device: @device, session: @session }
+        if args.length > 0 and args[0].kind_of? Hash
+          data.merge! args[0]
+        end
+
         log "building_twiml_block: #{klass.name.underscore}"
-        instance = klass.new({ device: @device, session: @session })
+        instance = klass.new(data)
         instance
       end
 
+      def strip_to_int(input)
+        return input unless input.present?
+        return input if input[/[\d.,]+/].nil?
+
+        input[/[\d.,]+/].gsub(',','.').to_i if input.present?
+      end
+
       def method_missing(meth, *args, &block)
-        if meth.to_s =~ /^twiml_(.+)$/
+        if meth.to_s =~ /^twiml_(.+)$/ and meth.to_s != "twiml_payload"
           build_twiml_block(meth.to_s, *args)
         else
           super

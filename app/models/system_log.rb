@@ -26,9 +26,13 @@ class SystemLog < ActiveRecord::Base
   class << self
 
     def fact(opts = {})
-      log = RequestStore.store[:log]
-      raise 'No SystemLog Found / Available for this Request' if log.nil?
-      log.facts.create! opts
+      begin
+        log = current_log
+        raise 'No SystemLog Found / Available for this Request' if log.nil?
+        log.facts.create! opts
+      rescue Exception => e
+        Rails.logger.error "Error saving fact log: #{e and e.message}"
+      end
     end
 
     def current_log
