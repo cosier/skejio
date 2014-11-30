@@ -23,7 +23,7 @@ class SchedulerSession < BaseSession
     class_name: 'SchedulerSessionTransition',
     foreign_key: 'scheduler_session_id'
 
-  validates_uniqueness_of :customer_id, :scope => :business_id
+  #validates_uniqueness_of :customer_id, :scope => :business_id
 
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)

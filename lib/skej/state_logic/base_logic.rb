@@ -116,7 +116,8 @@ module Skej
       # Override this in the sub logic
       def sms
         twiml do |r|
-          r.Message "Welcome to #{@session.current_state.titleize}"
+          r.Message "Welcome to #{@session.current_state.titleize}, this area is currently under construction. \nPlease check back soon"
+          r.Pause length: 2
         end
       end
 
@@ -124,7 +125,9 @@ module Skej
       # Override this in the sub logic
       def voice
         twiml do |r|
-          r.Say "Welcome to #{@session.current_state.titleize}"
+          r.Say "Welcome to #{@session.current_state.titleize}... This area is currently under construction."
+          r.Pause length: 2
+          r.Say "Have a nice day"
         end
       end
 

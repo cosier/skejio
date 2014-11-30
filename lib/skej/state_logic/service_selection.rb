@@ -14,6 +14,12 @@ module Skej
 
         @digits = @session.input[:Digits] || strip_to_int(@session.input[:Body])
 
+        # Early bail out if already completed
+        if get[:service_selection] and get[:service_selection].to_sym == :complete
+          log "Service selection already complete"
+          advance!
+        end
+
         # Automatic pass, not enough offices to choose from.
         if @services.length < 2
           log "Available Services < 2 <br/><strong>Skipping Customer Selection of Services</strong>"
