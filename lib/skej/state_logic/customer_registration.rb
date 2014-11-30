@@ -5,7 +5,39 @@ module Skej
 
       def think
         cust = @session.customer
-        binding.pry
+
+        # Processing customer input as their name,
+        # unless they already have a name
+        process_name unless cust.has_name?
+
+        if get[:customer_name].present? || cust.has_name?
+          # Update the session get with customer_registration as completed
+          get[:customer_registration] = :complete
+
+          # We're ready to go to the next transition
+          advance!
+        else
+
+          # We do nothing else, and let the twiml views for this state_logic
+          # carry the Customer to the next step.
+        end
+
+      end
+
+      def sms
+        log "SMS — asking for customer name"
+        twiml_ask_customer_name
+      end
+
+      def voice
+        log "VOICE — asking for customer name"
+        twiml_ask_customer_name
+      end
+
+
+      private
+
+      def process_name
         case @device.to_sym
 
         ##################################################
@@ -30,7 +62,6 @@ module Skej
         ##################################################
         # We are processing a VOICE Session
         when :voice
-
           # stash the customers recording
           recording_url = @session.input[:RecordingUrl]
 
@@ -53,31 +84,6 @@ module Skej
           end
 
         end
-        # END DEVICE SPECIFIC LOGIC
-
-        if get[:customer_name].present?
-
-          # Update the session get with customer_registration as completed
-          get[:customer_registration] = :complete
-
-          # We're ready to go to the next transition
-          advance!
-        else
-
-          # We do nothing else, and let the twiml views for this state_logic
-          # carry the Customer to the next step.
-        end
-
-      end
-
-      def sms
-        log "SMS — asking for customer name"
-        twiml_ask_customer_name
-      end
-
-      def voice
-        log "VOICE_ asking for customer name"
-        twiml_ask_customer_name
       end
 
     end

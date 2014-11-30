@@ -59,4 +59,8 @@ class Customer < ActiveRecord::Base
     "#{name} / #{phone_number}"
   end
 
+  def has_name?
+    recording_name_url || (first_name and last_name)
+  end
+
 end
