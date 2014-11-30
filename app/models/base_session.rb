@@ -1,6 +1,6 @@
 class BaseSession < ActiveRecord::Base
   include Statesman::Adapters::ActiveRecordQueries
-  attr_accessor :input, :twiml_sms, :twiml_voice
+  attr_accessor :input, :twiml_sms, :twiml_voice, :twiml
 
   # This is an abstract parent class to provide basic Session functionality
   self.abstract_class = true
@@ -11,7 +11,6 @@ class BaseSession < ActiveRecord::Base
   delegate :current_state,
     :process_state!,
     :can_transition_to?,
-    :transition_next!,
     :transition_to!,
     :available_events,
     to: :state_machine
@@ -58,7 +57,14 @@ class BaseSession < ActiveRecord::Base
     # Hit the instance variable cache
     # Hit the Json meta field backing store
     # Instantiate a new fresh hash for the Session
-    @store ||= (self.meta.present? and JSON.parse(self.meta)) || {}
+    @store ||= ActiveSupport::HashWithIndifferentAccess.new((self.meta.present? and JSON.parse(self.meta)) || {})
+
+  end
+
+  # Lazy load this logic engine facade
+  def logic
+    @logic_cache ||= {}
+    @logic_cache[current_state] ||= logic_engine(device_type.to_sym)
   end
 
   def store!(key, value)
@@ -74,30 +80,18 @@ class BaseSession < ActiveRecord::Base
     (prev and prev.to_state.to_sym) || :handshake
   end
 
-  def process_logic
-    self.send "process_#{device_type.to_s}_logic"
-  end
-
-  def think!
-    log "activating logic_engine -> behaviour(think!)"
-    logic_engine(device_type.to_sym).thinker
-  end
-
   def clear_input_body!
     raise "Session input unavailable" if self.input.nil?
     self.input.delete :Body
   end
 
+  def state
+    state_machine
+  end
+
   private
 
-  def process_sms_logic
-    logic_engine(:sms).process!
-  end
-
-  def process_voice_logic
-    logic_engine(:voice).process!
-  end
-
+  # Mini Logic factory
   def logic_engine(device)
     state = self.current_state
     klass = "Skej::StateLogic::#{state.classify}".constantize

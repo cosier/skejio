@@ -5,11 +5,6 @@ class BaseMachine
   # Class methods for StateMachine
   class << self
 
-    def log(msg)
-      SystemLog.fact(title: 'scheduler_state_machine', payload: msg)
-      Rails.logger.info "scheduler_state_machine: #{msg}"
-    end
-
     # Define states dynamically
     def linear_states(*states)
       @@STATES_AVAILABLE = states
@@ -44,37 +39,44 @@ class BaseMachine
       end if @@STATES_AVAILABLE
     end
 
+    # Log wrapper for this namespace
+    def log(msg)
+      SystemLog.fact(title: 'scheduler_state_machine', payload: msg)
+      Rails.logger.info "scheduler_state_machine: #{msg}"
+    end
+
   end # End class methods
   #################################
+
+  # Engage the next state, or retry the current state upon transition failure
+  def process!
+    state = @object.current_state.to_sym
+    state_priority = @@PRIORITY_BY_STATE[state] || 0
+    target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
+
+    session.logic.process!
+
+    log "attempting to transition to: #{target}"
+    transition_to target
+  end
 
   def transition_next!
     begin
       transition_to! next_state_by_priority
     rescue Statesman::GuardFailedError => e
-      retry_last_available_state
+      log "unable to transition_next!"
+      #retry_last_available_state
     end
   end
 
   def retry_last_available_state
-    transition_to! :retry
+    transition_to last_state_by_priority
   end
 
   # Delegate to the class method
   def log(*args)
     self.class.log(*args)
   end
-
-  # Engage the next state, or retry the current state upon transition failure
-  def process_state!
-    state = @object.current_state.to_sym
-    state_priority = @@PRIORITY_BY_STATE[state] || 0
-    target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
-
-    log "attempting to transition to: #{target}"
-    transition_to target
-  end
-
-  private
 
   def current_state_priority
     current_priority = @@PRIORITY_BY_STATE[@object.current_state.to_sym]
@@ -86,6 +88,21 @@ class BaseMachine
     state = @@STATES_BY_PRIORITY[current_state_priority + 1]
     raise "Next State not matched for: #{current_state_priority} / #{@object.current_state}" unless state
     state
+  end
+
+  def last_state_by_priority
+    if current_state.to_s == "retry"
+      state = @@STATES_BY_PRIORITY[@object.last_available_state]
+    else
+      state = @@STATES_BY_PRIORITY[current_state_priority - 1]
+      state || :handshake
+    end
+  end
+
+  private
+
+  def session
+    @object
   end
 
 end

@@ -2,10 +2,14 @@ module Skej
   module StateLogic
     class CustomerRegistration < BaseLogic
 
+
       def think
         cust = @session.customer
-
+        binding.pry
         case @device.to_sym
+
+        ##################################################
+        # We are processing a SMS Session
         when :sms
           # If there is an available message body,
           # then we are assuming that is their name
@@ -23,7 +27,10 @@ module Skej
             @session.customer.update!({first_name: first_name, last_name: last_name})
           end
 
+        ##################################################
+        # We are processing a VOICE Session
         when :voice
+
           # stash the customers recording
           recording_url = @session.input[:RecordingUrl]
 
@@ -46,18 +53,30 @@ module Skej
           end
 
         end
+        # END DEVICE SPECIFIC LOGIC
 
-        binding.pry
         if store[:customer_name].present?
+
           # Update the session store with customer_registration as completed
-          @session.store! :customer_registration, :complete
+          store[:customer_registration] = :complete
+
           # We're ready to go to the next transition
-          @session.transition_next!
+          advance!
+        else
+
+          # We do nothing else, and let the twiml views for this state_logic
+          # carry the Customer to the next step.
         end
 
       end
 
-      def sms_and_voice
+      def sms
+        log "SMS — asking for customer name"
+        twiml_ask_customer_name
+      end
+
+      def voice
+        log "VOICE_ asking for customer name"
         twiml_ask_customer_name
       end
 

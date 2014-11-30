@@ -21,32 +21,28 @@ module Skej
         @session = opts[:session]
       end
 
+      # Thinks, then returns the payload
+      # payload in this case is a Skej::Twiml::BaseTwiml instance.
       def process!
+        # Apply state logic and rules
         thinker
-        payload
       end
 
-      # Proce a Twiml text payload
-      def payload
-        p = false
+      def text
+        # Return the payload (Skej::Twiml::BaseTwiml)
+        twiml_payload.text
+      end
 
-        if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
-          log "processing twiml payload"
+      private
 
-          if defined? self.sms_and_voice
-            p = sms_and_voice
-          else
-            # Make the dispatch call to the correct method
-            # (using mapped device terminology for the call convention)
-            p = self.send(@device.to_s, twiml, @session)
-          end
+      def advanced_state?
+        @advanced_state.present?
+      end
 
-        else
-          log "skipping twiml payload"
-        end
-
-        # Make sure that we actually return the TwiML response xml builder here
-        p
+      def advance!
+        log "advancing to the next transition"
+        flush_settings
+        @advanced_state = @session.state.transition_next!
       end
 
       # Parent wrapper around the subclass definition
@@ -62,6 +58,39 @@ module Skej
         else
           log "skipping business logic"
         end
+      end
+
+      # Produce a Twiml text payload.
+      # Called only by the above process! method
+      def twiml_payload
+        @twiml_payload ||= false
+
+        if @twiml_payload.present?
+          log "returning cached twiml_payload"
+          return @twiml_payload
+        end
+
+        if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
+          log "processing twiml payload"
+
+          if defined? self.sms_and_voice
+            t = sms_and_voice
+          else
+            # Make the dispatch call to the correct method
+            # (using mapped device terminology for the call convention)
+            t = self.send @device.to_s
+          end
+
+        else
+          log "skipping twiml payload"
+        end
+
+        # stash the tiwml response on the session instance for controller pick up
+        @session.twiml = t
+        @twiml_payload = t
+
+        # Make sure that we actually return the TwiML response xml builder here
+        t
       end
 
       # Default think step place holder
@@ -85,8 +114,6 @@ module Skej
           r.Say "Welcome to #{@session.current_state.titleize}"
         end
       end
-
-      private
 
       # Get a key value from the session store— notice the class name prefixing
       def get(key)
@@ -115,7 +142,7 @@ module Skej
         log "processing twiml block"
 
         response = ::Twilio::TwiML::Response.new do |r|
-          block.call(r)
+          block.call(r) if block_given?
         end
 
         response

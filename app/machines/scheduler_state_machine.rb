@@ -20,25 +20,29 @@ class SchedulerStateMachine < BaseMachine
 
   # Log every transition complete
   after_transition do |session, transition|
-    key = session.current_state
+    key = session.current_state.to_sym
     log "transitioned to: <strong>#{key}</strong>"
-    session.think!
+
+    # Run the logic processing
+    session.logic.process!
   end
 
   # Guard every transition with a default hash lookup for :complete
-  guard_transition do |session|
-    c = session.current_state.to_sym
+  guard_transition do |session, tx|
+    prev_state = session.state.last_state_by_priority.to_s
+    curr_state = session.state.current_state.to_s
 
-    if session.store[c] == :complete
-      log "TRANSITION APPROVED — current_state(<strong>#{session.current_state}</strong>) passed"
+    # Validate the results of the logic processing
+    if session.store[curr_state] and session.store[curr_state].to_s == "complete"
+      log "TRANSITION APPROVED — current_state(<strong>#{curr_state}</strong>) passed"
       true
 
-    elsif c == :retry || c == :handshake
+    elsif curr_state == "retry" || curr_state == "handshake"
       #log "TRANSITION DEFAULT ALLOW - #{c.to_s}"
       true
 
     else
-      log "TRANSITION DENIED — current_state(<strong>#{session.current_state}</strong>) incomplete"
+      log "TRANSITION DENIED — current_state(<strong>#{curr_state}</strong>) is incomplete"
       false
     end
   end
