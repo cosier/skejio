@@ -41,7 +41,6 @@ module Skej
 
       def advance!
         log "advancing to the next transition"
-        flush_settings
         @advanced_state = @session.state.transition_next!
       end
 
@@ -51,10 +50,6 @@ module Skej
         if @@DONT_THINK[self.class.name.underscore].nil?
           log "processing business logic"
           think
-
-          # Once thinking tick is done,
-          # flush the settings to the backing session store (json)
-          flush_settings
         else
           log "skipping business logic"
         end
@@ -116,25 +111,13 @@ module Skej
       end
 
       # Get a key value from the session store— notice the class name prefixing
-      def get(key)
-        @session.store[key]
+      def get
+        @session.store
       end
 
       # Set a keyed value onto the session store— notice the class name prefixing
       def set(key, val)
         @session.store! "#{key.to_s}", val
-      end
-
-      def store
-        @store ||= (get(:store) || {})
-      end
-
-      # Flush the settings instance hash to the session meta store— json backing
-      def flush_settings
-        msg = "Flushing Logic Store to Session meta store — json backed"
-        Rails.logger.info msg
-        log(msg)
-        set :store, store
       end
 
       # TwiML Response generator helper / wrapper

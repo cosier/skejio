@@ -21,8 +21,8 @@ module Skej
             last_name = body.split(" ").last
             last_name = "" if last_name == first_name
 
-            store[:customer_name] = body
-            store[:customer_registration] = :complete
+            get[:customer_name] = body
+            get[:customer_registration] = :complete
 
             @session.customer.update!({first_name: first_name, last_name: last_name})
           end
@@ -36,7 +36,7 @@ module Skej
 
           # Customer already has a name recording present
           if cust.recording_name_url.present?
-            store[:customer_name] = cust.recording_name_url
+            get[:customer_name] = cust.recording_name_url
           end
 
           # Check if the customer tried to record their name already
@@ -46,7 +46,7 @@ module Skej
               <a href='#{recording_url}' target='_blank'>#{recording_url}</a>
             """
 
-            store[:customer_name] = recording_url
+            get[:customer_name] = recording_url
 
             log "updating session customer with the new name recording"
             cust.update! :recording_name_url, recording_url
@@ -55,10 +55,10 @@ module Skej
         end
         # END DEVICE SPECIFIC LOGIC
 
-        if store[:customer_name].present?
+        if get[:customer_name].present?
 
-          # Update the session store with customer_registration as completed
-          store[:customer_registration] = :complete
+          # Update the session get with customer_registration as completed
+          get[:customer_registration] = :complete
 
           # We're ready to go to the next transition
           advance!
