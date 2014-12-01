@@ -41,8 +41,8 @@ class BaseMachine
 
     # Log wrapper for this namespace
     def log(msg)
-      SystemLog.fact(title: 'scheduler_state_machine', payload: msg)
-      Rails.logger.info "scheduler_state_machine: #{msg}"
+      SystemLog.fact(title: self.name.underscore, payload: msg)
+      Rails.logger.info "#{self.name.underscore}: #{msg}"
     end
 
   end # End class methods
@@ -51,13 +51,12 @@ class BaseMachine
   # Engage the next state, or retry the current state upon transition failure
   def process!
     state = @object.current_state.to_sym
-    state_priority = @@PRIORITY_BY_STATE[state] || 0
-    target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
-
     session.logic.process!
+    #state_priority = @@PRIORITY_BY_STATE[state] || 0
+    #target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
 
-    log "attempting to transition to: #{target}"
-    transition_to target
+    #log "attempting to transition to: #{target}"
+    #transition_to target
   end
 
   def transition_next!

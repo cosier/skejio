@@ -68,7 +68,7 @@ module Skej
         if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
           log "processing twiml payload"
 
-          if defined? self.sms_and_voice
+          if self.respond_to? :sms_and_voice
             t = sms_and_voice
           else
             # Make the dispatch call to the correct method

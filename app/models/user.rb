@@ -41,6 +41,7 @@ class User < ActiveRecord::Base
 
   scope :business, ->(business){ where business_id: business.id }
   scope :service_providers, ->(){ with_roles(:service_provider).order('sort_order desc, last_name asc')  }
+  scope :provider, ->(){ service_providers }
 
   has_one :schedule_rule,
     foreign_key: 'service_provider_id'

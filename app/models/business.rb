@@ -27,6 +27,9 @@ class Business < ActiveRecord::Base
   has_many :settings,
     dependent: :destroy
 
+  has_many :services,
+    dependent: :destroy
+
   has_many :sub_accounts
   has_many :numbers,
     :through => :sub_accounts
@@ -38,7 +41,17 @@ class Business < ActiveRecord::Base
 
   after_save :check_for_approval_processing
 
-  scope :available_offices, ->(){ offices.where(is_schedule_public: true) }
+  def available_offices
+    offices.where(is_schedule_public: true)
+  end
+
+  def available_services
+    services.where(is_public: true)
+  end
+
+  def available_providers
+    users.provider
+  end
 
   # Formal display name for this entity
   def display_name

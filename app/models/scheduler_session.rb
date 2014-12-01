@@ -14,6 +14,7 @@
 class SchedulerSession < BaseSession
 
   belongs_to :customer
+  belongs_to :business
 
   #has_paper_trail
   has_many :scheduler_session_transitions
