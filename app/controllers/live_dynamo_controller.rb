@@ -1,10 +1,10 @@
-class TwilioController < ApplicationController
+class LiveDynamoController < ApplicationController
 
-  before_filter :attach_log_to_request
-  before_filter :register_business
-  before_filter :register_customer
-  before_filter :register_session
-  before_filter :prepare_twiml
+  before_filter :attach_log_to_request # Step 1
+  before_filter :register_business     # Step 2
+  before_filter :register_customer     # Step 3
+  before_filter :register_session      # Step 4
+  before_filter :prepare_twiml         # Step 5
 
   def voice
     twiml_payload
@@ -19,6 +19,7 @@ class TwilioController < ApplicationController
     log @twiml.text
     render xml: @twiml.text
   end
+
 
   private
 
@@ -55,8 +56,19 @@ class TwilioController < ApplicationController
   ################################################################
   # Step 4
   def register_session
-    @session = SchedulerSession.load(@customer, @business)
+    # Resume session only for sub requests, or requests routed to the *sms* action
+    if params[:sub_request].present? || params[:action].to_sym == :sms
+      # Will either load existing or create a new one
+      @session = SchedulerSession.load(@customer, @business)
+    else
+      # Creates a brand new Session for this Customer & Business
+      @session = SchedulerSession.fresh(@customer, @business)
+    end
+
+    # Associate the newly created/loaded Session with the current SystemLog
     @log.update(session_id: @session.id)
+
+    # Store some request data on the Session instance
     @session.device_type = params[:action].to_sym
     @session.input = params.dup
     @session.state.process!
@@ -77,7 +89,7 @@ class TwilioController < ApplicationController
 
   # Lazy log helper / wrapper
   def log(msg)
-    SystemLog.fact(title: 'controller', payload: msg)
+    SystemLog.fact(title: 'live-dynamo-controller', payload: msg)
   end
 
 end

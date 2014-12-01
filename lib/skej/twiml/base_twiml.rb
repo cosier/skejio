@@ -15,7 +15,7 @@ module Skej
       private
 
       def endpoint(data = {})
-        data.reverse_merge! :log_id => SystemLog.current_log.id, method: 'get'
+        data.reverse_merge! :log_id => SystemLog.current_log.id, method: 'get', sub_request: 'true'
         url = "#{ENV['PROTOCOL'].downcase}://#{ENV['HOST']}/twilio/#{data[:device] || @device}"
         url << "?#{data.to_query.html_safe}" if data.keys.length > 0
         url.html_safe

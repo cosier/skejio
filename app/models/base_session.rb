@@ -39,6 +39,11 @@ class BaseSession < ActiveRecord::Base
       sesh
     end
 
+    def fresh(customer, business)
+      properties  = { customer_id: customer.id, business_id: business.id }
+      create! properties
+    end
+
     def initial_state
       :handshake
     end

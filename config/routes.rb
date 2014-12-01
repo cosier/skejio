@@ -25,9 +25,14 @@ Rails.application.routes.draw do
     get '/', to: 'manage#dashboard', as: :manage_dashboard
   end
 
-  controller :twilio do
+  # Live handling of Customer Scheduler Sessions
+  controller :live_scheduler do
     match '/twilio/voice', to: :voice, as: :twilio_voice, via: [:get, :post]
     match '/twilio/sms',   to: :sms, as: :twilio_sms, via: [:get, :post]
+  end
+
+  # Live handling of Customer Dynamic Tree Sessions
+  controller :live_dynamo do
   end
 
   get '/businesses/:id/pending', to: 'businesses#pending', as: :business_pending
