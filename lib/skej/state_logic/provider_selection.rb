@@ -10,7 +10,7 @@ module Skej
 
         @providers.each_with_index do |provider, index|
           @providers_ordered[index + 1] = provider
-          @human_readable_providers << "#{index + 1} - #{provider.name}"
+          @human_readable_providers << "#{index + 1} - #{provider.display_name}"
         end
 
         # Normalise all device input from the Customer

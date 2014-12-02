@@ -4,13 +4,13 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Welcome to the Scheduling System, to get started please tell us your full name."
+          b.Message "To get started please tell us your full name."
         end
       end
 
       def voice(session)
         build_twiml do |b|
-          b.Say "Welcome to the Scheduling System, to get started please tell us your full name...."
+          b.Say "To get started please tell us your full name...."
 
           b.Say "Record your name after the beep..."
           b.Say "Then Press the pound key to continue"

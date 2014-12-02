@@ -6,6 +6,9 @@ class LiveSchedulerController < ApplicationController
   before_filter :register_session      # Step 4
   before_filter :prepare_twiml         # Step 5
 
+  # Interacting with twilio rest api— no need for CSRF
+  protect_from_forgery except: [:voice, :sms]
+
   def voice
     twiml_payload
   end

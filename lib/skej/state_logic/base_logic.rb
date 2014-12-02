@@ -51,6 +51,14 @@ module Skej
         @advanced_state = @session.state.transition_next!
       end
 
+      def endpoint(data = {})
+        data.reverse_merge! :log_id => SystemLog.current_log.id, method: 'get', sub_request: 'true'
+        url = "#{ENV['PROTOCOL'].downcase}://#{ENV['HOST']}/twilio/#{data[:device] || @device}"
+        url << "?#{data.to_query.html_safe}" if data.keys.length > 0
+        url.html_safe
+      end
+
+
       # If you utilize the customer input to perform a permenanent side effect,
       # then make sure you clear the session input for the next state to behave correctly.
       #
