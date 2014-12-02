@@ -54,7 +54,7 @@ class OfficesController < BusinessesController
   end
 
   def office_params
-    p = params.require(:office).permit(:name, :location, :time_zone, :is_schedule_public).dup
+    p = params.require(:office).permit(:name, :location, :time_zone, :is_schedule_public, :sort_order).dup
     p[:business_id] = params[:business_id]
     p
   end

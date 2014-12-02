@@ -5,4 +5,5 @@ class Scplanner.Models.Service extends Backbone.Model
 
 class Scplanner.Collections.ServicesCollection extends Backbone.Collection
   model: Scplanner.Models.Service
-  url: '/api/services'
+  url: ->
+    "/api/businesses/#{Scp.business_id}/services"

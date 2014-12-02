@@ -7,7 +7,7 @@ class SettingsController < BusinessesController
   before_filter :set_current_sidebar
   before_filter :load_setting, only: [:update]
   before_filter :load_settings, only: [:index, :show]
-  
+
   rescue_from CanCan::AccessDenied do |exception|
 
     path = root_path
@@ -23,21 +23,22 @@ class SettingsController < BusinessesController
   def index
     @settings = Setting.business(@business)
     @services = Service.business(@business)
-    
-    # Set the default visual radio input to ask, 
+    @offices  = Office.business(@business)
+
+    # Set the default visual radio input to ask,
     # when we will be skipping service selection (< 2)
     if @services.length < 2
       @service_selection.value = Setting::SERVICE_SELECTION_ASK
     end
 
     if @service_providers.length < 2
-      @user_priority.value = Setting::USER_PRIORITY_RANDOM
+      @user_selection_priority.value = Setting::USER_SELECTION_PRIORITY_RANDOM
     end
 
   end
 
   def update
-    
+
     if @setting.present? and can? :manage, @setting
       @setting.update! setting_params
     end
@@ -52,9 +53,7 @@ class SettingsController < BusinessesController
   end
 
   def show
-    respond_with @business, @setting do |format|
-      format.html { redirect_to business_settings_path(@business) }
-    end
+    redirect_to business_settings_path(@business)
   end
 
 
@@ -71,19 +70,26 @@ class SettingsController < BusinessesController
 
   def load_settings
     if can? :read, Setting
-      @service_selection = Setting.get_or_create Setting::SERVICE_SELECTION, 
-        business_id: @business.id, 
+      @office_selection = Setting.get_or_create Setting::OFFICE_SELECTION,
+        business_id: @business.id,
+        default_value: Setting::OFFICE_SELECTION_ASK
+
+      @service_selection = Setting.get_or_create Setting::SERVICE_SELECTION,
+        business_id: @business.id,
         default_value: Setting::SERVICE_SELECTION_ASK
-    
-      @user_selection = Setting.get_or_create Setting::USER_SELECTION, 
-        business_id: @business.id, 
+
+      @user_selection = Setting.get_or_create Setting::USER_SELECTION,
+        business_id: @business.id,
         default_value: Setting::USER_SELECTION_FULL_CONTROL
-    
-      @user_priority = Setting.get_or_create Setting::USER_PRIORITY, 
-        business_id: @business.id, 
-        default_value: Setting::USER_PRIORITY_RANDOM
-      
-      @service_providers = UserPriority.sort! User.business(@business).service_providers
+
+      @user_selection_priority = Setting.get_or_create Setting::USER_SELECTION_PRIORITY,
+        business_id: @business.id,
+        default_value: Setting::USER_SELECTION_PRIORITY_RANDOM
+
+
+      @service_providers = PrioritySorter.sort! User.business(@business).service_providers
+      @services = PrioritySorter.sort! Service.business(@business)
+      @offices = PrioritySorter.sort! Office.business(@business)
     end
   end
 

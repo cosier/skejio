@@ -28,6 +28,9 @@
 #
 
 class User < ActiveRecord::Base
+
+  include Sortable
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -109,17 +112,10 @@ class User < ActiveRecord::Base
     return self if not available_for_scheduling?
   end
 
-  def has_sort_order?
-    sort_order and sort_order > 0
-  end
-
-  def has_not_sort_order?
-    not has_sort_order?
-  end
-
   def update_ordering
     if business
-      UserPriority.sort! User.business(business).service_providers
+      PrioritySorter.sort! User.business(business).service_providers
     end
   end
+
 end

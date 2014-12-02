@@ -5,6 +5,15 @@
 
 
 .content-box.user-selection
+  - disable_selection = @service_providers.length < 2
+  .row.no-select
+    - if disable_selection
+      .col.col-lg-12
+        .alert.alert-danger.info
+          Your Business has less than
+          %strong 2 Service Providers,
+          check out the User Staff page to &nbsp;
+          = link_to 'Add more User Providers', business_users_path(@business), class: 'btn btn-success'
   = simple_form_for [@business, @user_selection], url: business_setting_path(@business, @user_selection) do |f|
     %input{type: "hidden", name: "hash", value: "user-selection" }/
     .row.no-select
@@ -43,9 +52,7 @@
             Express I
       .col-lg-12.info
         %p
-          Customer is given the next available appointment (from any Service Provider meeting the criteria).
-          %br/
-          If multiple Service Providers exist for this Category, the Customer will be given the option to choose.
+          Automatically select the provider and tell the customer the name of the service provider for each available slot.
         %p.small
           Additionally:
           Customer will be offered to select a different appointment time.
@@ -60,9 +67,7 @@
             Express II
       .col-lg-12.info
         %p
-          Customer is provided with the next available appointment
-          —
-          %u without any mention of a Service Provider
+          Automatically select the provider with no mention of who the service provider will be.
         %p.small
           Additionally:
           Customer will be offered to select a different appointment time.

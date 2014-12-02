@@ -26,23 +26,28 @@ class Setting < ActiveRecord::Base
   scope :business, ->(business) { where business_id: business.id }
 
   # Constants for various option names
-  SERVICE_SELECTION_ASK = 'ask'
-  SERVICE_SELECTION_ASK_AND_ASSUME = 'ask_and_assume'
-  SERVICE_SELECTION_ASSUME = 'assume'
+  OFFICE_SELECTION_ASK             = 'office_ask'
+  OFFICE_SELECTION_ASK_AND_ASSUME  = 'office_ask_and_assume'
+  OFFICE_SELECTION_ASSUME          = 'office_assume'
 
-  USER_SELECTION_FULL_CONTROL = 'full_control'
-  USER_SELECTION_EXPRESS_I = 'express_1'
-  USER_SELECTION_EXPRESS_II = 'express_2'
-  USER_SELECTION_EXPRESS_III = 'express_3'
+  SERVICE_SELECTION_ASK            = 'service_ask'
+  SERVICE_SELECTION_ASK_AND_ASSUME = 'service_ask_and_assume'
+  SERVICE_SELECTION_ASSUME         = 'service_assume'
 
-  USER_PRIORITY_RANDOM = 'random'
-  USER_PRIORITY_AUTOMATIC = 'automatic'
-  USER_PRIORITY_CUSTOM = 'custom'
+  USER_SELECTION_FULL_CONTROL = 'user_selection_full_control'
+  USER_SELECTION_EXPRESS_I    = 'user_selection_express_1'
+  USER_SELECTION_EXPRESS_II   = 'user_selection_express_2'
+  USER_SELECTION_EXPRESS_III  = 'user_selection_express_3'
+
+  USER_SELECTION_PRIORITY_RANDOM    = 'user_selection_priority_random'
+  USER_SELECTION_PRIORITY_AUTOMATIC = 'user_selection_priority_automatic'
 
   # Constants for key lookup
-  USER_PRIORITY = 'user_priority'
-  USER_SELECTION = 'user_selection'
-  SERVICE_SELECTION = 'service_selection'
+  PRIORITY                = 'priority'
+  USER_SELECTION          = 'user_selection'
+  USER_SELECTION_PRIORITY = 'user_selection_priority'
+  SERVICE_SELECTION       = 'service_selection'
+  OFFICE_SELECTION        = 'office_selection'
 
   class << self
     def get_or_create(key, opts = {})
@@ -75,7 +80,7 @@ class Setting < ActiveRecord::Base
   end
 
   def user_priority_type=(type)
-    self.key = USER_PRIORITY
+    self.key = PRIORITY
     self.value = type
   end
 

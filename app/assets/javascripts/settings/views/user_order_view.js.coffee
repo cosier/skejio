@@ -1,16 +1,16 @@
-class UserOrderView extends Backbone.View
+class OrderedView extends Backbone.View
 
   events:
     'click .down': 'down'
     'click .up': 'up'
 
   tagName: 'div'
-  className: 'user'
+  className: 'item'
 
   constructor: (opts)->
     super(opts)
 
-    @$el.attr 'data-user-sort', @model.get('sort_order')
+    @$el.attr 'data-item-sort', @model.get('sort_order')
     @$el.data 'view', @
 
   up: ->
@@ -24,21 +24,21 @@ class UserOrderView extends Backbone.View
     target_order = order + dir
 
     return false if target_order < 1
-    
-    target = $(".user[data-user-sort='#{target_order}']")
+
+    target = @$el.parent().find(".item[data-item-sort='#{target_order}']").first()
     target_view = target.data('view')
 
     console.debug 'target:', target
-    
+
     if dir < 0 # UP
       @$el.insertBefore(target)
     else # DOWN
       @$el.insertAfter(target)
 
     # Update the dom data markers
-    target.attr 'data-user-sort', order
-    @$el.attr 'data-user-sort', target_order
-    @$el.attr 'data-user', @model.toJSON()
+    target.attr 'data-item-sort', order
+    @$el.attr 'data-item-sort', target_order
+    @$el.attr 'data-item', @model.toJSON()
 
     @update(target_order)
 
@@ -54,8 +54,8 @@ class UserOrderView extends Backbone.View
     @model.save()
 
 
-  
+
 
 
 # Export namespace to global window
-window.UserOrderView = UserOrderView
+window.OrderedView = OrderedView

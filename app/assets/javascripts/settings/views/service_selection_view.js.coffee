@@ -3,7 +3,7 @@ class ServiceSelectionView extends Backbone.View
   el: '#service_selection_content'
   events:
     'change input[type=radio]': 'changed'
-  
+
   constructor: (opts)->
     super(opts)
     @update_state @$('input:checked').closest('.col')

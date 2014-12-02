@@ -10,9 +10,12 @@
 #  updated_at         :datetime
 #  is_schedule_public :boolean          default(TRUE)
 #  time_zone          :string(255)
+#  sort_order         :integer
 #
 
 class Office < ActiveRecord::Base
+  include Sortable
+
   belongs_to :business
 
   validates_presence_of :business
@@ -20,8 +23,16 @@ class Office < ActiveRecord::Base
   validates_presence_of :location
 
   scope :business, ->(business){ where business_id: business.id  }
+  after_create :update_ordering
 
   def display_name
     "#{business.display_name} - #{name}"
   end
+
+  def update_ordering
+    if business
+      PrioritySorter.sort! Office.business(business)
+    end
+  end
+
 end

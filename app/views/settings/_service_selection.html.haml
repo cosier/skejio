@@ -13,7 +13,7 @@
       - if disable_selection
         .col.col-lg-12
           .alert.alert-info.info
-            Your Business currently has less than 
+            Your Business currently has less than
             %strong 2 Services,
             check out the Services page to &nbsp;
             = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-info'
@@ -23,8 +23,8 @@
           %input{ id: "service-ask", type: :radio, name: "setting[service_selection_type]", value: 'ask', checked: ('ask' == @service_selection.value) }
         .heading
           %label{for: "service-ask"}
-            First ask the Customer to Select a Category 
-            %p 
+            First ask the Customer to Select a Category
+            %p
               — Selection will be skipped if you have less than 2 Services
               %span.muted — default
 
@@ -45,7 +45,7 @@
             Assume it is for
             = f.collection_select :supportable_id, @services, :id, :name, {}, disabled: disable_selection
             %p without any option to change
-          
+
 
     %hr
     %button.btn-save-service-selection.btn-default.btn{type: :submit}

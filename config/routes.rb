@@ -57,6 +57,10 @@ Rails.application.routes.draw do
 
   scope :api do
     resources :break_shifts
+    resources :businesses do
+      resources :services
+      resources :offices
+    end
   end
 
   devise_scope :user do

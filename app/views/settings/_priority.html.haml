@@ -1,0 +1,104 @@
+%h3.header
+  Manage Priority Selections — for Appointment Scheduling
+%hr
+
+
+.content-box.user-priority
+  - disable_selection_providers = @service_providers.length < 2
+  - disable_selection_offices   = @offices.length < 2
+  - disable_selection_services  = @services.length < 2
+
+  .row.no-select.priority-types
+
+    .col.col-lg-4.col-md-4.offices.type{ class: "#{disable_selection_offices ? 'disabled' : ''}" }
+
+      .row.inner
+        .col.col-lg-12
+          %h3 Office Priorities
+
+          #offices-priority-container
+            - for office in @offices.sort_by(&:sort_order)
+              .row.item.noselect{data: {item: office.to_json }}
+                .col.col-xs-2.sort_order
+                  %span.count.label.label-default= office.sort_order
+                .col.col-xs-7.display_name
+                  = link_to office.name, business_office_path(@business, office)
+                .col.col-xs-3.controls
+                  %i.fa.fa-chevron-down.down
+                  %i.fa.fa-chevron-up.up
+
+        - if disable_selection_offices
+          .col.col-lg-12
+            .alert.alert-danger.info
+              Your Business has less than
+              %strong 2 Offices,
+              %br
+              check out the Offices page to Add more Offices&nbsp;
+              %br
+              %hr
+              = link_to 'Add more Offices', business_offices_path(@business), class: 'btn btn-success'
+
+    .col.col-lg-4.col-md-4.services.type{ class: "#{disable_selection_services ? 'disabled' : ''}" }
+      .row.inner
+        .col.col-lg-12
+          %h3 Services Priorities
+
+        - if disable_selection_services
+          .col.col-lg-12
+            .alert.alert-danger.info
+              Your Business has less than
+              %strong 2 Services,
+              %br
+              check out the Services page to Add more Services&nbsp;
+              %br
+              %hr
+              = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-success'
+
+        .col.col-lg-12{ class: "#{disable_selection_providers ? 'muted' : ''}" }
+          #services-priority-container
+            - for service in @services.sort_by(&:sort_order)
+              .row.item.noselect{data: { item: service.to_json }}
+                .col.col-xs-2.sort_order
+                  %span.count.label.label-default= service.sort_order
+                .col.col-xs-7.display_name
+                  = link_to service.name, business_service_path(@business, service)
+                .col.col-xs-3.controls
+                  %i.fa.fa-chevron-down.down
+                  %i.fa.fa-chevron-up.up
+
+
+    .col.col-lg-4.col-md-4.providers.type{ class: "#{disable_selection_providers ? 'disabled' : ''}" }
+      .row.inner
+        .col-lg-12
+          %h3 User Provider Priorities
+
+        - if disable_selection_providers
+          .col.col-lg-12
+            .alert.alert-danger.info
+              Your Business has less than
+              %strong 2 Service Providers,
+              %br
+              check out the User Staff page to Add more Users as Service Providers&nbsp;
+              %br
+              %hr
+              = link_to 'Add more Providers', business_users_path(@business), class: 'btn btn-success'
+
+        .col.col-lg-12{ class: "#{disable_selection_providers ? 'muted' : ''}" }
+          #providers-priority-container
+            - for user in @service_providers.sort_by(&:sort_order)
+              .row.item.noselect{data: { item: user.to_json }}
+                .col.col-xs-2.sort_order
+                  %span.count.label.label-default= user.sort_order
+                .col.col-xs-7.display_name
+                  = link_to user.display_name, business_user_path(@business, user)
+                .col.col-xs-3.controls
+                  %i.fa.fa-chevron-down.down
+                  %i.fa.fa-chevron-up.up
+
+
+
+- content_for :javascript do
+  :coffeescript
+    window.Scp ||= {}
+    window.Scp.Users = #{@service_providers.to_json}
+

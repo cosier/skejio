@@ -4,30 +4,39 @@
 %ul#settingTabs.nav.nav-tabs.hidden{:role => "tablist"}
 
   %li.active{:role => "presentation"}
+    %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#office_selection_content", :role => "tab", "data-hash" => "office-selection" } Office Selection
+
+  %li{:role => "presentation"}
     %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#service_selection_content", :role => "tab", "data-hash" => "service-selection" } Service Selection
 
   %li{:role => "presentation"}
     %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#user_selection_content", :role => "tab", "data-hash" => "user-selection" } User Selection
 
   %li{:role => "presentation"}
-    %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#user_priority_content", :role => "tab", "data-hash" => "user-priority" } User Priority
+    %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#priority_content", :role => "tab", "data-hash" => "priority" } Priority Management
 
 .tab-content.hidden
-  #service_selection_content.tab-pane.active{:role => "tabpanel"}
+
+  #office_selection_content.tab-pane.active{:role => "tabpanel"}
+    = render 'office_selection'
+
+  #service_selection_content.tab-pane{:role => "tabpanel"}
     = render 'service_selection'
 
   #user_selection_content.tab-pane{:role => "tabpanel"}
     = render 'user_selection'
 
-  #user_priority_content.tab-pane{:role => "tabpanel"}
-    = render 'user_priority'
+  #priority_content.tab-pane{:role => "tabpanel"}
+    = render 'priority'
 
 - content_for :javascript do
   = javascript_include_tag "settings/main"
+
   :coffeescript
     window.Scp ||= {}
-    window.Scp.Settings = 
+    window.Scp.Settings =
+      office_selection: #{@office_selection.to_json}
       service_selection: #{@service_selection.to_json}
       user_selection: #{@user_selection.to_json}
-      user_priority: #{@user_priority.to_json}
-  
+      user_selection_priority: #{@user_selection_priority.to_json}
+
