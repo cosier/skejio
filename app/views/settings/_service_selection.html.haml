@@ -20,7 +20,7 @@
 
       .col.col-lg-12
         .selection
-          %input{ id: "service-ask", type: :radio, name: "setting[service_selection_type]", value: 'ask', checked: ('ask' == @service_selection.value) }
+          %input{ id: "service-ask", type: :radio, name: "setting[service_selection_type]", value: 'service_ask', checked: ('service_ask' == @service_selection.value) }
         .heading
           %label{for: "service-ask"}
             First ask the Customer to Select a Category
@@ -30,7 +30,7 @@
 
       .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "service-ask-and-assume", type: :radio, name: "setting[service_selection_type]", value: 'ask_and_assume', checked: ('ask_and_assume' == @service_selection.value), disabled: disable_selection }
+          %input{ id: "service-ask-and-assume", type: :radio, name: "setting[service_selection_type]", value: 'service_ask_and_assume', checked: ('service_ask_and_assume' == @service_selection.value), disabled: disable_selection }
         .heading
           %label{for: "service-ask-and-assume"}
             Assume it is for
@@ -39,7 +39,7 @@
 
       .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "service-assume", type: :radio, name: "setting[service_selection_type]", value: 'assume', checked: ('assume' == @service_selection.value), disabled: disable_selection }
+          %input{ id: "service-assume", type: :radio, name: "setting[service_selection_type]", value: 'service_assume', checked: ('service_assume' == @service_selection.value), disabled: disable_selection }
         .heading
           %label{for: "service-assume"}
             Assume it is for

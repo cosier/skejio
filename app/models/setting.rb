@@ -69,6 +69,11 @@ class Setting < ActiveRecord::Base
     value.to_b
   end
 
+  def office_selection_type=(type)
+    self.key = OFFICE_SELECTION
+    self.value = type
+  end
+
   def service_selection_type=(type)
     self.key = SERVICE_SELECTION
     self.value = type
@@ -79,7 +84,7 @@ class Setting < ActiveRecord::Base
     self.value = type
   end
 
-  def user_priority_type=(type)
+  def user_selection_priority_type=(type)
     self.key = PRIORITY
     self.value = type
   end

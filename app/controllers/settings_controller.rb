@@ -98,7 +98,7 @@ class SettingsController < BusinessesController
   end
 
   def setting_params
-    p = params.dup[:setting]
+    p = params.require :setting
     p[:business_id] = @business.id
     p.permit!
   end

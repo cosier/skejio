@@ -30,8 +30,9 @@ body.settings {
       margin:0;
     }
   }
-  
-  .content-box.user-selection {
+
+  .content-box {
+
     .heading p {
       display:block;
     }
@@ -42,9 +43,9 @@ body.settings {
   }
 
   .content-box {
+    .office-selections > div,
     .service-selections > div {
       margin-bottom:40px;
-
     }
 
     .selection {
@@ -54,7 +55,7 @@ body.settings {
     }
     .heading {
       display:inline-block;
-      
+
       select {
         min-width:140px;
         margin-left:10px;

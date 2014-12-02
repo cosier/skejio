@@ -13,6 +13,7 @@ $ ->
   console.debug 'Settings/main.js -> init'
 
   service_selection_view = new ServiceSelectionView()
+  office_selection_view = new OfficeSelectionView()
 
   user_priority_view = new PriorityView
     el: '#providers-priority-container'

@@ -20,7 +20,7 @@
 
       .col.col-lg-12
         .selection
-          %input{ id: "office-ask", type: :radio, name: "setting[office_selection_type]", value: 'ask', checked: ('ask' == @office_selection.value) }
+          %input{ id: "office-ask", type: :radio, name: "setting[office_selection_type]", value: 'office_ask', checked: ('office_ask' == @office_selection.value) }
         .heading
           %label{for: "office-ask"}
             First ask the Customer to Select a Category
@@ -30,7 +30,7 @@
 
       .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "office-ask-and-assume", type: :radio, name: "setting[office_selection_type]", value: 'ask_and_assume', checked: ('ask_and_assume' == @office_selection.value), disabled: disable_selection }
+          %input{ id: "office-ask-and-assume", type: :radio, name: "setting[office_selection_type]", value: 'office_ask_and_assume', checked: ('office_ask_and_assume' == @office_selection.value), disabled: disable_selection }
         .heading
           %label{for: "office-ask-and-assume"}
             Assume it is for
@@ -39,7 +39,7 @@
 
       .col.col-lg-12{ class: "#{disable_selection ? 'muted' : ''}" }
         .selection
-          %input{ id: "office-assume", type: :radio, name: "setting[office_selection_type]", value: 'assume', checked: ('assume' == @office_selection.value), disabled: disable_selection }
+          %input{ id: "office-assume", type: :radio, name: "setting[office_selection_type]", value: 'office_assume', checked: ('office_assume' == @office_selection.value), disabled: disable_selection }
         .heading
           %label{for: "office-assume"}
             Assume it is for
