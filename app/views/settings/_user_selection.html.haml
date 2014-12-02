@@ -14,25 +14,26 @@
           %strong 2 Service Providers,
           check out the User Staff page to &nbsp;
           = link_to 'Add more User Providers', business_users_path(@business), class: 'btn btn-success'
+
   = simple_form_for [@business, @user_selection], url: business_setting_path(@business, @user_selection) do |f|
     %input{type: "hidden", name: "hash", value: "user-selection" }/
     .row.no-select
       - if false
-        .col-lg-12
+        .col.col-lg-12
           .alert.alert-info.info
             Your Business currently has less than
             %strong 2 Services,
             check out the Services page to &nbsp;
             = link_to 'Add more Services', business_services_path(@business), class: 'btn btn-info'
 
-      .col-lg-12
+      .col.col-lg-12
         .selection
           %input{ id: "user-full-control", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_FULL_CONTROL, checked: (Setting::USER_SELECTION_FULL_CONTROL == @user_selection.value) }
 
         .heading
           %label{for: "user-full-control"}
             Full Control
-      .col-lg-12.info
+      .col.col-lg-12.info
         %p
           Customer is provided with Service Provider (User) selection first.
           %br/
@@ -43,43 +44,46 @@
           The option to select another User or different Time will also be offered.
 
 
-      .col-lg-12
+      .col.col-lg-12
         .selection
           %input{ id: "user-express-1", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_I, checked: (Setting::USER_SELECTION_EXPRESS_I == @user_selection.value) }
 
         .heading
           %label{for: "user-express-1"}
             Express I
-      .col-lg-12.info
+      .col.col-lg-12.info
         %p
           Automatically select the provider and tell the customer the name of the service provider for each available slot.
         %p.small
           Additionally:
           Customer will be offered to select a different appointment time.
+        .options-container
 
 
-      .col-lg-12
+      .col.col-lg-12
         .selection
           %input{ id: "user-express-2", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_II, checked: ( Setting::USER_SELECTION_EXPRESS_II == @user_selection.value) }
 
         .heading
           %label{for: "user-express-2"}
             Express II
-      .col-lg-12.info
+
+      .col.col-lg-12.info
         %p
           Automatically select the provider with no mention of who the service provider will be.
         %p.small
           Additionally:
           Customer will be offered to select a different appointment time.
+        .options-container
 
-      .col-lg-12
+      .col.col-lg-12
         .selection
           %input{ id: "user-express-3", type: :radio, name: "setting[user_selection_type]", value: Setting::USER_SELECTION_EXPRESS_III, checked: (Setting::USER_SELECTION_EXPRESS_III == @user_selection.value) }
 
         .heading
           %label{for: "user-express-3"}
             Express III
-      .col-lg-12.info
+      .col.col-lg-12.info
         %p
           Customer is provided with the next available appointment for each available Service Providers
         %p.small
@@ -96,4 +100,25 @@
     %button.btn-save-service-selection.btn-default.btn{type: :submit}
       %i.fa.fa-save
         Save Preferences
+
+
+    .service-provider-options
+      .option
+        %input{ type: :hidden, name: "setting_aux[key]", value: Setting::USER_SELECTION_PRIORITY }
+        %input{ type: :hidden, name: "setting_aux[value]", value: :user_selection_priority_type }
+        %input{ id: "user-selection-priority-1",
+          type: :radio,
+          name: "setting_aux[user_selection_priority_type]",
+          value: Setting::USER_SELECTION_PRIORITY_RANDOM,
+          checked: (Setting::USER_SELECTION_PRIORITY_RANDOM == @user_selection_priority.value) }
+        %label{for: "user-selection-priority-1" } The Service Provider will be chosen at Random
+
+      .option
+        %input{ id: "user-selection-priority-2",
+          type: :radio,
+          name: "setting_aux[user_selection_priority_type]",
+          value: Setting::USER_SELECTION_PRIORITY_AUTOMATIC,
+          checked: (Setting::USER_SELECTION_PRIORITY_AUTOMATIC == @user_selection_priority.value) }
+        %label{for: "user-selection-priority-2" } Automatic Service Provider assignment (utilizes custom priority lists)
+
 

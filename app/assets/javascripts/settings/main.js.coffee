@@ -14,6 +14,7 @@ $ ->
 
   service_selection_view = new ServiceSelectionView()
   office_selection_view = new OfficeSelectionView()
+  user_selection_view = new UserSelectionView()
 
   user_priority_view = new PriorityView
     el: '#providers-priority-container'

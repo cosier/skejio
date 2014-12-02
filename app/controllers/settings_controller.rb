@@ -43,6 +43,12 @@ class SettingsController < BusinessesController
       @setting.update! setting_params
     end
 
+    if params[:setting_aux].present?
+      aux = params.require(:setting_aux).permit!
+      setting_auxilary = Setting.where(key: aux[:key]).first
+      setting_auxilary.update! value: aux[aux[:value]]
+    end
+
     hash = "##{params[:hash] || "service-selection"}"
 
     if @setting.errors.empty?

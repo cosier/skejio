@@ -7,6 +7,24 @@ body.settings {
     font-size:20px;
   }
 
+  .service-provider-options {
+    display:none;
+  }
+
+  .options-container .service-provider-options {
+    display:block;
+    border:1px solid #e1e1e1;
+    padding:10px;
+    border-radius:3px;
+    .option {
+      padding:10px;
+      label {
+        display:inline-block;
+        cursor:pointer;
+      }
+    }
+  }
+
   .tab-content {
     padding:40px 20px;
   }
