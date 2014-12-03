@@ -24,6 +24,7 @@ class Setting < ActiveRecord::Base
   validates_uniqueness_of :business_id, :scope => :key
 
   scope :business, ->(business) { where business_id: business.id }
+  scope :key, ->(key) { where key: key }
 
   # Constants for various option names
   OFFICE_SELECTION_ASK             = 'office_ask'

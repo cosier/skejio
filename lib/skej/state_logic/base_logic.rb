@@ -2,8 +2,11 @@ module Skej
   module StateLogic
     class BaseLogic
 
+      include Skej::Endpoint
+
       @@SKIP_PAYLOAD = {}
       @@DONT_THINK = {}
+      @@DRY_RUN = false
 
       # ::BaseLogic Class methods
       class << self
@@ -22,10 +25,13 @@ module Skej
 
       end
 
+      # Initializes the class with a device type and the active Session
       def initialize(opts)
-        @opts = opts
         @device = opts[:device].to_sym
         @session = opts[:session]
+
+        # Stash original opts for inspection purposes
+        @opts = opts
       end
 
       # Thinks, then returns the payload
@@ -41,23 +47,84 @@ module Skej
 
       private
 
+      def setting(key)
+        log "looking up business setting: <strong>#{key}</strong>"
+        setting = Setting.business(business).key(key).first
+        raise "Unknown Setting key:#{key}" if setting.nil?
+        setting.value
+      end
+
+      def business
+        @business ||= @session.business
+      end
+
+      def can_assume?
+        # Cache wall first
+        @can_assume ||= false
+        return true if @can_assume.present?
+
+        if self.class.name.underscore =~ /office/
+          key = Setting::OFFICE_SELECTION
+        else
+          key = Setting::SERVICE_SELECTION
+        end
+
+        # Returns TRUE if the setting contains "assume"
+        #
+        # Lookup the available Setting constants for all the
+        # various key mappings.
+        if setting(key) =~ /_assume/
+          log "can assume(<strong>#{key}</strong>)"
+          @can_assume = true
+          return true
+        else
+          log "can not assume(<strong>#{key}</strong>)"
+          return false
+        end
+      end
+
+      def can_assume_and_change?
+        if can_assume?
+
+          # Cache wall first
+          @can_assume_and_change ||= false
+          return @can_assume_and_change if @can_assume_and_change.present?
+
+          if self.class.name.underscore =~ /office/
+            key = Setting::OFFICE_SELECTION
+          else
+            key = Setting::SERVICE_SELECTION
+          end
+
+          # Returns TRUE if the setting contains "assume"
+          #
+          # Lookup the available Setting constants for all the
+          # various key mappings.
+          if setting(key) =~ /_ask_and_assume/
+            @can_assume_and_change = true
+            return true
+          end
+
+        end
+      end
+
       def advanced_state?
         @advanced_state.present?
       end
 
       # Move the Session forward to the next level / state
-      def advance!
+      def advance!(opts = {})
         log "advancing to the next transition"
+
+        # Bail and log when we are dry run testing of a particular state
+        if opts[:dry].present? and Rails.env.development?
+          log "advance! -> dry run triggered"
+          @advanced_state = true
+          return
+        end
+
         @advanced_state = @session.state.transition_next!
       end
-
-      def endpoint(data = {})
-        data.reverse_merge! :log_id => SystemLog.current_log.id, method: 'get', sub_request: 'true'
-        url = "#{ENV['PROTOCOL'].downcase}://#{ENV['HOST']}/twilio/#{data[:device] || @device}"
-        url << "?#{data.to_query.html_safe}" if data.keys.length > 0
-        url.html_safe
-      end
-
 
       # If you utilize the customer input to perform a permenanent side effect,
       # then make sure you clear the session input for the next state to behave correctly.
@@ -165,6 +232,7 @@ module Skej
         SystemLog.fact(title: self.class.name.underscore, payload: msg)
       end
 
+      # Factory for building SKej::TwiML view blocks for deferred rendering
       def build_twiml_block(meth, *args)
         klass = meth.to_s.gsub("twiml_", "skej/twiml/").classify
         klass = klass.constantize
@@ -179,6 +247,7 @@ module Skej
         instance
       end
 
+      # Strip a text string of everything except for integers
       def strip_to_int(input)
         return input unless input.present?
         return input if input[/[\d.,]+/].nil?
