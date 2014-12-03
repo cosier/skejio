@@ -10,6 +10,9 @@
       %li= link_to 'Businesses', manage_businesses_path, class: manage_sidebar_active(:businesses)
 
     - if can? :read, SystemLog
+      %li= link_to 'Twilio Stats', manage_twilio_stats_path, class: manage_sidebar_active(:twilio_stats)
+
+    - if can? :read, SystemLog
       %li= link_to 'System Logs', system_logs_path, class: manage_sidebar_active(:system_logs)
 
     -#- if can? :read, Simulator

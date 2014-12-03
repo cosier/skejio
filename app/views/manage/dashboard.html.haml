@@ -2,32 +2,5 @@
   .col-lg-12
     %h1 Super Console Dashboard
     %hr/
-.block
-  %h3 
-    Twilio Sub Accounts 
-    %span.muted LIVE API Results
-  = cache :twilio_sub_accounts, expiry: 30.minutes do
-    %table.table.table-striped
-      %thead
-        %th Friendly Name
-        %th SID
-        %th Inbound Numbers
-        %th Status
-        %th.actions
-          %i.fa.fa-cogs
-      %tbody
-        - @sub_accounts.each do |account|
-          %tr
-            %td= account.friendly_name
-            %td= account.sid
-            %td
-              - numbers = account.incoming_phone_numbers.list
-              - if numbers.empty?
-                0
-              - numbers.each do |num|
-                .number
-                  = num.phone_number
-
-            %td= account.status
-            %td
-              = link_to 'View', show_twilio_account_path(sid: account.sid), class: 'btn btn-xs btn-default'
+-#.block
+  -#%h3

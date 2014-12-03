@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     end
 
     get '/twilio/sub_account/:sid', to: 'manage#show_twilio_account', as: :show_twilio_account
+    get '/twilio/stats', to: 'manage#show_twilio_stats', as: :manage_twilio_stats
     get '/twilio/test_client', to: 'manage#show_test_client', as: :manage_test_client
 
     get '/businesses', to: 'manage_businesses#index', as: :businesses

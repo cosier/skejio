@@ -7,7 +7,6 @@ class ManageController < SecureController
   skip_load_resource
 
   def dashboard
-    @sub_accounts = Skej::Twilio.sub_accounts status: 'active'
     @current_sidebar = :dashboard
   end
 
@@ -21,6 +20,11 @@ class ManageController < SecureController
     @current_sidebar = :simulator
 
     @twilio_token = create_twilio_capability
+  end
+
+  def show_twilio_stats
+    @current_sidebar = :twilio_stats
+    @sub_accounts = Skej::Twilio.sub_accounts status: 'active'
   end
 
   private
