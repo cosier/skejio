@@ -80,11 +80,11 @@ module Skej
         #
         # Returns TRUE if the setting contains "assume"
         if setting(assume_key).value =~ /_assume/
-          log "can assume(<strong>#{key}</strong>)"
+          log "can assume(<strong>#{assume_key}</strong>)"
           @can_assume = true
           return true
         else
-          log "can not assume(<strong>#{key}</strong>)"
+          log "can not assume(<strong>#{assume_key}</strong>)"
           return false
         end
       end
@@ -251,6 +251,52 @@ module Skej
         log "building_twiml_block: #{klass.name.underscore}"
         instance = klass.new(data)
         instance
+      end
+
+      def customer_entered_yes?(defaults = {})
+        defaults.reverse_merge! voice: 1, sms: "y"
+
+        if @session.input[:Body].present?
+          # Does the sms input match our definition of yes?
+          return @session.input[:Body].include? defaults[:sms].to_s
+
+        elsif @session.input[:Digits].present?
+          # Does the voice input match our definition of yes?
+          return  @session.input[:Digits].to_i == defaults[:voice].to_i
+        end
+
+        # Does not look like the customer confirmed the action
+        return false
+      end
+
+      def process_assumptions
+        # Obtain the office defined directly on the Setting key/value — via
+        # the supportable relationship
+        @supportable = setting(assume_key).supportable
+        raise "#{@STATE_KEY.to_s.titleize} Target not found during the assumption process: #{assume_key}, business:#{@session.business.id}" unless @supportable.present?
+
+        # Business can assume and will offer change
+        # let the TwiML view blocks handle this switching
+        if can_assume_and_change?
+
+          if get["#{@@STATE_KEY}_confirming_assumption"] and not get["#{@@STATE_KEY}_customer_asked_to_change"]
+            if customer_entered_yes?
+              log 'customer entered yes: wished to change the default assumption'
+              get["#{@@STATE_KEY}_customer_asked_to_change"] = true
+            else
+              @get["chosen_#{@@STATE_KEY}_id"] = @supportable.id
+              return advance!
+            end
+          else
+            get["#{@@STATE_KEY}_confirming_assumption"] = true
+          end
+
+        # Business is set to assume and will not ask the Customer to change it.
+        else
+          # Load up the dictatorship
+          get["chosen_#{@@STATE_KEY}_id"] = @supportable.id
+          return advance!
+        end
       end
 
       # Strip a text string of everything except for integers

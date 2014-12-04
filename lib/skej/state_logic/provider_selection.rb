@@ -2,6 +2,8 @@ module Skej
   module StateLogic
     class ProviderSelection < BaseLogic
 
+      @@STATE_KEY = :provider
+
       def think
 
         @providers = @session.business.available_providers.to_a

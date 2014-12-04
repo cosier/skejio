@@ -2,6 +2,8 @@ module Skej
   module StateLogic
     class ServiceSelection < BaseLogic
 
+      @@STATE_KEY = :service
+
       def think
         @services = @session.business.available_services.to_a
         @services_ordered = {}

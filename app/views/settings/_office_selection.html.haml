@@ -7,6 +7,7 @@
 .content-box
   = simple_form_for [@business, @office_selection], url: business_setting_path(@business, @office_selection) do |f|
     %input{type: "hidden", name: "hash", value: "office-selection" }/
+    %input{type: "hidden", name: "setting[supportable_type]", value: "Office" }/
     - disable_selection =  @offices.length > 1 ? false : true
 
     .row.office-selections.no-select

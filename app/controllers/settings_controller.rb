@@ -92,10 +92,18 @@ class SettingsController < BusinessesController
         business_id: @business.id,
         default_value: Setting::USER_SELECTION_PRIORITY_RANDOM
 
-
       @service_providers = PrioritySorter.sort! User.business(@business).service_providers
       @services = PrioritySorter.sort! Service.business(@business)
       @offices = PrioritySorter.sort! Office.business(@business)
+
+      if @office_selection.supportable.nil?
+        @office_selection.update! supportable_type: 'Office', supportable_id: @offices.first
+      end
+
+      if @service_selection.supportable.nil?
+        @service_selection.update! supportable_type: 'Service', supportable_id: @services.first
+      end
+
     end
   end
 

@@ -5,6 +5,7 @@ module Skej
       # Toggle this to true for debugging purposes,
       # which disables advancement to the next state— allowing tight testing
       @@DRY_RUN = true
+      @@STATE_KEY = :office
 
       def think
 
@@ -26,29 +27,20 @@ module Skej
           return advance!
         end
 
-
         # Early bail out if already completed
-        if get[:office_selection] and get[:office_selection].to_sym == :complete
+        if get[:office_selection].present? and get[:chosen_office_id].present?
           log "Office selection already complete"
-
           # ADVANCE
-          advance!
+          return advance!
         end
 
-        if can_assume_and_change?
-          # Business can assume and will offer change
-
-        else if can_assume?
-          # Business is set to assume and will not ask the Customer to change it.
-          @chosen_office = setting(assume_key).supportable
-          binding.pry
-          # Load up the dictatorship
-          get[:chosen_office_id] = @chosen_office.id
-
-          advance!
+        if can_assume?
+          process_assumptions
+        else
+          # Process any input (digits or text body), and match it to the ordered collection
+          process_input
         end
 
-        process_input
       end
 
       # Handle Customer Input — advancement logic
@@ -83,12 +75,18 @@ module Skej
       end
 
       def sms_and_voice
+        data = { offices: @offices_ordered, default: @chosen_office }
+
+        if get[:office_customer_asked_to_change].present?
+          data[:ask] = true
+        end
+
         if @bad_selection and @digits.present?
           # Show a sorry, incorrect input page and ask again
-          twiml_repeat_office_selection offices: @offices_ordered
+          twiml_repeat_office_selection(data)
         else
           # Just render normal menu selection
-          twiml_ask_office_selection offices: @offices_ordered
+          twiml_ask_office_selection(data)
         end
       end
 

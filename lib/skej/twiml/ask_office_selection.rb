@@ -4,13 +4,19 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Please select a Office for your Appointment"
+          if options[:default].present? and options[:ask].nil?
+            b.Message """We have chosen the office #{options[:default].name} for you.
+            \n Would you like to like to change it? (enter yes/no)"""
+          else
+            b.Message "Please select a Office for your Appointment"
 
-          office_choices = ""
-          options[:offices].map do |index, office|
-            office_choices << "Enter #{index} for #{office.name} \n"
+            office_choices = ""
+            options[:offices].map do |index, office|
+              office_choices << "Enter #{index} for #{office.name} \n"
+            end
+            b.Message office_choices
           end
-          b.Message office_choices
+
         end
       end
 
