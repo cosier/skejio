@@ -21,21 +21,36 @@ module Skej
 
       def voice(session)
         build_twiml do |b|
-          b.Gather action: endpoint(gathering: true), maxlength: 10, timeout: 120,  finishOnKey: "#", method: 'get' do |g|
+          option_length = Math.log10(options[:offices].length).to_i + 1
 
-            g.Pause length: 1
-            g.Say "Please select a Office for your Appointment"
-            g.Pause length: 1
-            g.Say "Followed by the pound key to continue"
-            g.Pause length: 2
+          b.Gather action: endpoint(gathering: true), maxlength: option_length , timeout: 10,  finishOnKey: "#", method: 'get' do |g|
 
-            options[:offices].map do |index, office|
-              g.Say "Enter #{index} for #{office.name} ...."
+            if options[:office_confirming_assumption].present? and not options[:ask].present?
+              log "Asking the Customer for Assumption confirmation"
+              g.Say "We have chosen the office #{options[:default].name} for you. ...."
+              g.Say "Press 1 to change this office ...."
+              g.Say "Press 2 to keep this office ...."
+              g.Say "When you are finished, ... press the pound key to continue ..."
+
+            else
+              log "Asking the Customer for Office Selection"
+
+              g.Say "Please select a Office for your Appointment ...."
+              g.Say "Followed by the pound key to continue"
+              g.Pause length: 2
+
+              options[:offices].map do |index, office|
+                g.Say "Enter #{index} for #{office.name} ...."
+              end
+
+              g.Pause length: 1
+              g.Say "Press the pound key to listen to the available Offices again"
             end
 
-            g.Pause length: 1
-            g.Say "Press the pound key to listen to the available Offices again"
-          end
+          end # b.Gather
+
+          # Fallback to a retry loop when the Customer times out
+          b.Redirect endpoint
         end
       end
 

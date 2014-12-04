@@ -16,7 +16,7 @@ module Skej
 
       def voice(session)
         build_twiml do |b|
-          b.Gather action: endpoint(gathering: true), maxlength: 10, timeout: 120,  finishOnKey: "#", method: 'get' do |g|
+          b.Gather action: endpoint(gathering: true), maxlength: 10, timeout: 10,  finishOnKey: "#", method: 'get' do |g|
 
             g.Pause length: 1
             g.Say "Please select a Provider for your Appointment"
@@ -30,7 +30,10 @@ module Skej
 
             g.Pause length: 1
             g.Say "Press the pound key to listen to the available Providers again"
-          end
+          end # b.Gather
+
+          # Fallback to a retry loop when the Customer times out
+          b.Redirect endpoint
         end
       end
 

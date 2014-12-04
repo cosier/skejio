@@ -27,13 +27,8 @@ module Skej
 
       end
 
-      def sms
-        log "SMS — asking for customer name"
-        twiml_ask_customer_name
-      end
-
-      def voice
-        log "VOICE — asking for customer name"
+      def sms_and_voice
+        log "asking for customer name"
         twiml_ask_customer_name
       end
 

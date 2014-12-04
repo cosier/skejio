@@ -32,7 +32,10 @@ module Skej
 
             g.Pause length: 1
             g.Say "Press the pound key to listen to the available Services again"
-          end
+          end # b.Gather
+
+          # Fallback to a retry loop when the Customer times out
+          b.Redirect endpoint
         end
       end
 

@@ -59,13 +59,14 @@ class LiveSchedulerController < ApplicationController
   ################################################################
   # Step 4
   def register_session
-    # Resume session only for sub requests, or requests routed to the *sms* action
-    if params[:sub_request].present? || params[:action].to_sym == :sms
+    # Explicit new session only for Calls that are "ringing"
+    if params[:CallStatus] and params[:CallStatus].downcase =~ /ringing/
+      # Creates a brand new Session for this Customer & Business.
+      # A new record will always be created, regardless if an existing on exists.
+      @session = SchedulerSession.fresh(@customer, @business)
+    else
       # Will either load existing or create a new one
       @session = SchedulerSession.load(@customer, @business)
-    else
-      # Creates a brand new Session for this Customer & Business
-      @session = SchedulerSession.fresh(@customer, @business)
     end
 
     # Associate the newly created/loaded Session with the current SystemLog

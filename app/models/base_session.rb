@@ -24,7 +24,7 @@ class BaseSession < ActiveRecord::Base
       sesh   = false
       query  = { customer_id: customer.id, business_id: business.id }
 
-      existing = self.where(query).first
+      existing = self.order(created_at: :desc).where(query).first
       log_title = self.name.underscore
 
       if existing
