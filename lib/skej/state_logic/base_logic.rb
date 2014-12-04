@@ -23,6 +23,10 @@ module Skej
           @@DONT_THINK[self.name.underscore] = true
         end
 
+        def state_key(key)
+          @@STATE_KEY = key.to_sym
+        end
+
       end
 
       # Initializes the class with a device type and the active Session
@@ -48,14 +52,23 @@ module Skej
       private
 
       def setting(key)
+        @setting_cache ||= {}
+        return @setting_cache[key] if @setting_cache[key].present?
+
         log "looking up business setting: <strong>#{key}</strong>"
         setting = Setting.business(business).key(key).first
         raise "Unknown Setting key:#{key}" if setting.nil?
+
+        @setting_cache[key] = setting
         setting
       end
 
       def business
         @business ||= @session.business
+      end
+
+      def state
+        @@STATE_KEY ||= self.class.name.underscore.gsub!('skej/state_logic/','').split('_').first.to_sym
       end
 
       def assume_key
@@ -96,17 +109,12 @@ module Skej
           @can_assume_and_change ||= false
           return @can_assume_and_change if @can_assume_and_change.present?
 
-          if self.class.name.underscore =~ /office/
-            key = Setting::OFFICE_SELECTION
-          else
-            key = Setting::SERVICE_SELECTION
-          end
-
           # Returns TRUE if the setting contains "assume"
           #
           # Lookup the available Setting constants for all the
           # various key mappings.
-          if setting(key) =~ /_ask_and_assume/
+          if setting(assume_key).value =~ /_ask_and_assume/
+            log "can assume(<strong>#{assume_key}</strong>) and <strong>change</strong>"
             @can_assume_and_change = true
             return true
           end
@@ -120,6 +128,8 @@ module Skej
 
       # Move the Session forward to the next level / state
       def advance!(opts = {})
+        @session.update_meta_store!
+
         log "advancing to the next transition"
 
         # Bail and log when we are dry run testing of a particular state
@@ -129,6 +139,7 @@ module Skej
           return
         end
 
+        mark_state_complete!
         @advanced_state = @session.state.transition_next!
       end
 
@@ -253,6 +264,10 @@ module Skej
         instance
       end
 
+      def customer_entered_no?(defaults = {})
+        customer_entered_yes?(voice: 2, sms: "n")
+      end
+
       def customer_entered_yes?(defaults = {})
         defaults.reverse_merge! voice: 1, sms: "y"
 
@@ -273,30 +288,60 @@ module Skej
         # Obtain the office defined directly on the Setting key/value — via
         # the supportable relationship
         @supportable = setting(assume_key).supportable
-        raise "#{@STATE_KEY.to_s.titleize} Target not found during the assumption process: #{assume_key}, business:#{@session.business.id}" unless @supportable.present?
+        raise "#{state.to_s.titleize} Target not found during the assumption process: #{assume_key}, business:#{@session.business.id}" unless @supportable.present?
 
+        ##################################################################
         # Business can assume and will offer change
         # let the TwiML view blocks handle this switching
-        if can_assume_and_change?
-
-          if get["#{@@STATE_KEY}_confirming_assumption"] and not get["#{@@STATE_KEY}_customer_asked_to_change"]
+        if can_assume_and_change? and not get["#{state}_customer_asked_to_change"]
+          if get["#{state}_confirming_assumption"]
             if customer_entered_yes?
               log 'customer entered yes: wished to change the default assumption'
-              get["#{@@STATE_KEY}_customer_asked_to_change"] = true
-            else
-              @get["chosen_#{@@STATE_KEY}_id"] = @supportable.id
+              get["#{state}_customer_asked_to_change"] = true
+
+            elsif customer_entered_no?
+              log 'customer entered no: proceeding to the next state'
+              get["#{state}_customer_asked_to_change"] = false
+              get["chosen_#{state}_id"] = @supportable.id
+
+              clear_session_input!
+
+              # ADVANCE
               return advance!
+
+            else
+              log "customer entered unknown input: #{@session.input[:Body] || @session.input[:Digits]}"
+              get["#{state}_customer_asked_to_change"] = true
             end
           else
-            get["#{@@STATE_KEY}_confirming_assumption"] = true
+            log "attempting to ask the Customer for Assumption confirmation"
+            get["#{state}_confirming_assumption"] = true
           end
 
+          @session.update_meta_store!
+
+        ##################################################################
+        elsif get["#{state}_customer_asked_to_change"]
+          log "processing normal selection input"
+          # run normal input processing for this state, to process the new selection.
+          process_input
+
+        ##################################################################
         # Business is set to assume and will not ask the Customer to change it.
         else
+          log "can_assume!"
+
           # Load up the dictatorship
-          get["chosen_#{@@STATE_KEY}_id"] = @supportable.id
+          get["chosen_#{state}_id"] = @supportable.id
+          get["#{state}_customer_asked_to_change"] = false
+          clear_session_input!
           return advance!
         end
+      end
+
+      def mark_state_complete!
+        get["#{state}_selection"] = :complete
+        get["#{state}"] = :complete
       end
 
       # Strip a text string of everything except for integers

@@ -4,8 +4,7 @@ module Skej
 
       # Toggle this to true for debugging purposes,
       # which disables advancement to the next state— allowing tight testing
-      @@DRY_RUN = true
-      @@STATE_KEY = :office
+      state_key :office
 
       def think
 
@@ -75,7 +74,11 @@ module Skej
       end
 
       def sms_and_voice
-        data = { offices: @offices_ordered, default: @chosen_office }
+        data = {
+          offices: @offices_ordered,
+          default: @chosen_office || @supportable,
+          sanity: true
+        }.reverse_merge!(get.symbolize_keys)
 
         if get[:office_customer_asked_to_change].present?
           data[:ask] = true

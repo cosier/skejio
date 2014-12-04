@@ -92,6 +92,15 @@ class BaseSession < ActiveRecord::Base
     state_machine
   end
 
+  def update_meta_store
+    self.meta = JSON.generate(store)
+  end
+
+  def update_meta_store!
+    update_meta_store
+    self.save!
+  end
+
   private
 
   # Mini Logic factory
@@ -100,10 +109,6 @@ class BaseSession < ActiveRecord::Base
     klass = "Skej::StateLogic::#{state.classify}".constantize
     engine = klass.new(session: self, device: device)
     engine
-  end
-
-  def update_meta_store
-    self.meta = JSON.generate(store)
   end
 
   def log(msg)

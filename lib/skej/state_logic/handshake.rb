@@ -1,6 +1,7 @@
 module Skej
   module StateLogic
     class Handshake < BaseLogic
+      state_key :handshake
 
       def think
 

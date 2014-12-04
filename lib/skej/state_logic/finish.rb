@@ -2,6 +2,8 @@ module Skej
   module StateLogic
     class Finish < BaseLogic
 
+      state_key :finish
+
       def think
         log "Congratulations, we're Finished booking your next appointment!"
       end
