@@ -23,7 +23,7 @@ module Skej
           get[:office_selection] = :complete
 
           # ADVANCE
-          return advance! dry: @@DRY_RUN
+          return advance!
         end
 
 
@@ -32,7 +32,20 @@ module Skej
           log "Office selection already complete"
 
           # ADVANCE
-          advance! dry: @@DRY_RUN
+          advance!
+        end
+
+        if can_assume_and_change?
+          # Business can assume and will offer change
+
+        else if can_assume?
+          # Business is set to assume and will not ask the Customer to change it.
+          @chosen_office = setting(assume_key).supportable
+          binding.pry
+          # Load up the dictatorship
+          get[:chosen_office_id] = @chosen_office.id
+
+          advance!
         end
 
         process_input
@@ -59,7 +72,7 @@ module Skej
             clear_session_input!
 
             # ADVANCE
-            advance! dry: @@DRY_RUN
+            advance!
 
           else
             @bad_selection = true

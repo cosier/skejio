@@ -51,11 +51,23 @@ module Skej
         log "looking up business setting: <strong>#{key}</strong>"
         setting = Setting.business(business).key(key).first
         raise "Unknown Setting key:#{key}" if setting.nil?
-        setting.value
+        setting
       end
 
       def business
         @business ||= @session.business
+      end
+
+      def assume_key
+        # Determine the correct key we need to check.
+        # We have only two potential values here, see usage below.
+        #
+        # Check if the class name (underscore'd) contains "office"
+        if self.class.name.underscore =~ /office/
+          key = Setting::OFFICE_SELECTION
+        else
+          key = Setting::SERVICE_SELECTION
+        end
       end
 
       def can_assume?
@@ -63,17 +75,11 @@ module Skej
         @can_assume ||= false
         return true if @can_assume.present?
 
-        if self.class.name.underscore =~ /office/
-          key = Setting::OFFICE_SELECTION
-        else
-          key = Setting::SERVICE_SELECTION
-        end
-
-        # Returns TRUE if the setting contains "assume"
-        #
         # Lookup the available Setting constants for all the
         # various key mappings.
-        if setting(key) =~ /_assume/
+        #
+        # Returns TRUE if the setting contains "assume"
+        if setting(assume_key).value =~ /_assume/
           log "can assume(<strong>#{key}</strong>)"
           @can_assume = true
           return true
