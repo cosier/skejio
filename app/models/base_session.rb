@@ -22,7 +22,12 @@ class BaseSession < ActiveRecord::Base
 
     def load(customer, business)
       sesh   = false
-      query  = { customer_id: customer.id, business_id: business.id }
+
+      # Find a session specific to this:
+      # Business, Customer and within the last hour
+      query  = { customer_id: customer.id,
+                 business_id: business.id,
+                 updated_at: 1.hour.ago..DateTime.now }
 
       existing = self.order(created_at: :desc).where(query).first
       log_title = self.name.underscore
