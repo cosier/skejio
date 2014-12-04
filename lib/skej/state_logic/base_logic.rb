@@ -305,8 +305,6 @@ module Skej
             clear_session_input!
             @session.update_meta_store!
 
-            binding.pry
-
             # ADVANCE
             advance!
 
