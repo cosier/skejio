@@ -4,13 +4,19 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Please select a Service for your Appointment"
+          if options[:service_confirming_assumption].present? and not options[:ask].present?
+            b.Message """We have chosen the service #{options[:default].name} for you.
+            \n Would you like to like to change it? (enter yes/no)"""
 
-          service_choices = ""
-          options[:services].map do |index, service|
-            service_choices << "Enter #{index} for #{service.name} \n"
+          else
+            service_choices = "Please select a Service for your Appointment:\n"
+            options[:services].map do |index, service|
+              service_choices << "Enter #{index} for #{service.name} \n"
+            end
+
+            b.Message service_choices
           end
-          b.Message service_choices
+
         end
       end
 

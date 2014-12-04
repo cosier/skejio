@@ -9,9 +9,7 @@ module Skej
             \n Would you like to like to change it? (enter yes/no)"""
 
           else
-            b.Message "Please select a Office for your Appointment"
-
-            office_choices = ""
+            office_choices = "Please select a Office for your Appointment:\n"
             options[:offices].map do |index, office|
               office_choices << "Enter #{index} for #{office.name} \n"
             end

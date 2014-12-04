@@ -24,7 +24,7 @@ module Skej
         end
 
         def state_key(key)
-          @@STATE_KEY = key.to_sym
+          # Deprecated
         end
 
       end
@@ -68,7 +68,7 @@ module Skej
       end
 
       def state
-        @@STATE_KEY ||= self.class.name.underscore.gsub!('skej/state_logic/','').split('_').first.to_sym
+        @STATE_KEY ||= self.class.name.underscore.gsub!('skej/state_logic/','').split('_').first.to_sym
       end
 
       def assume_key
@@ -284,7 +284,42 @@ module Skej
         return false
       end
 
+      # Handle Customer Input — advancement logic
+      def process_input
+        @digits = @session.input[:Digits] || strip_to_int(@session.input[:Body])
+
+        # Attempt processing of the digits
+        if @digits.present?
+          log "Processing Customer Input Digits: <strong>#{@digits}</strong>"
+
+          if @supportable = @ordered[@digits.to_i]
+            log "Customer has Selected #{state.to_s.titleize}: <strong>#{@supportable.display_name}</strong>"
+
+            # Mark the state as complete— allowing the Guards to pass us
+            get["#{state}_selection"] = :complete
+
+            # Assign the Chosen office id to the Session meta store
+            get["chosen_#{state}_id"] = @supportable.id
+
+            # Since we utilized the input, we must clear
+            clear_session_input!
+            @session.update_meta_store!
+
+            binding.pry
+
+            # ADVANCE
+            advance!
+
+          else
+            @bad_selection = true
+            log "Oops, selection(#{@digits}) was not matched to any available Office"
+          end
+        end
+      end
+
+      # Handle any model assumptions on selections (based on business settings)
       def process_assumptions
+
         # Obtain the office defined directly on the Setting key/value — via
         # the supportable relationship
         @supportable = setting(assume_key).supportable

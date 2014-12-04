@@ -2,24 +2,20 @@ module Skej
   module StateLogic
     class ServiceSelection < BaseLogic
 
-      @@STATE_KEY = :service
-
       def think
         @services = @session.business.available_services.to_a
-        @services_ordered = {}
-        @human_readable_services = []
+        @ordered = {}
 
         @services.each_with_index do |service, index|
-          @services_ordered[index + 1] = service
-          @human_readable_services << "#{index + 1} - #{service.name}"
+          @ordered[index + 1] = service
         end
 
         @digits = @session.input[:Digits] || strip_to_int(@session.input[:Body])
 
         # Early bail out if already completed
-        if get[:service_selection] and get[:service_selection].to_sym == :complete
+        if get[:service_selection].present? and get[:chosen_service_id].present?
           log "Service selection already complete"
-          advance!
+          return advance!
         end
 
         # Automatic pass, not enough offices to choose from.
@@ -30,35 +26,32 @@ module Skej
           return advance!
         end
 
-        # Attempt processing of the digits
-        if @digits.present?
-          log "Processing Customer Input Digits: <strong>#{@digits}</strong>"
-
-          if @chosen_service = @services_ordered[@digits.to_i]
-            log "Customer has Selected Service: <strong>#{@chosen_service.display_name}</strong>"
-
-            get[:service_selection] = :complete
-            get[:chosen_service_id] = @chosen_service.id
-
-            # Since we utilized the input, we must clear
-            clear_session_input!
-            advance!
-          else
-            @bad_selection = true
-            log "Available Services: <br/>#{@human_readable_services.to_json}"
-            log "Oops, selection(#{@digits}) was not matched to any available Service"
-          end
+        if can_assume?
+          process_assumptions
+        else
+          # Process any input (digits or text body), and match it to the ordered collection
+          process_input
         end
 
       end
 
       def sms_and_voice
+        data = {
+          services: @ordered,
+          default: @supportable,
+          sanity: true
+        }.reverse_merge!(get.symbolize_keys)
+
+        if get[:service_customer_asked_to_change].present?
+          data[:ask] = true
+        end
+
         if @bad_selection and @digits.present?
           # Show a sorry, incorrect input page and ask again
-          twiml_repeat_service_selection services: @services_ordered
+          twiml_repeat_service_selection(data)
         else
           # Just render normal menu selection
-          twiml_ask_service_selection services: @services_ordered
+          twiml_ask_service_selection(data)
         end
       end
 
