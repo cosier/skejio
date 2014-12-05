@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141206055427) do
+ActiveRecord::Schema.define(version: 20141206060228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,18 @@ ActiveRecord::Schema.define(version: 20141206055427) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "appointment_selection_transitions", force: true do |t|
+    t.string   "to_state",                                      null: false
+    t.text     "metadata",                       default: "{}"
+    t.integer  "sort_key",                                      null: false
+    t.integer  "appointment_selection_state_id",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "appointment_selection_transitions", ["appointment_selection_state_id"], name: "unique_transition_appointments", using: :btree
+  add_index "appointment_selection_transitions", ["sort_key", "appointment_selection_state_id"], name: "unique_transition_appointments_sorted", unique: true, using: :btree
 
   create_table "break_offices", force: true do |t|
     t.integer  "break_shift_id"
