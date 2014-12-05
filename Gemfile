@@ -94,6 +94,9 @@ gem 'paper_trail', '~> 3.0.6'
 # Add bool conversion
 gem 'wannabe_bool'
 
+# Logging tooling
+gem 'json-compare'
+
 # Use evented thin server
 gem 'thin'
 gem 'request_store'

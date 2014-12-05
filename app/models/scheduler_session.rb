@@ -16,7 +16,7 @@ class SchedulerSession < BaseSession
   belongs_to :customer
   belongs_to :business
 
-  #has_paper_trail
+  has_paper_trail
   has_many :scheduler_session_transitions
 
   has_many :transitions,
@@ -24,10 +24,31 @@ class SchedulerSession < BaseSession
     foreign_key: 'scheduler_session_id'
 
   #validates_uniqueness_of :customer_id, :scope => :business_id
+  after_save :log_changes
 
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
   end
+
+  private
+
+  def log_changes
+    if v = versions.last and v.event == "update" and v.changeset.present? and self.changed?
+      meta = v.changeset["meta"]
+      before = JSON.parse(meta.first)
+      after  = JSON.parse(meta.last)
+      diff = {}
+
+      after.map do |k,v|
+        diff[k] = v if before[k] != after[k]
+      end
+
+      formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '')
+      log "session changes: <br/>\n<pre>#{formatted_json}</pre>"
+    end
+  end
+
+
 
 
 end
