@@ -11,11 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205045442) do
+ActiveRecord::Schema.define(version: 20141206055427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "appointment_selection_states", force: true do |t|
+    t.integer  "scheduler_session_id", null: false
+    t.integer  "business_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "break_offices", force: true do |t|
     t.integer  "break_shift_id"
