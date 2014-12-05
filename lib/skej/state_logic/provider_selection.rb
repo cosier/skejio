@@ -33,6 +33,13 @@ module Skej
           return advance!
         end
 
+
+        unless setting(:user_selection).user_selection_full_control?
+          log "Business setting for User_Selection is <strong>not FULL_CONTROL<strong>— skipping explicit provider selection"
+          get[:provider_selection] = :complete
+          return advance!
+        end
+
         # Attempt processing of the digits
         if @digits.present?
           log "Processing Customer Input Digits: <strong>#{@digits}</strong>"

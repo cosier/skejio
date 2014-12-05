@@ -90,4 +90,8 @@ class Setting < ActiveRecord::Base
     self.value = type
   end
 
+  def user_selection_full_control?
+    value == USER_SELECTION_FULL_CONTROL
+  end
+
 end
