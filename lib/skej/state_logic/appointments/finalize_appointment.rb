@@ -1,4 +1,4 @@
-class Skej::StateLogic::Appointments::Handshake
+class Skej::StateLogic::Appointments::FinalizeAppointment < Skej::StateLogic::BaseLogic
   def think
   end
 end

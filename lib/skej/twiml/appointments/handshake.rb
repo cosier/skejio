@@ -1,12 +1,13 @@
 class Skej::Twiml::Appointments::Handshake < Skej::Twiml::BaseTwiml
 
-    def sms
+    def sms(session)
+      binding.pry
       build_twiml do |b|
         b.Message "Welcome to Appointment Selection"
       end
     end
 
-    def voice
+    def voice(session)
       build_twiml do |b|
         b.Say "Welcome to Appointment Selection"
       end
