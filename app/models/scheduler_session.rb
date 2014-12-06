@@ -25,6 +25,8 @@ class SchedulerSession < BaseSession
     foreign_key: 'scheduler_session_id'
 
   has_many :appointment_selection_states
+  has_one  :appointment_selection_state
+  alias_attribute :apt, :appointment_selection_state
 
   #validates_uniqueness_of :customer_id, :scope => :business_id
   after_save :log_changes
@@ -33,6 +35,18 @@ class SchedulerSession < BaseSession
 
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
+  end
+
+  def chosen_office
+    Office.where(business_id: business_id, id: store[:chosen_office_id]).first
+  end
+
+  def chosen_provider
+    User.where(business_id: business_id, id: store[:chosen_provider_id]).first
+  end
+
+  def chosen_service
+    Service.where(business_id: business_id, id: store[:chosen_service_id]).first
   end
 
   private
