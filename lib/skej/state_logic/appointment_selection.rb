@@ -8,12 +8,21 @@ module Skej
         @appointment.logic.process!
       end
 
-      # Dynamically dispatch to the renderer
-      # based on the current_state
+      # Dynamically dispatch to the renderer— provided by the logic module
       def sms_and_voice
-        now = @appointment.current_state.to_sym
         # Dispatch!
-        self.send "twiml_appointments_#{now}"
+        if @appointment.logic.respond_to? :sms_and_voice
+          @appointment.logic.sms_and_voice
+
+        elsif @session.sms?
+          @appointment.logic.sms
+
+        elsif @session.voice?
+          @appointment.logic.voice
+
+        else
+          raise "Unmatched sms/voice dispatch to sub appointment logic gate"
+        end
       end
 
     end
