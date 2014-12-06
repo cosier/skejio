@@ -29,6 +29,8 @@ class SchedulerSession < BaseSession
   #validates_uniqueness_of :customer_id, :scope => :business_id
   after_save :log_changes
 
+  enum device_type: [:voice, :sms]
+
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
   end

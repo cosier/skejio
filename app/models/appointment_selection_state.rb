@@ -7,14 +7,19 @@
 #  business_id          :integer
 #  created_at           :datetime
 #  updated_at           :datetime
+#  meta                 :text
+#  device_type          :integer
 #
 
 class AppointmentSelectionState < BaseSession
   has_paper_trail
 
+  # Instance level storage of the device/request-type at hand
+  # (:sms, :voice)
+  attr_accessor :device
+
   belongs_to :scheduler_session
   belongs_to :business
-
 
   has_many :appointment_selection_transitions
   enum device_type: [:voice, :sms]
@@ -33,7 +38,7 @@ class AppointmentSelectionState < BaseSession
 
       # load this instance's device paramter from the original
       # session request
-      appointment.device = session.device
+      appointment.device_type = session.device_type
 
       # Here's an AppointmentSelectionState ready to go!
       appointment

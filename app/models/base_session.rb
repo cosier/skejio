@@ -5,8 +5,6 @@ class BaseSession < ActiveRecord::Base
   # This is an abstract parent class to provide basic Session functionality
   self.abstract_class = true
 
-  enum device_type: [:voice, :sms]
-
   # expose the state machine more naturally
   delegate :current_state,
     :process_state!,
@@ -33,10 +31,10 @@ class BaseSession < ActiveRecord::Base
 
       if existing
         sesh = existing
-        SystemLog.fact(title: log_title, payload: "loaded -> ID:##{sesh.id}")
+        SystemLog.fact(title: self.name.underscore, payload: "loaded -> ID:##{sesh.id}")
       else
         sesh = self.create! query
-        SystemLog.fact title: log_title, payload: "created -> ID:##{sesh.id}"
+        SystemLog.fact title: self.name.underscore, payload: "created -> ID:##{sesh.id}"
       end
 
       # seshion is now ready for use!
