@@ -251,7 +251,13 @@ module Skej
 
       # Factory for building SKej::TwiML view blocks for deferred rendering
       def build_twiml_block(meth, *args)
-        klass = meth.to_s.gsub("twiml_", "skej/twiml/").classify
+        if meth =~ /twiml_appointments_/
+          klass = meth.to_s.gsub("twiml_appointments_", "skej/twiml/appointments/").classify
+        else
+          klass = meth.to_s.gsub("twiml_", "skej/twiml/").classify
+        end
+
+        # Make it real here
         klass = klass.constantize
 
         data = { device: @device, session: @session }
