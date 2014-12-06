@@ -51,6 +51,10 @@ module Skej
 
       private
 
+      def offset
+        @session.chosen_office.time_zone
+      end
+
       def setting(key)
         @setting_cache ||= {}
         return @setting_cache[key] if @setting_cache[key].present?
