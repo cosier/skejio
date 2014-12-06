@@ -30,7 +30,6 @@ class BaseSession < ActiveRecord::Base
                  updated_at: 1.hour.ago..DateTime.now }
 
       existing = self.order(created_at: :desc).where(query).first
-      log_title = self.name.underscore
 
       if existing
         sesh = existing
@@ -65,7 +64,7 @@ class BaseSession < ActiveRecord::Base
 
   def store
     # Hit the instance variable cache
-    # Hit the Json meta field backing store
+    # Hit the Json eta field backing store
     # Instantiate a new fresh hash for the Session
     @store ||= ActiveSupport::HashWithIndifferentAccess.new((self.meta.present? and JSON.parse(self.meta)) || {})
 
@@ -110,8 +109,7 @@ class BaseSession < ActiveRecord::Base
 
   # Mini Logic factory
   def logic_engine(device)
-    state = self.current_state
-    klass = "Skej::StateLogic::#{state.classify}".constantize
+    klass = "Skej::StateLogic::#{current_state.classify}".constantize
     engine = klass.new(session: self, device: device)
     engine
   end

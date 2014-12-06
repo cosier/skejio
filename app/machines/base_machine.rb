@@ -48,15 +48,25 @@ class BaseMachine
   end # End class methods
   #################################
 
+  # Global before / after hooks
+
+  # Log every transition attempted
+  before_transition do |object, transition|
+    log "transitioning from: #{object.current_state}"
+  end
+
+  # Log every transition complete
+  after_transition do |object, transition|
+    key = object.current_state.to_sym
+    log "transitioned to: <strong>#{key}</strong>"
+
+    # Run the logic processing
+    object.logic.process!
+  end
+
   # Engage the next state, or retry the current state upon transition failure
   def process!
-    state = @object.current_state.to_sym
     session.logic.process!
-    #state_priority = @@PRIORITY_BY_STATE[state] || 0
-    #target = @@STATES_BY_PRIORITY[ state_priority + 1 ]
-
-    #log "attempting to transition to: #{target}"
-    #transition_to target
   end
 
   def transition_next!
