@@ -3,7 +3,6 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     @apt   = @session.appointment_selection_state
     @state = @apt.state
 
-    offset = @session.chosen_office.time_zone
     input = @apt.store[:input_date].to_datetime.change(offset: offset) rescue nil
 
     # Load SMS users first initial date decoding
@@ -23,4 +22,9 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     end
 
   end
+
+  def sms_and_voice
+    twiml_appointment_handshake
+  end
+
 end

@@ -51,6 +51,10 @@ module Skej
 
       private
 
+      def user_input?
+        @session.input[:Body].present? || @session.input[:Digits].present?
+      end
+
       def offset
         @session.chosen_office.time_zone
       end

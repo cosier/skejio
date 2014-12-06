@@ -8,21 +8,9 @@ module Skej
         @appointment.logic.process!
       end
 
-      # Dynamically dispatch to the renderer— provided by the logic module
       def sms_and_voice
-        # Dispatch!
-        if @appointment.logic.respond_to? :sms_and_voice
-          @appointment.logic.sms_and_voice
-
-        elsif @session.sms?
-          @appointment.logic.sms
-
-        elsif @session.voice?
-          @appointment.logic.voice
-
-        else
-          raise "Unmatched sms/voice dispatch to sub appointment logic gate"
-        end
+        # Delegate to the logic renderer
+        @appointment.logic.render
       end
 
     end

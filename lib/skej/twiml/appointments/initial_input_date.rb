@@ -1,4 +1,4 @@
-class Skej::Twiml::Appointments::InitialDateInput < Skej::Twiml::BaseTwiml
+class Skej::Twiml::Appointments::InitialInputDate < Skej::Twiml::BaseTwiml
 
     def sms(session)
       build_twiml do |b|
