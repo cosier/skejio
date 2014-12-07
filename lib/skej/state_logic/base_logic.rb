@@ -52,7 +52,11 @@ module Skej
       private
 
       def user_input?
-        @session.input[:Body].present? || @session.input[:Digits].present?
+        params[:Body].present? || params[:Digits].present?
+      end
+
+      def params
+        RequestStore.store[:params]
       end
 
       def offset
@@ -159,8 +163,10 @@ module Skej
       # contaminated.
       def clear_session_input!
         log "clearing session input to avoid state contamination"
-        @session.input.delete :Digits
-        @session.input.delete :Body
+        @session.input.delete :Digits if @session.input
+        @session.input.delete :Body if @session.input
+        params.delete :Digits if params
+        params.delete :Body if params
       end
 
       # Parent wrapper around the subclass definition
@@ -285,13 +291,13 @@ module Skej
       def customer_entered_yes?(defaults = {})
         defaults.reverse_merge! voice: 1, sms: "y"
 
-        if @session.input[:Body].present?
+        if params[:Body].present?
           # Does the sms input match our definition of yes?
-          return @session.input[:Body].include? defaults[:sms].to_s
+          return params[:Body].include? defaults[:sms].to_s
 
-        elsif @session.input[:Digits].present?
+        elsif params[:Digits].present?
           # Does the voice input match our definition of yes?
-          return  @session.input[:Digits].to_i == defaults[:voice].to_i
+          return  params[:Digits].to_i == defaults[:voice].to_i
         end
 
         # Does not look like the customer confirmed the action
@@ -300,7 +306,7 @@ module Skej
 
       # Handle Customer Input — advancement logic
       def process_input
-        @digits = @session.input[:Digits] || strip_to_int(@session.input[:Body])
+        @digits = params[:Digits] || strip_to_int(params[:Body])
 
         # Attempt processing of the digits
         if @digits.present?
@@ -357,7 +363,7 @@ module Skej
               return advance!
 
             else
-              log "customer entered unknown input: #{@session.input[:Body] || @session.input[:Digits]}"
+              log "customer entered unknown input: #{params[:Body] || params[:Digits]}"
               get["#{state}_customer_asked_to_change"] = true
             end
           else

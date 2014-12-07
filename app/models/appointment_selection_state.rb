@@ -16,7 +16,7 @@ class AppointmentSelectionState < BaseSession
 
   # Instance level storage of the device/request-type at hand
   # (:sms, :voice)
-  attr_accessor :device
+  attr_accessor :device, :input
 
   belongs_to :scheduler_session
   belongs_to :business
@@ -39,6 +39,7 @@ class AppointmentSelectionState < BaseSession
       # load this instance's device paramter from the original
       # session request
       appointment.device_type = session.device_type
+      appointment.input = session.input || RequestStore.store[:params]
 
       # Here's an AppointmentSelectionState ready to go!
       appointment

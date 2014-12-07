@@ -69,9 +69,9 @@ class BaseSession < ActiveRecord::Base
   end
 
   # Lazy load this logic engine facade
-  def logic
+  def logic(device = false, opts = {})
     @logic_cache ||= {}
-    @logic_cache[current_state] ||= logic_engine(device_type.to_sym)
+    @logic_cache[current_state] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
   end
 
   def store!(key, value)
@@ -86,8 +86,8 @@ class BaseSession < ActiveRecord::Base
   end
 
   def clear_input_body!
-    raise "Session input unavailable" if self.input.nil?
-    self.input.delete :Body
+    self.input.delete :Body if self.input
+    params.delete :Body
   end
 
   def state
@@ -114,6 +114,10 @@ class BaseSession < ActiveRecord::Base
 
   def log(msg)
     SystemLog.fact(title: self.class.name.underscore, payload: msg)
+  end
+
+  def params
+    RequestStore.store[:params]
   end
 
 end

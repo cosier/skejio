@@ -15,12 +15,11 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     }
 
     if user_input?
-
       if @session.sms?
-        input = @session.input[:Body]
+        input = params[:Body]
 
       elsif @session.voice?
-        input = @options[@session.input[:Digits].to_i]
+        input = @options[params[:Digits].to_i] if params[:Digits].present?
 
       else
         log 'not recognized session type'
@@ -31,9 +30,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
 
       log "processed customer date selection: #{daterized}"
 
-
       @apt.store[:input_date] = daterized.to_s
-      binding.pry
       @apt.transition_to! :display_results
     end
 

@@ -54,16 +54,18 @@ class SchedulerSession < BaseSession
   def log_changes
     if v = versions.last and v.event == "update" and v.changeset.present? and self.changed?
       meta = v.changeset["meta"]
-      before = JSON.parse(meta.first)
-      after  = JSON.parse(meta.last)
-      diff = {}
+      if meta
+        before = JSON.parse(meta.first)
+        after  = JSON.parse(meta.last)
+        diff = {}
 
-      after.map do |k,v|
-        diff[k] = v if before[k] != after[k]
+        after.map do |k,v|
+          diff[k] = v if before[k] != after[k]
+        end
+
+        formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '')
+        log "session changes: <br/>\n<pre>#{formatted_json}</pre>"
       end
-
-      formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '')
-      log "session changes: <br/>\n<pre>#{formatted_json}</pre>"
     end
   end
 

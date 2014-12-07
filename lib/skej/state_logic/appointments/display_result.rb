@@ -5,7 +5,9 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     @state = @apt.state
 
     @ordered_appointments = {
-      1 => ""
+      1 => "1. Test Appointment — 1:30pm",
+      2 => "2. Test Appointment — 2:30pm",
+      3 => "3. Test Appointment — 3:30pm",
     }
 
     if @apt.store[:input_date].nil?
@@ -27,11 +29,19 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
   def sms(session = @session)
     twiml do |b|
+      appointment_list_text = ""
+
+      @ordered_appointments.map do |id,label|
+        appointment_list_text << "#{label}\n"
+      end if @ordered_appointments.present?
+
       b.Message """
       Here are your next available Appointments:
-      #{@apt.store.to_json}
+      #{appointment_list_text}
+      ______
+      #{@apt.store[:input_date].to_s}
 
-      send *change* to change the appointment time.
+      send *change* to choose a different appointment time.
       """
     end
   end
@@ -41,6 +51,8 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       b.Gather action: endpoint(confirm: true) do |g|
         b.Say """
           Here are your next available Appointments:
+          ...
+          No appointments found
         """
 
         b.Say "Press 9 to choose another Date"
@@ -52,10 +64,10 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
   def user_wants_change?
     # Detect sms bodies for text "change"
-    body = (b = @session.input[:Body] and b.kind_of? String and b.include? "change")
+    body = (b = params[:Body] and b.kind_of? String and b.include? "change")
 
     # Detect voice digits for the digit 9
-    digits = (d = @session.input[:Digits] and d.to_i == 9)
+    digits = (d = params[:Digits] and d.to_i == 9)
 
     # If any were true, return it.
     body || digits
