@@ -105,6 +105,8 @@ group :development, :test do
   # Enable pry and
   # byebug as prys step debugger
   gem 'pry-byebug'
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
 
   # Model schema documentor
   gem 'annotate'
