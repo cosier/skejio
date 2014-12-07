@@ -13,10 +13,13 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     if @apt.store[:input_date].nil?
       log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
       return @apt.transition_to! :repeat_input_date
+    else
+      @apt.store! :input_date, @apt.store[:input_date]
     end
 
     if user_wants_change?
       log "customer requested time :change"
+      clear_input!
       return @apt.transition_to! :repeat_input_date
     end
 
@@ -37,10 +40,12 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
       b.Message """
       Here are your next available Appointments:
-      #{appointment_list_text}
-      ______
-      #{@apt.store[:input_date].to_s}
 
+      #{appointment_list_text}
+      ____________________
+      Input:#{@apt.store[:input_date].to_s}
+
+      ____________________
       send *change* to choose a different appointment time.
       """
     end

@@ -43,16 +43,29 @@ module Skej
       def process!
         # Apply state logic and rules
         thinker
+        @thinked = true
       end
 
       def render
+        think_first
         twiml_payload
+      end
+
+      def think_first
+        process! unless @thinked
       end
 
       private
 
       def user_input?
         params[:Body].present? || params[:Digits].present?
+      end
+
+      def clear_input!
+        params[:Body] = nil
+        params[:Digits] = nil
+        @session.input[:Body] = nil if @session.input.present?
+        @session.input[:Digits] = nil if @session.input.present?
       end
 
       def params

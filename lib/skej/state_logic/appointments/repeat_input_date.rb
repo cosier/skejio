@@ -9,6 +9,9 @@ class Skej::StateLogic::Appointments::RepeatInputDate < Skej::StateLogic::BaseLo
     @session.input[:Body] = nil
     @session.input[:Digits] = nil
 
+    params.delete :Body
+    params.delete :Digits
+
     log 'going back to :initial_date_input, now'
     @apt.transition_to! :initial_input_date
 

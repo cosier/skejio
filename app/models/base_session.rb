@@ -70,8 +70,9 @@ class BaseSession < ActiveRecord::Base
 
   # Lazy load this logic engine facade
   def logic(device = false, opts = {})
-    @logic_cache ||= {}
-    @logic_cache[current_state] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
+    #@logic_cache ||= {}
+    #@logic_cache[current_state] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
+    logic_engine((device_type and device_type.to_sym) || device || params[:action])
   end
 
   def store!(key, value)
