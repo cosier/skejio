@@ -86,9 +86,18 @@ class BaseSession < ActiveRecord::Base
     (prev and prev.to_state.to_sym) || :handshake
   end
 
-  def clear_input_body!
+  # If you utilize the customer input to perform a permenanent side effect,
+  # then make sure you clear the session input for the next state to behave correctly.
+  #
+  # As the next state may happen instantaneously, and not between http requests—
+  # thus session input must be handled carefully from state to state, as not to get
+  # contaminated.
+  def clear_session_input!
+    log "clearing session input to avoid state contamination"
+    self.input.delete :Digits if self.input
     self.input.delete :Body if self.input
-    params.delete :Body
+    params.delete :Digits if params
+    params.delete :Body if params
   end
 
   def state
@@ -104,6 +113,10 @@ class BaseSession < ActiveRecord::Base
     self.save!
   end
 
+  def params
+    RequestStore.store[:params]
+  end
+
   private
 
   # Mini Logic factory
@@ -115,10 +128,6 @@ class BaseSession < ActiveRecord::Base
 
   def log(msg)
     SystemLog.fact(title: self.class.name.underscore, payload: msg)
-  end
-
-  def params
-    RequestStore.store[:params]
   end
 
 end

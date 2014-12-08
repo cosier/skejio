@@ -23,7 +23,7 @@ module Skej
         if date
           log "date extracted: <strong>#{date}</strong>"
           @session.store! :initial_date_input, input
-          @session.clear_input_body!
+          @session.clear_session_input!
         else
           log "no valid date detected: #{input}"
         end
