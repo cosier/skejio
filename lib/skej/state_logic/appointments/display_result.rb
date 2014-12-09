@@ -1,6 +1,7 @@
 class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogic
 
   def think
+    @thinked = true
     @apt   = @session.apt
     @state = @apt.state
 
@@ -31,6 +32,9 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
   end
 
   def sms(session = @session)
+
+    think unless @thinked.present?
+
     twiml do |b|
       appointment_list_text = ""
 

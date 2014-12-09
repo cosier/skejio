@@ -78,7 +78,6 @@ class LiveSchedulerController < ApplicationController
     @session.device_type = params[:action].to_sym
     @session.save!
 
-    @session.input = params.dup
     @session.state.process!
   end
 
@@ -87,7 +86,10 @@ class LiveSchedulerController < ApplicationController
   def prepare_twiml
     SystemLog.fact(title: 'controller', payload: "rendering TwiML:#{session.current_state} response")
 
-    @twiml = session.logic.render
+    @logic = session.logic
+    @logic.process!
+
+    @twiml = @logic.render
 
     if @twiml.nil?
       raise "Session(#{session.current_state}) -> logic(#{session.logic.class.name.underscore}) @twiml empty"

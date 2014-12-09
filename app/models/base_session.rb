@@ -1,6 +1,6 @@
 class BaseSession < ActiveRecord::Base
   include Statesman::Adapters::ActiveRecordQueries
-  attr_accessor :input, :twiml_sms, :twiml_voice, :twiml
+  attr_accessor :twiml_sms, :twiml_voice, :twiml
 
   # This is an abstract parent class to provide basic Session functionality
   self.abstract_class = true
@@ -123,6 +123,10 @@ class BaseSession < ActiveRecord::Base
 
   def params
     RequestStore.store[:params]
+  end
+
+  def input
+    params
   end
 
   private

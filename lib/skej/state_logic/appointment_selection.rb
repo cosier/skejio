@@ -16,7 +16,7 @@ module Skej
 
       def appointment_state
         # Load up the AppointmentSelectionState machine
-        @appointment ||= AppointmentSelectionState.machine(@session)
+        AppointmentSelectionState.machine(@session)
       end
 
       alias_attribute :ap, :appointment_state

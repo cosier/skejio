@@ -42,7 +42,7 @@ module Skej
       # payload in this case is a Skej::Twiml::BaseTwiml instance.
       def process!
         # Apply state logic and rules
-        thinker
+        thinker unless @thinked.present?
         @thinked = true
       end
 
