@@ -47,7 +47,21 @@ module Skej
       end
 
       def render
-        think_first
+        unless @thinked
+          #raise "Cannot render before thinking / processing behaviours"
+
+          # For some reason this module has not think'ed yet.
+          #
+          # So instead of calling it directly and messing up potential state,
+          # we will simply initiate a redirect request (HTTP from Twilio) back to us
+          # for additional processing.
+          log 'redirecting back to the same state — to force a logic reflow'
+
+          twiml do |b|
+            b.Redirect endpoint
+          end
+        end
+
         twiml_payload
       end
 

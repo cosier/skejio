@@ -43,7 +43,7 @@ module Skej
       def sms_and_voice
         data = {
           offices: @ordered,
-          default: @supportable || @supportable,
+          default: @supportable,
           sanity: true
         }.reverse_merge!(get.symbolize_keys)
 
