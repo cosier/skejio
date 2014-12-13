@@ -1,0 +1,31 @@
+body:before {
+  content:"";
+  position:fixed;
+  top:50%; left: 50%;
+  z-index:9999;
+  width:1px; height: 1px;
+  outline:2999px solid invert;
+}
+
+html { -webkit-filter: invert(); }
+html {
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix type=\'matrix\' values=\'-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0\'/></filter></svg>#invert");
+  }
+
+#page-content-wrapper {
+  background:white;
+}
+
+body.system_logs tr.facts .fact.row {
+  background:white;
+}
+
+body.system_logs tr.facts .fact.row .payload {
+  font-size:14px;
+}
+
+body.system_logs tr.facts .col.col-md-3.title strong {
+  font-weight:100;
+  font-size:14px;
+  letter-spacing:1px;
+}

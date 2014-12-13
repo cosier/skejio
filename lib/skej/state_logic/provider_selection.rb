@@ -2,8 +2,6 @@ module Skej
   module StateLogic
     class ProviderSelection < BaseLogic
 
-      @@STATE_KEY = :provider
-
       def think
 
         @providers = @session.business.available_providers.to_a
@@ -19,26 +17,33 @@ module Skej
         @digits = @session.input[:Digits] || strip_to_int(@session.input[:Body])
 
         # Early bail out if already completed
-        if get[:provider_selection] and get[:provider_selection].to_sym == :complete
+        if marked_as_complete?
           log "Provider selection already complete"
+
+          # Transition to the next state
           advance!
         end
 
         # Automatic pass— not enough providers to choose from.
         if @providers.length < 2
           log "Available Providers < 2 <br/><strong>Skipping Customer Selection of Providers</strong>"
-          get[:provider_selection] = :complete
+
+          # Update the session store to mark this state as :complete
+          mark_as_completed!
+
           # Choose the only available provider for this business
           get[:chosen_provider_id] = @providers.first and @providers.first.id
+
           return advance!
         end
 
 
         unless setting(:user_selection).user_selection_full_control?
           log "Business setting for User_Selection is <strong>not FULL_CONTROL<strong>— skipping explicit provider selection"
-          get[:provider_selection] = :complete
           get[:chosen_provider_id] = :deferred
-          return advance!
+
+          mark_as_completed! and advance!
+          return
         end
 
         # Attempt processing of the digits
@@ -48,12 +53,16 @@ module Skej
           if @chosen_provider = @providers_ordered[@digits.to_i]
             log "Customer has Selected Provider: <strong>#{@chosen_provider.display_name}</strong>"
 
-            get[:provider_selection] = :complete
             get[:chosen_provider_id] = @chosen_provider.id
+
+            # Update the session store to mark this state as :complete
+            mark_as_completed!
+
 
             # Since we utilized the input, we must clear
             clear_session_input!
             advance!
+
           else
             @bad_selection = true
             log "Available Providers: <br/>#{@human_readable_providers.to_json}"

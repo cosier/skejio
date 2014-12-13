@@ -4,31 +4,6 @@ module Skej
 
       include Skej::Endpoint
 
-      @@SKIP_PAYLOAD = {}
-      @@DONT_THINK = {}
-      @@DRY_RUN = false
-
-      # ::BaseLogic Class methods
-      class << self
-
-        # Identifies the sub class as "skippable"
-        # for TwiML Payload Generation   (skip_payload)
-        def skip_payload
-          @@SKIP_PAYLOAD[self.name.underscore] = true
-        end
-
-        # Identifies the sub class as "skippable"
-        # for Behaviour Processing (dont_think)
-        def dont_think
-          @@DONT_THINK[self.name.underscore] = true
-        end
-
-        def state_key(key)
-          # Deprecated
-        end
-
-      end
-
       # Initializes the class with a device type and the active Session
       def initialize(opts)
         @device = opts[:device].to_sym
@@ -43,6 +18,10 @@ module Skej
       def process!
         # Apply state logic and rules
         thinker unless @thinked.present?
+
+        # Mark this instance as having thinked already.
+        # We will use this at various points to ensure this instance
+        # has been processed.
         @thinked = true
       end
 
@@ -65,31 +44,72 @@ module Skej
         twiml_payload
       end
 
+      # Ensure we always thinked first, before attempting something...
+      #
+      # This is normally not needed, as thinking is handled automatically.
+      #
+      # However there are edge cases which it make it possible that this was not
+      # thinked, due to being a new instance in memory.
+      #
+      # Thus there may be edgecases surrounding logic instance creation.
+      #
+      # However since the think process should be idopotent,
+      # and able to be called repeatedly without side effects.
+      #
       def think_first
-        process! unless @thinked
+        process! unless @thinked.present?
       end
 
       private
 
+      # Determines if the customer has input present for the
+      # current state phase.
       def user_input?
         params[:Body].present? || params[:Digits].present?
       end
 
+      # Clears all session input for the current request
+      #
+      # Note: the customer input for a request is never actually
+      # saved into the session.
+      #
+      # We clear multiple values, just to be safe.
       def clear_input!
         params[:Body] = nil
         params[:Digits] = nil
         @session.input[:Body] = nil if @session.input.present?
         @session.input[:Digits] = nil if @session.input.present?
+        @session.clear_session_input!
       end
 
+      # Provide access to this requests current request params.
+      #
+      # Note: All requests will pin the SystemLog and request
+      # Params hash to the RequestStore.store abstraction around
+      # Thread local.
       def params
         RequestStore.store[:params]
       end
 
+      # Returns the textual time_zone offset for the Office
+      # chosen for this session.
+      #
+      # We assume there is no reason the office won't be available.
+      # Due to automatic assumptions, and requiring at least one office
+      # per business.
       def offset
         @session.chosen_office.time_zone
       end
 
+      # For the current Business on this Session,
+      # we can lookup a *key setting for this Business.
+      #
+      # All settings are stored as a Setting model, which belongs_to
+      # a Business.
+      #
+      # This provides simple settings lookup, while also caching lookups.
+      #
+      # Returns instance of Setting
       def setting(key)
         @setting_cache ||= {}
         return @setting_cache[key] if @setting_cache[key].present?
@@ -102,14 +122,36 @@ module Skej
         setting
       end
 
+      # Memoized business cache
+      # As .business hits the activerecord interface on the Session model
+      #
       def business
         @business ||= @session.business
       end
 
+      # Gives you the current state name in key form.
+      # The state key is able to be specified directly in the Logic sub class,
+      # however it is recommended to use the auto generated name (see below) of the
+      # Logic sub class name.
+      #
+      # eg.
+      #
+      # class Handshake < BaseLogic
+      # returns :handshake
+      #
+      # class InitialDecoder < BaseLogic
+      # return :initial_decoder
+      #
       def state
         @STATE_KEY ||= self.class.name.underscore.gsub!('skej/state_logic/','').split('_').first.to_sym
       end
 
+      # Produces the correct settings key fir the current assumption context.
+      # Based on the underscore'd class name string, we either use the Office or Service keys.
+      #
+      # This can be expanded in the future to support more types of selections
+      # which have assumption capabilities.
+      #
       def assume_key
         # Determine the correct key we need to check.
         # We have only two potential values here, see usage below.
@@ -122,6 +164,13 @@ module Skej
         end
       end
 
+      # Based on business rules, can we assume a selection?
+      #
+      # Note: the specific selection we are checking to assume
+      # is a dynamic key (look at #assume_key)
+      #
+      # Which is either office or service selections.
+      #
       def can_assume?
         # Cache wall first
         @can_assume ||= false
@@ -141,6 +190,14 @@ module Skej
         end
       end
 
+      # Based on business rules, can we assume a selection with the
+      # ability to change that selection?
+      #
+      # Note: the specific selection we are checking to assume
+      # is a dynamic key (look at #assume_key)
+      #
+      # Which is either office or service selections.
+      #
       def can_assume_and_change?
         if can_assume?
 
@@ -161,6 +218,7 @@ module Skej
         end
       end
 
+      # Let's us know if we moved states in this particular request.
       def advanced_state?
         @advanced_state.present?
       end
@@ -216,6 +274,7 @@ module Skej
           log "returning cached twiml_payload"
           return @twiml_payload
         end
+        think_first
 
         if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
           log "processing twiml payload"
@@ -343,13 +402,16 @@ module Skej
             log "Customer has Selected #{state.to_s.titleize}: <strong>#{@supportable.display_name}</strong>"
 
             # Mark the state as complete— allowing the Guards to pass us
-            get["#{state}_selection"] = :complete
+            mark_state_complete!
 
             # Assign the Chosen office id to the Session meta store
-            get["chosen_#{state}_id"] = @supportable.id
+            assign_chosen_id! @supportable.id
 
             # Since we utilized the input, we must clear
             clear_session_input!
+
+            # Ensure any values changes in the instance store, are persisted to disk.
+            # Todo: remove this, as it isn't needed.
             @session.update_meta_store!
 
             # ADVANCE
@@ -362,17 +424,36 @@ module Skej
         end
       end
 
-      # Handle any model assumptions on selections (based on business settings)
+      # Handle any model assumptions on selections (based on business settings).
+      #
+      # This is a generic method which dynamically processes the Customers input,
+      # in relation to deciding and assumming various selections.
+      #
+      # For example, assumption for both Services and Offices happen here.
+      # And can easily support more state assumptions.
       def process_assumptions
 
-        # Obtain the office defined directly on the Setting key/value — via
+        # Obtain the fallback choice defined directly on the Setting key/value — via
         # the supportable relationship
+        #
+        # This is setup in the setting page, where we explcitily set an Entity as belonging
+        # to the setting, along with the original setting value.
+        #
         @supportable = setting(assume_key).supportable
+
+        # Generate a specific error for this  sub class State if the @supportable model is not found.
+        # This is because the @supportable model should always be present in this situation.
         raise "#{state.to_s.titleize} Target not found during the assumption process: #{assume_key}, business:#{@session.business.id}" unless @supportable.present?
 
         ##################################################################
+        # Assumption SWITCH
+        #
         # Business can assume and will offer change
         # let the TwiML view blocks handle this switching
+        #
+        # Also check that the customer did not already asked to change
+        # ie. lookup #{state}_customer_asked_to_change
+        #
         if can_assume_and_change? and not get["#{state}_customer_asked_to_change"]
           if get["#{state}_confirming_assumption"]
             if customer_entered_yes?
@@ -401,15 +482,22 @@ module Skej
           @session.update_meta_store!
 
         ##################################################################
+        # Assumption SWITCH
+        #
+        # The Customer has already stated the intent to change the given selection.
+        # Thus in this situation we will process the Customer input.
+        #
         elsif get["#{state}_customer_asked_to_change"]
           log "processing normal selection input"
           # run normal input processing for this state, to process the new selection.
           process_input
 
         ##################################################################
+        # Assumption SWITCH
+        #
         # Business is set to assume and will not ask the Customer to change it.
         else
-          log "can_assume!"
+          log "can_assume! without offering the Customer a choice"
 
           # Load up the dictatorship
           get["chosen_#{state}_id"] = @supportable.id
@@ -419,9 +507,18 @@ module Skej
         end
       end
 
+      # Automated method and recommended interface for marking the
+      # state as complete.
+      #
+      # Thus allowing the state guards to let you pass.
       def mark_state_complete!
-        get["#{state}_selection"] = :complete
         get["#{state}"] = :complete
+      end
+
+      # Determines if this current state is marked as complete?
+      # Returns boolean.
+      def marked_as_complete?
+        get[state.to_s] and get[state.to_s].to_sym == :complete
       end
 
       # Strip a text string of everything except for integers

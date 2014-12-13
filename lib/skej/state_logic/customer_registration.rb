@@ -2,17 +2,17 @@ module Skej
   module StateLogic
     class CustomerRegistration < BaseLogic
 
-
       def think
         cust = @session.customer
 
         # Processing customer input as their name,
         # unless they already have a name
-        process_name(cust) unless cust.has_name?
+        process_name_input(cust) unless cust.has_name?
 
         if get[:customer_name].present? || cust.has_name?
+
           # Update the session get with customer_registration as completed
-          get[:customer_registration] = :complete
+          mark_state_complete!
 
           # Since we utilized the input, we must clear
           clear_session_input!
@@ -35,12 +35,15 @@ module Skej
 
       private
 
-      def process_name(cust)
+      # Process the input from a Customer to determine
+      # their full name.
+      def process_name_input(cust)
         case @device.to_sym
 
         ##################################################
         # We are processing a SMS Session
         when :sms
+
           # If there is an available message body,
           # then we are assuming that is their name
           if @session.input[:Body].present?
@@ -51,8 +54,8 @@ module Skej
             last_name = body.split(" ").last
             last_name = "" if last_name == first_name
 
+            # Set the customer_name property
             get[:customer_name] = body
-            get[:customer_registration] = :complete
 
             @session.customer.update!({first_name: first_name, last_name: last_name})
           end
@@ -60,6 +63,7 @@ module Skej
         ##################################################
         # We are processing a VOICE Session
         when :voice
+
           # stash the customers recording
           recording_url = @session.input[:RecordingUrl]
 
@@ -70,11 +74,15 @@ module Skej
 
           # Check if the customer tried to record their name already
           if recording_url.present?
+
+            # Provide a log with a link to the recording_url
+            # (opens in a new window)
             log """
               received recording_url from the customer: <br/>
               <a href='#{recording_url}' target='_blank'>#{recording_url}</a>
             """
 
+            # Set the customer_name property
             get[:customer_name] = recording_url
 
             log "updating session customer with the new name recording"

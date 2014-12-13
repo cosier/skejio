@@ -14,30 +14,58 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       7 => "Sunday"
     }
 
+    # Check if we can abort early due to already having a date
+    # This only applies for SMS users.
+    if @session.sms? and input = @session.store[:initial_date_decoded]
+      log "Detected SMS User with Initial Date already set <span class='muted'>(from the initial_decoder)</span>"
+      # Now that we have used the :initial_date_decoded, make sure we clear it.
+      # So that future attempts to change the date will be able to avoid this branch.
+      @session.store! :initial_date_decoded, nil
+
+      # And proceed to the next
+      return save! input
+    end
+
+
     if user_input?
-      if @session.sms?
-        input = params[:Body]
-
-      elsif @session.voice?
-        input = @options[params[:Digits].to_i] if params[:Digits].present?
-
-      else
-        log 'not recognized session type'
-      end
-
-      daterized = Chronic.parse(input)
-      daterized = daterized.to_datetime.change(offset: offset) if daterized
+      # Two possible types of input (:Body and :Digits)
+      # Based on if the @session is sms? or voice?
+      input = params[:Body] if @session.sms?
+      input = @options[params[:Digits].to_i] if @session.voice? and params[:Digits].present?
 
       log "processed customer date selection: #{daterized}"
 
-      @apt.store[:input_date] = daterized.to_s
-      @apt.transition_to! :display_results
+      # And proceed to the next
+      return save! daterized
     end
 
   end
 
   def sms_and_voice
+    # Generate the Twiml/Appointments/InitialInputDate view
     twiml_appointments_initial_input_date
+  end
+
+
+  private
+
+  def save!(input)
+    # Transform textual input into a Chronic date
+    parsed_date = Chronic.parse(input)
+
+    # Audit to logs
+    log "using office timezone offset: #{offset || 'none'}"
+
+    # Apply a datetime offset shift, if the date parsing was successful.
+    daterized = parsed_date.to_datetime.change(offset: offset) if parsed_date
+
+    # Stash this datetime object as a string on the Appointment state
+    @apt.store[:appointment_input_date] = daterized.to_s
+
+    # Log and go to next
+    log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"
+    @apt.transition_to! :display_results
+
   end
 
 

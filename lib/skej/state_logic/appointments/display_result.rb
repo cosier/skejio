@@ -5,15 +5,17 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     @apt   = @session.apt
     @state = @apt.state
 
-    @ordered_appointments = {
-      1 => "1. Test Appointment — 1:30pm",
-      2 => "2. Test Appointment — 2:30pm",
-      3 => "3. Test Appointment — 3:30pm",
-    }
+    # Hash table for ordered indexing of appointments.
+    # Which is used in the user selection phase as a decision selector.
+    @ordered_appointments = {}
+
+    # Generate a list of available time slots for this Session's Appointment
+    @appointments = query.available_now
 
     if @apt.store[:input_date].nil?
       log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
       return @apt.transition_to! :repeat_input_date
+
     else
       @apt.store! :input_date, @apt.store[:input_date]
     end
@@ -27,14 +29,12 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     if user_input?
 
     else
+
     end
 
   end
 
   def sms(session = @session)
-
-    think unless @thinked.present?
-
     twiml do |b|
       appointment_list_text = ""
 
@@ -47,7 +47,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
       #{appointment_list_text}
       ____________________
-      Input:#{@apt.store[:input_date].to_s}
+      Customer Input: #{@apt.store[:input_date].to_s}
 
       ____________________
       send *change* to choose a different appointment time.
@@ -71,15 +71,25 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
   private
 
-  def user_wants_change?
-    # Detect sms bodies for text "change"
-    body = (b = params[:Body] and b.kind_of? String and b.include? "change")
+    # Memoize the query object based on this @session.
+    def query
+      @query ||= Skej::Appointments::Query.new(@session)
+    end
 
-    # Detect voice digits for the digit 9
-    digits = (d = params[:Digits] and d.to_i == 9)
+    # Helper to determine if the Customer chose "Change".
+    #
+    # For voice users, we are currently mapping that to the digit 9 to
+    # trigger the change selection.
+    def user_wants_change?
 
-    # If any were true, return it.
-    body || digits
-  end
+      # Detect sms bodies for text "change"
+      body = (b = params[:Body] and b.kind_of? String and b.include? "change")
+
+      # Detect voice digits for the digit 9
+      digits = (d = params[:Digits] and d.to_i == 9)
+
+      # If any were true, change is wanted — otherwise it's not.
+      body || digits
+    end
 
 end

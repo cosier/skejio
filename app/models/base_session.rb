@@ -108,6 +108,8 @@ class BaseSession < ActiveRecord::Base
     params.delete :Body if params
   end
 
+  def has_initial_date?
+
   def state
     state_machine
   end
