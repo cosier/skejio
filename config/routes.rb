@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   controller :live_scheduler do
     match '/twilio/voice', to: :voice, as: :twilio_voice, via: [:get, :post]
     match '/twilio/sms',   to: :sms, as: :twilio_sms, via: [:get, :post]
+    match '/twilio/invalid/:device', to: :invalid_number, via: [:get, :post], as: :invalid_number
   end
 
   # Live handling of Customer Dynamic Tree Sessions
