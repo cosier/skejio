@@ -143,7 +143,8 @@ module Skej
       # return :initial_decoder
       #
       def state
-        @STATE_KEY ||= self.class.name.underscore.gsub!('skej/state_logic/','').split('_').first.to_sym
+        module_name = self.class.name.underscore.gsub!('skej/state_logic/','')
+        @STATE_KEY ||= module_name.to_sym
       end
 
       # Produces the correct settings key fir the current assumption context.
@@ -257,12 +258,18 @@ module Skej
       # Parent wrapper around the subclass definition
       # to provide logging and skipping facilities on the *think* method
       def thinker
-        if @@DONT_THINK[self.class.name.underscore].nil?
-          log "processing business logic"
-          think
-        else
-          log "skipping business logic"
-        end
+
+        # Deprecated: logic for optional module think skipping
+        #
+        #if @@DONT_THINK[self.class.name.underscore].nil?
+        #  log "processing business logic"
+        #  think
+        #else
+        #  log "skipping business logic"
+        #end
+
+        log "processing business logic for: #{@session.current_state}"
+        think
       end
 
       # Produce a Twiml text payload.
@@ -274,27 +281,31 @@ module Skej
           log "returning cached twiml_payload"
           return @twiml_payload
         end
+
+        # Ensure this specific instance in memory has already been processed
+        # at least once to ensure the proper view headers are set.
         think_first
 
-        if @@SKIP_PAYLOAD[self.class.name.underscore].nil?
-          log "processing twiml payload"
-          if self.respond_to? :sms_and_voice
-            t = sms_and_voice
-          else
-            # Make the dispatch call to the correct method
-            # (using mapped device terminology for the call convention)
-            t = self.send @device.to_s
-          end
+        log "processing twiml payload: #{@session}"
 
+        if self.respond_to? :sms_and_voice
+          # Provide a convient method to handle both sms and voice
+          # requests.
+          t = sms_and_voice
         else
-          log "skipping twiml payload"
+
+          # Make the dispatch call to the correct method
+          # (using mapped device terminology for the call convention)
+          t = self.send @device.to_s
         end
+
 
         # stash the tiwml response on the session instance for controller pick up
         @session.twiml = t
         @twiml_payload = t
 
-        # Make sure that we actually return the TwiML response xml builder here
+        # Make sure that we actually return the TwiML response xml builder here.
+        # So we don't break any method chains relying on this xml response.
         t
       end
 
@@ -350,23 +361,29 @@ module Skej
       end
 
       # Factory for building SKej::TwiML view blocks for deferred rendering
-      def build_twiml_block(meth, *args)
+      def factory_twiml_block(meth, *args)
         if meth =~ /twiml_appointments_/
           klass = meth.to_s.gsub("twiml_appointments_", "skej/twiml/appointments/").classify
         else
           klass = meth.to_s.gsub("twiml_", "skej/twiml/").classify
         end
 
-        # Make it real here
+        # Make the string representation a real Class object.
         klass = klass.constantize
 
+        # Prepare view local variables
         data = { device: @device, session: @session }
         if args.length > 0 and args[0].kind_of? Hash
           data.merge! args[0]
         end
 
-        log "building_twiml_block: #{klass.name.underscore}"
+        log "twiml_view_factory -> #{klass.name.underscore}"
+
+        # Instantiate the new instance from the dynamic Klass
+        # we generated earlier.
         instance = klass.new(data)
+
+        # Return the TwiML view instance
         instance
       end
 
@@ -512,7 +529,13 @@ module Skej
       #
       # Thus allowing the state guards to let you pass.
       def mark_state_complete!
-        get["#{state}"] = :complete
+        get[state.to_s] = :complete
+      end
+
+      # Simple alias for the above method.
+      # Note: We're in pure ruby here, no activesupport aliase helpers.
+      def mark_as_completed!
+        mark_state_complete!
       end
 
       # Determines if this current state is marked as complete?
@@ -531,7 +554,7 @@ module Skej
 
       def method_missing(meth, *args, &block)
         if meth.to_s =~ /^twiml_(.+)$/ and meth.to_s != "twiml_payload"
-          build_twiml_block(meth.to_s, *args)
+          factory_twiml_block(meth.to_s, *args)
         else
           super
         end
