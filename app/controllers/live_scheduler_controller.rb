@@ -1,33 +1,77 @@
 class LiveSchedulerController < ApplicationController
 
-  before_filter :attach_log_to_request # Step 1
-  before_filter :register_business     # Step 2
-  before_filter :register_customer     # Step 3
-  before_filter :register_session      # Step 4
-  before_filter :prepare_twiml         # Step 5
+  before_filter :attach_log_to_request   # Step 0
+  before_filter :process_blocked_numbers # Step 1
+  before_filter :register_business       # Step 2
+  before_filter :register_customer       # Step 3
+  before_filter :register_session        # Step 4
+  before_filter :prepare_twiml           # Step 5
 
-  # Interacting with twilio rest api— no need for CSRF
-  protect_from_forgery except: [:voice, :sms]
+  # Interacting with twilio rest api directly— no need for CSRF protection
+  protect_from_forgery except: [:voice, :sms, :invalid_number]
 
+  # Voice Requests are routed here
+  #
+  # While this is identical to the other action (sms),
+  # we use the fact that they are routed to different actions
+  # to differentiate between the Session's device_type.
+  #
+  # So various filters may rely on params[:action] to populate the
+  # Session device_type Enum.
   def voice
+    # Give Twilio the TwiML payload instructions
     twiml_payload
   end
 
+  # SMS Requests are routed here
+  #
+  # While this is identical to the other action (voice),
+  # we use the fact that they are routed to different actions
+  # to differentiate between the Session's device_type.
+  #
+  # So various filters may rely on params[:action] to populate the
+  # Session device_type Enum.
   def sms
+    # Give Twilio the TwiML payload instructions
     twiml_payload
   end
 
-  # Get the TwiML xml text and render it to the Customer
+  # Customers which have invalid "From" numbers, will be routed
+  # to this action.
+  #
+  # This action's purpose is to provide a simple message,
+  # without providing any further services.
+  def invalid_number
+    xml = Twilio::TwiML::Response.new do |r|
+     if params[:device] =~ /sms/
+       r.Message "Sorry, to use our Services your number must not be private."
+     else
+       r.Say "Sorry, we don't allow Customers with private or blocked numbers."
+       r.Say "Please try again from another Number."
+     end
+    end.text
+
+    render xml: xml
+  end
+
+
+  private
+
+  # Gets the TwiML xml text and render it to the Customer.
+  #
+  # @twiml is a TwiML builder object provided to us by the
+  # Logic layer— from the current state being processed.
+  #
+  # We return a raw XML response containing the TwiML instructions.
   def twiml_payload
     log @twiml.text
     render xml: @twiml.text
   end
 
 
-  private
-
   ################################################################
-  # Step 1
+  # Step 0 - Either create a new SystemLog, or attach a previous
+  # one to this request (and all future sub requests).
   def attach_log_to_request
     # First we attempt to load an existing log from the request params
     @log = SystemLog.find(params[:log_id]) if params[:log_id]
@@ -44,15 +88,39 @@ class LiveSchedulerController < ApplicationController
     RequestStore.store[:params] = params.dup
   end
 
+
   ################################################################
-  # Step 2
+  # Step 1 - Processing Blocked Numbers
+  #
+  # If we detect a number that is invalid, or matches a known blocked
+  # number, we will provide that Customer with a custom message.
+  def process_blocked_numbers
+    # eg. 12504274006
+    from = params['From']
+
+    # Innocent until proven guilty
+    blocked = false
+
+    if from.present?
+    else
+      log 'Invalid Customer From number: not present'
+      blocked = true
+    end
+
+    if blocked
+      redirect_to invalid_number_path
+    end
+  end
+
+  ################################################################
+  # Step 2 - Determine the business associated with this Inbound Number
   def register_business
     @business = Number.where(phone_number: params['To']).first.sub_account.business
     @log.update(business_id: @business.id)
   end
 
   ################################################################
-  # Step 3
+  # Step 3 - Determine the Customer associated with this Number.
   def register_customer
     @customer = Customer.load(params['From'])
     @log.update(customer_id: @customer.id)
@@ -100,7 +168,6 @@ class LiveSchedulerController < ApplicationController
   def session
     @session
   end
-
 
   # Lazy log helper / wrapper
   def log(msg)
