@@ -109,6 +109,10 @@ class BaseSession < ActiveRecord::Base
   end
 
   def has_initial_date?
+    # If we have an initial date from the initial_decoder,
+    # then that means we have an initial date :)
+    store[:initial_date_decoded].present?
+  end
 
   def state
     state_machine

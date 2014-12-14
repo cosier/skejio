@@ -3,9 +3,14 @@ module Skej
     class InitialDecoder < BaseLogic
 
       def think
-        if @session.device_type.to_s.downcase.to_sym == :sms
+        # Check the sessions device_type enum (see the model Enum)
+        # Which is either :sms or :voice
+        #
+        # So here we are checking if the session has a SMS device type.
+        if @session.sms?
           parse_date_and_store!
         else
+          # Voice calls do not support initial date dictation, so we just do nothing here.
           log "initial date decoding is not supported for: #{@session.device_type || 'unknown-device'}"
         end
 

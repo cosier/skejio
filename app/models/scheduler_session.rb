@@ -64,7 +64,7 @@ class SchedulerSession < BaseSession
         end
 
         formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '')
-        log "session changes: <br/>\n<pre>#{formatted_json}</pre>"
+        log "detected session store changes: <br/>\n<pre>#{formatted_json}</pre>"
       end
     end
   end

@@ -7,8 +7,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
     # Hash table for ordered indexing of appointments.
     # Which is used in the user selection phase as a decision selector.
-    @ordered_appointments = {}
-
+    #
     # Generate a list of available time slots for this Session's Appointment
     @appointments = query.available_now
 
@@ -26,47 +25,29 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       return @apt.transition_to! :repeat_input_date
     end
 
-    if user_input?
+    # If the Customer has entered input,
+    # we need to match it to one of the potential Appointments (ordered)
+    if input = user_input?
+      # Normalize selection to an integer for precise hash lookup
+      selected = input.to_i
 
-    else
+      # Get the appointment from the ordered_appointents
+      appointment = @appointments[selected]
 
-    end
+      log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
+      @apt.store! :chosen_appointment_id = appointment.save.id
 
-  end
-
-  def sms(session = @session)
-    twiml do |b|
-      appointment_list_text = ""
-
-      @ordered_appointments.map do |id,label|
-        appointment_list_text << "#{label}\n"
-      end if @ordered_appointments.present?
-
-      b.Message """
-      Here are your next available Appointments:
-
-      #{appointment_list_text}
-      ____________________
-      Customer Input: #{@apt.store[:input_date].to_s}
-
-      ____________________
-      send *change* to choose a different appointment time.
-      """
+      log "advancing customer to appointment finalization step"
+      @apt.transition_to! :finalize_appointment
     end
   end
 
-  def voice(session = @session)
-    twiml do |b|
-      b.Gather action: endpoint(confirm: true) do |g|
-        b.Say """
-          Here are your next available Appointments:
-          ...
-          No appointments found
-        """
-
-        b.Say "Press 9 to choose another Date"
-      end
-    end
+  def sms_and_voice
+    # Delegate rendering of the appointment display selection
+    # to a sub TwiML view.
+    #
+    # The view receives just the appointments to render.
+    twiml_appointments_display_results(appointments: @appointments)
   end
 
   private
