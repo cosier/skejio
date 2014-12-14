@@ -31,11 +31,17 @@ class Skej::Twiml::Appointments::DisplayResults < Skej::Twiml::BaseTwiml
   private
 
     def generate_appointment_list
+      # Empty string container
+      list = ""
+
       # Iterate over all given appointments to produce a
       # visual selection list.
-      options[:appointments].map do |apt|
-        "#{apt.label}\n"
-      end.join
+      options[:appointments].each_with_index do |apt, index|
+        list << "#{index} - #{apt.label}"
+      end
+
+      # Return string compilation containing visual selection list.
+      list
     end
 
 
