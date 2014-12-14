@@ -32,15 +32,30 @@ class SchedulerStateMachine < BaseMachine
     prev_state = session.state.last_state_by_priority.to_s
     curr_state = session.state.current_state.to_s
 
-    # Validate the results of the logic processing
+    # Validate the results of the logic processing.
+    #
+    # Passage onto the next state is governed only by the Logic module
+    # responsible for that particular State.
+    #
+    # We accomplish this by checking the Session store to see if
+    # the current Session state has a value of "complete".'
+    #
+    # Which will be explicitly set by the Logic module, if the state is truly complete.
     if session.store[curr_state] and session.store[curr_state].to_s == "complete"
-      log "TRANSITION APPROVED — current_state(<strong>#{curr_state}</strong>) passed"
+      log """
+        TRANSITION APPROVED — current_state(<strong>#{curr_state}</strong>) -> <strong>#{session.state.next_state_by_priority}</strong>
+        <pre>session.store[#{curr_state}] == :complete</pre>
+      """
       true
 
+    # Always let retry or handshake pass
     elsif curr_state == "retry" || curr_state == "handshake"
-      #log "TRANSITION DEFAULT ALLOW - #{c.to_s}"
       true
 
+    # Looks like the Logic module for this specific state hasn't been executed yet.
+    # or simply the Customer did not meet the Logic criteria to pass.
+    #
+    # So we return false, and let the Customer try again (by revaluating the logic think step).
     else
       log "TRANSITION DENIED — current_state(<strong>#{curr_state}</strong>) is incomplete"
       false
