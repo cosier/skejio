@@ -33,10 +33,10 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       input = params[:Body] if @session.sms?
       input = @options[params[:Digits].to_i] if @session.voice? and params[:Digits].present?
 
-      log "processed customer date selection: #{daterized}"
+      log "processed customer date selection: #{input}"
 
       # And proceed to the next
-      return save! daterized
+      return save! input
     end
 
   end
@@ -54,7 +54,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     parsed_date = Chronic.parse(input)
 
     # Audit to logs
-    log "using office timezone offset: #{offset || 'none'}"
+    log "using office time_zone offset: #{offset || 'none'}"
 
     # Apply a datetime offset shift, if the date parsing was successful.
     daterized = parsed_date.to_datetime.change(offset: offset) if parsed_date

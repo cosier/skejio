@@ -39,7 +39,7 @@ class Appointment < ActiveRecord::Base
 
   # Returns a short one-liner of the Appointment details
   def label
-    # eg. "Monday 1:30 pm to 2:00pm"
+    # eg. "Monday 1:30 pm to 2:00 pm"
     "#{start.strftime('%A')} #{pretty_start} to #{pretty_end}"
   end
 
@@ -56,11 +56,17 @@ class Appointment < ActiveRecord::Base
   private
 
   def pretty_start
-    "#{start.hour}:#{start.minute} #{start.strftime('%p')}"
+    "#{start.hour}:#{start.minute} #{meridian(start)}"
   end
 
   def pretty_end
-    "#{end.hour}:#{end.minute} #{end.strftime('%p')}"
+    "#{end_time.hour}:#{end_time.minute} #{meridian(end_time)}"
   end
+
+  def meridian(time)
+    time.strftime('%p').upcase
+  end
+
+  alias_attribute :end_time, :end
 
 end

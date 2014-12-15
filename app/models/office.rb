@@ -35,4 +35,16 @@ class Office < ActiveRecord::Base
     end
   end
 
+  def time_zone_offset
+    require 'timezone_parser'
+    match = TimezoneParser::getTimezones(time_zone)
+      # Filter out any occurrences of "etc"
+      .select { |t| t.downcase.include? "etc" ? false : true }
+      # Use the first result
+      .first
+
+    log "parsing time_zone_offset: #{time_zone} -> #{match}"
+    match
+  end
+
 end

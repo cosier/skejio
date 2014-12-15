@@ -34,7 +34,7 @@ module Skej
         # By means of natural language processing.
         #
         # If it is indeed a valid date, then we will store only the original
-        # text for later transition into the correct date and timezone.
+        # text for later transition into the correct date and time_zone.
         #
         def parse_date_and_store!
           input = @session.input[:Body]

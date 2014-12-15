@@ -10,6 +10,7 @@ gem 'rails_12factor', group: :production
 gem 'rollbar', group: :production
 gem 'dalli'
 
+gem 'TimezoneParser'
 
 # # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'

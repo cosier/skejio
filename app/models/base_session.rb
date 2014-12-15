@@ -94,6 +94,10 @@ class BaseSession < ActiveRecord::Base
     (prev and prev.to_state.to_sym) || :handshake
   end
 
+  def chosen_office
+    Office.where(id: store[:chosen_office_id], business_id: business.id).first
+  end
+
   # If you utilize the customer input to perform a permenanent side effect,
   # then make sure you clear the session input for the next state to behave correctly.
   #

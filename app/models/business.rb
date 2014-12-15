@@ -53,6 +53,8 @@ class Business < ActiveRecord::Base
     users.provider
   end
 
+  alias_attribute :service_providers, :available_providers
+
   # Formal display name for this entity
   def display_name
     name and name.downcase.titleize

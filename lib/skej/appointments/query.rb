@@ -20,7 +20,7 @@ module Skej
           results = []
           now = DateTime.now
 
-          1.times do |n|
+          3.times do |n|
             results << generate_appointment
           end
 
@@ -39,9 +39,16 @@ module Skej
           off_id = @session.chosen_office.id
           ses_id = @session.id
 
+          # Optionally merge in start and end dates,
+          # if not already provided.
           opts.reverse_merge! start: random_range_start
           opts.reverse_merge! end: random_range_end(opts[:start])
 
+          # Instantiate an Appointment model with all the
+          # right properties.
+          #
+          # Note: This is not saved to the database yet.
+          # (most likely pending confirmation/selection at this point)
           Appointment.new do |ap|
             # Required fields
             ap.business_id = biz_id
@@ -49,33 +56,39 @@ module Skej
             ap.customer_id = cst_id
             ap.office_id = off_id
             ap.created_by_session_id = ses_id
-
+            binding.pry
+            # Ensure :start is transformed to a DateTime.
+            # As well as applying any time_zone transformations.
             ap.start = opts[:start]
               .to_datetime
-              .change(@session.chosen_office.timezone)
+              .change(offset: @session.chosen_office.time_zone_offset)
 
+            # Ensure :end is transformed to a DateTime.
+            # As well as applying any time_zone transformations.
             ap.end   = opts[:end]
               .to_datetime
-              .change(@session.chosen_office.timezone)
+              .change(offset: @session.chosen_office.time_zone_offset)
           end
         end
 
         # Fetch the timezone for the chosen office.
         #
-        # While also memoizing the timezone result as
-        # @timezone_cache
-        def timezone
-          return @timezone_cache if @timezone_cache
+        # While also memoizing the time_zone result as
+        # @time_zone_cache
+        def time_zone
+          return @time_zone_cache if @time_zone_cache
 
           # Get the office id from the session json store
           id = @session.store[:chosen_office_id]
-          office = Office.where(business_id: @session.business_id, id: id).first
+          office = Office
+            .where(business_id: @session.business_id, id: id)
+            .first
 
           if office.present?
-            @timezone_cache = office.timezone
+            @time_zone_cache = office.time_zone
           end
 
-          @timezone_cache
+          @time_zone_cache
 
         end
 
