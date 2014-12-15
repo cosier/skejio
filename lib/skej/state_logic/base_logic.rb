@@ -27,8 +27,6 @@ module Skej
 
       def render
         unless @thinked
-          #raise "Cannot render before thinking / processing behaviours"
-
           # For some reason this module has not think'ed yet.
           #
           # So instead of calling it directly and messing up potential state,
@@ -41,6 +39,8 @@ module Skej
           end
         end
 
+        # We have already think'ed,
+        # so let's deliver whatever payload thinking provided us with.
         twiml_payload
       end
 
@@ -522,6 +522,32 @@ module Skej
           clear_session_input!
           return advance!
         end
+      end
+
+      def assign_chosen_id!(id)
+        log "Assigning chosen id: #{id}"
+        selector = false
+        klass = self.class.name.underscore
+
+        if klass =~ /office/
+          selector = "office"
+
+        elsif klass =~ /service/
+          selector = "service"
+
+        else
+          # Raise an exception if we havn't defined the selector.
+          #
+          # This is because there are currently no situations that I can
+          # imagine that require setting a chosen_xxx_id, other than Services and Offices.
+          #
+          # Of course this could change in the future, if any additional states are added
+          # that would utilize this method.
+          raise "This method (assign_chosen_id) is not supported on anything else besides Office & Service logic modules" unless selector
+        end
+
+
+        @session.store! "chosen_#{selector}_id", id
       end
 
       # Automated method and recommended interface for marking the

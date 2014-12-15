@@ -35,7 +35,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       appointment = @appointments[selected]
 
       log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
-      @apt.store! :chosen_appointment_id = appointment.save.id
+      @apt.store! :chosen_appointment_id, appointment.save.id
 
       log "advancing customer to appointment finalization step"
       @apt.transition_to! :finalize_appointment

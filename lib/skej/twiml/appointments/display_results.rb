@@ -37,7 +37,17 @@ class Skej::Twiml::Appointments::DisplayResults < Skej::Twiml::BaseTwiml
       # Iterate over all given appointments to produce a
       # visual selection list.
       options[:appointments].each_with_index do |apt, index|
-        list << "#{index} - #{apt.label}"
+
+        # Determine if we can show Service Provider names inline with
+        # the Appointment Label.
+        if options[:session].show_service_providers_during_appointment_selection?
+          log "Showing Appointments: Express II — with Service Providers"
+          list << "#{index} - #{apt.label_with_service_provider}"
+        else
+          log "Showing Appointments"
+          list << "#{index} - #{apt.label}"
+        end
+
       end
 
       # Return string compilation containing visual selection list.
