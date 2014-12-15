@@ -37,16 +37,35 @@ class SchedulerSession < BaseSession
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
   end
 
+  # Based on the already set :chosen_office_id,
+  # get the corresponding Office entity.
   def chosen_office
     Office.where(business_id: business_id, id: store[:chosen_office_id]).first
   end
 
+  # Based on the already set :chosen_provider_id,
+  # get the corresponding ServiceProvider entity (User).
   def chosen_provider
     User.where(business_id: business_id, id: store[:chosen_provider_id]).first
   end
 
+  # Based on the already set :chosen_service_id,
+  # get the corresponding Service entity.
   def chosen_service
     Service.where(business_id: business_id, id: store[:chosen_service_id]).first
+  end
+
+  # Determines if we can show the name of the Service Provider during
+  # Appointment Selection choices.
+  def show_service_providers_during_appointment_selection?
+
+    # Get the specific Setting for the key Setting::USER_SELECTION,
+    # specific to this business.
+    setting = Setting.business(business).key(Setting::USER_SELECTION)
+
+    # Return the result of checking if the setting
+    # value ==  Setting::USER_SELECTION_EXPRESS_I
+    setting.is? Setting::USER_SELECTION_EXPRESS_I
   end
 
   private

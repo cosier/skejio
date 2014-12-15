@@ -25,14 +25,42 @@
 
 class Appointment < ActiveRecord::Base
 
+
+  belongs_to :service_provider,
+    class_name: 'User'
+
+  belongs_to :office
+  belongs_to :business
+  belongs_to :customer
+
+  belongs_to :session,
+    foreign_key: 'created_by_session_id',
+    class_name: 'SchedulerSession'
+
   # Returns a short one-liner of the Appointment details
   def label
+    # eg. "Monday 1:30 pm to 2:00pm"
+    "#{start.strftime('%A')} #{pretty_start} to #{pretty_end}"
+  end
 
+  # Same label, but appended with the service provider.
+  def label_with_service_provider
+    label << ", with #{service_provider.display_name}"
   end
 
   # Returns a quick/n/short summary of the Appointment details
   def summary
     # TODO
+  end
+
+  private
+
+  def pretty_start
+    "#{start.hour}:#{start.minute} #{start.strftime('%p')}"
+  end
+
+  def pretty_end
+    "#{end.hour}:#{end.minute} #{end.strftime('%p')}"
   end
 
 end
