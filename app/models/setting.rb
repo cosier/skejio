@@ -65,6 +65,7 @@ class Setting < ActiveRecord::Base
   def is(what)
     value == what
   end
+  alias_attribute :is?, :is
 
   def to_b
     value.to_b
