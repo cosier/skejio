@@ -97,7 +97,7 @@ module Skej
       # We assume there is no reason the office won't be available.
       # Due to automatic assumptions, and requiring at least one office
       # per business.
-      def offset
+      def time_zone
         @session.chosen_office.time_zone
       end
 

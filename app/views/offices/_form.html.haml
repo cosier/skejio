@@ -19,7 +19,7 @@
     .form-group.with-check-box
       = f.label :time_zone, 'Office Local Timezone'
       %br/
-      = f.time_zone_select(:time_zone, ActiveSupport::TimeZone.us_zones, {}, class: 'form-control')
+      = f.time_zone_select(:time_zone, nil, {}, class: 'form-control')
 
     %br/
     / Text input

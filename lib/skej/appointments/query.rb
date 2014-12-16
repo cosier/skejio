@@ -61,13 +61,14 @@ module Skej
             # As well as applying any time_zone transformations.
             ap.start = opts[:start]
               .to_datetime
-              .change(offset: @session.chosen_office.time_zone_offset)
+              .in_time_zone(@session.chosen_office.time_zone)
 
             # Ensure :end is transformed to a DateTime.
             # As well as applying any time_zone transformations.
             ap.end   = opts[:end]
               .to_datetime
-              .change(offset: @session.chosen_office.time_zone_offset)
+              .in_time_zone(@session.chosen_office.time_zone)
+
           end
         end
 

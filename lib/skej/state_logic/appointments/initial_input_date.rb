@@ -54,10 +54,10 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     parsed_date = Chronic.parse(input)
 
     # Audit to logs
-    log "using office time_zone offset: #{offset || 'none'}"
+    log "using office time_zone offset: #{time_zone || 'none'}"
 
     # Apply a datetime offset shift, if the date parsing was successful.
-    daterized = parsed_date.to_datetime.change(offset: offset) if parsed_date
+    daterized = parsed_date.to_datetime.in_time_zone(time_zone) if parsed_date
 
     # Stash this datetime object as a string on the Appointment state
     @apt.store[:appointment_input_date] = daterized.to_s
