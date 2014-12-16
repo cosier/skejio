@@ -13,6 +13,8 @@ Rails.application.config.assets.precompile += %w(
   simulator/main.css
   super/main.css
   super/manage_businesses.css
-  dev.css
-  dev.js
 )
+
+if Rails.env.development?
+  Rails.application.config.assets.precompile += %w( dev.css dev.js)
+end
