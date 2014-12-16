@@ -13,11 +13,11 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     end
 
     if input.present?
-      log "Customer input <strong>found:</strong><br/><pre>[:input_date => #{input.to_s}]</pre>"
+      log "Customer initial date input <strong>found:</strong><br/><pre>[:input_date => #{input.to_s}]</pre>"
       @apt.transition_to! :display_results
 
     else
-      log "Customer input <strong>not found:</strong><br/><pre>[:input_date => #{@apt[:input_date] || 'nil' }]</pre>"
+      log "Customer initial date input <strong>not found:</strong><br/><pre>[:input_date => #{@apt[:input_date] || 'nil' }]</pre>"
       @apt.transition_to! :initial_input_date
     end
 

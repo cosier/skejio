@@ -20,6 +20,8 @@ module Skej
         build_twiml do |b|
           b.Gather action: endpoint(gathering: true), maxlength: 10, timeout: 120,  finishOnKey: "#", method: 'get' do |g|
 
+            g.Say "Sorry please try again ..."
+
             g.Pause length: 1
             g.Say "Please select a Service for your Appointment"
             g.Pause length: 1

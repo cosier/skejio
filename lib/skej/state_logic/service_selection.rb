@@ -60,7 +60,7 @@ module Skej
           view_locals[:ask] = true
         end
 
-        if @bad_selection and @digits.present?
+        if @bad_selection.present?
           # Show a sorry, incorrect input page and ask again
           twiml_repeat_service_selection(view_locals)
         else

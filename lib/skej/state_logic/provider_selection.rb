@@ -73,7 +73,7 @@ module Skej
       end
 
       def sms_and_voice
-        if @bad_selection and @digits.present?
+        if @bad_selection.present?
           # Show a sorry, incorrect input page and ask again
           twiml_repeat_provider_selection providers: @providers_ordered
         else

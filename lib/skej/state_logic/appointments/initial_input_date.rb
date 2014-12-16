@@ -17,7 +17,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     # Check if we can abort early due to already having a date
     # This only applies for SMS users.
     if @session.sms? and input = @session.store[:initial_date_decoded]
-      log "Detected SMS User with Initial Date already set <span class='muted'>(from the initial_decoder)</span>"
+      log "Detected SMS User with Initial Date already set <span class='muted'>(#{input})</span>"
       # Now that we have used the :initial_date_decoded, make sure we clear it.
       # So that future attempts to change the date will be able to avoid this branch.
       @session.store! :initial_date_decoded, nil
@@ -60,7 +60,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     daterized = parsed_date.to_datetime.in_time_zone(time_zone) if parsed_date
 
     # Stash this datetime object as a string on the Appointment state
-    @apt.store[:appointment_input_date] = daterized.to_s
+    @apt.store! :appointment_input_date, daterized.to_s
 
     # Log and go to next
     log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"

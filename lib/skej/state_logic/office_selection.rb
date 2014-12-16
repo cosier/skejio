@@ -61,7 +61,7 @@ module Skej
 
         # Return a twiml view, based on a condition.
         # Either repeat the selection, or ask normally (first time).
-        if @bad_selection and @digits.present?
+        if @bad_selection.present?
           # Show a sorry, incorrect input page and ask again
           twiml_repeat_office_selection(data)
 

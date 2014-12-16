@@ -1,18 +1,18 @@
 module Skej
   module Twiml
-    class RepeatOfficeSelection < BaseTwiml
+    class RepeatProviderSelection < BaseTwiml
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Sorry we did not recognize the option \"#{session.input[:Body]}\" "
+          b.Message """
+          Sorry we did not recognize the option \"#{session.input[:Body]}\" \n
+          """
 
-          office_choices = ""
-          options[:offices].map do |index, office|
-            office_choices << "Enter #{index} for #{office.name} \n"
+          provider_choices = ""
+          options[:providers].map do |index, provider|
+            provider_choices << "Enter #{index} for #{provider.display_name} \n"
           end
-
-          b.Message office_choices
-
+          b.Message provider_choices
         end
       end
 
@@ -23,17 +23,17 @@ module Skej
             g.Say "Sorry please try again ..."
 
             g.Pause length: 1
-            g.Say "Please select a Office for your Appointment"
+            g.Say "Please select a Provider for your Appointment"
             g.Pause length: 1
             g.Say "Followed by the pound key to continue"
             g.Pause length: 2
 
-            options[:offices].map do |index, office|
-              g.Say "Enter #{index} for #{office.name} ...."
+            options[:providers].map do |index, provider|
+              g.Say "Enter #{index} for #{provider.display_name} ...."
             end
 
             g.Pause length: 1
-            g.Say "Press the pound key to listen to the available Offices again"
+            g.Say "Press the pound key to listen to the available Providers again"
           end # b.Gather
 
           # Fallback to a retry loop when the Customer times out
