@@ -98,7 +98,7 @@ module Skej
       # Due to automatic assumptions, and requiring at least one office
       # per business.
       def time_zone
-        @session.chosen_office.time_zone
+        @session.chosen_office.time_zone if @session.chosen_office.present?
       end
 
       # For the current Business on this Session,

@@ -56,8 +56,11 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     # Audit to logs
     log "using office time_zone offset: #{time_zone || 'none'}"
 
-    # Apply a datetime offset shift, if the date parsing was successful.
-    daterized = parsed_date.to_datetime.in_time_zone(time_zone) if parsed_date
+    daterized = parsed_date.to_datetime if parsed_date
+
+    # Apply a datetime offset shift, if the time_zone is available
+    daterized = daterized.in_time_zone(time_zone) if time_zone
+
 
     # Stash this datetime object as a string on the Appointment state
     @apt.store! :appointment_input_date, daterized.to_s
