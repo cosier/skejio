@@ -4,7 +4,7 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          if options[:service_confirming_assumption].present? and not options[:ask].present?
+          if options[:service_selection_confirming_assumption].present? and not options[:ask].present?
             b.Message """We have chosen the service #{options[:default].name} for you.
             \n Would you like to like to change it? (enter yes/no)"""
 
@@ -26,7 +26,7 @@ module Skej
 
           b.Gather action: endpoint(gathering: true), maxlength: option_length , timeout: 10,  finishOnKey: "#", method: 'get' do |g|
 
-            if options[:service_confirming_assumption].present? and not options[:ask].present?
+            if options[:service_selection_confirming_assumption].present? and not options[:ask].present?
               log "Asking the Customer for Assumption confirmation"
               g.Say "We have chosen the service #{options[:default].name} for you. ...."
               g.Say "Press 1 to change this service ...."
