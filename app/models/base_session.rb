@@ -95,6 +95,7 @@ class BaseSession < ActiveRecord::Base
   end
 
   def chosen_office
+    binding.pry
     Office.where(id: store[:chosen_office_id], business_id: business.id).first
   end
 

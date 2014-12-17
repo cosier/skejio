@@ -51,7 +51,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
 
   def save!(input)
     # Transform textual input into a Chronic date
-    parsed_date = Chronic.parse(input)
+    parsed_date = Skej::NLP.parse(@session, input)
 
     # Audit to logs
     log "using office time_zone offset: #{time_zone || 'none'}"
@@ -59,7 +59,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     daterized = parsed_date.to_datetime if parsed_date
 
     # Apply a datetime offset shift, if the time_zone is available
-    daterized = daterized.in_time_zone(time_zone) if time_zone
+    daterized = Skej::Warp.zone(daterized, time_zone_offset) if time_zone
 
 
     # Stash this datetime object as a string on the Appointment state

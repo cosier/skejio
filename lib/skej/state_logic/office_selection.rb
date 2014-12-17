@@ -16,6 +16,9 @@ module Skej
           log "Available Offices < 2 <br/><strong>Skipping Customer Selection of Offices</strong>"
           mark_state_complete!
 
+          office = @session.business.available_offices.first
+          @session.store! :chosen_office_id, office.id
+
           # ADVANCE
           return advance!
         end

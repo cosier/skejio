@@ -40,7 +40,7 @@ module Skej
           input = @session.input[:Body]
 
           log "sms session detected— engaging Chronic.parse(<strong>#{input}</strong>)"
-          date = Chronic.parse(input)
+          date = Skej::NLP.parse(@session, input)
 
           if date
             log "date extracted from initial message: <br/><strong>#{date}</strong>"
