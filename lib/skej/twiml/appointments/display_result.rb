@@ -40,11 +40,9 @@ class Skej::Twiml::Appointments::DisplayResult < Skej::Twiml::BaseTwiml
         # Determine if we can show Service Provider names inline with
         # the Appointment Label.
         if options[:session].show_service_providers_during_appointment_selection?
-          log "Showing Appointments: Express II — with Service Providers"
-          list << "#{index} - #{apt.label_with_service_provider} \n"
+          list << "#{index + 1} - #{apt.label_with_service_provider} \n"
         else
-          log "Showing Appointments"
-          list << "#{index} - #{apt.label} \n"
+          list << "#{index + 1} - #{apt.label} \n"
         end
 
       end

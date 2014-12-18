@@ -3,9 +3,8 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
   def think
 
     @thinked = true
-    @apt   = @session.apt
-    @state = @apt.state
-    binding.pry
+    @apt     = @session.apt
+    @state   = @apt.state
 
     if @apt.store[:appointment_input_date].nil?
       # If we don't have a date determined yet,
@@ -47,7 +46,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     if just_shown_results? and (input = user_input?)
 
       # Normalize selection to an integer for precise hash lookup
-      selected = input.to_i
+      selected = input.to_i - 1
 
       # Clear this boolean as it's no longer true.
       clear_just_shown_flag!
@@ -56,7 +55,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       #
       # Here we are matching the users input as the index against an
       # ordered collection of Appointments.
-      appointment = @appointments[selected]
+      appointment = @appointments[selected - 1]
 
       # Make the appointment by committing to the database.
       # Will raise an exception immediately if not persisted successfully (!).
