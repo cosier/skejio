@@ -10,7 +10,6 @@
   %tr
     %th Name
     %th Description
-    %th Priority
     %th Duration
     %th
     %th
@@ -26,7 +25,6 @@
     %tr
       %td= service.name
       %td= service.description
-      %td= service.priority
       %td= service.duration
       %td= link_to 'Show', [@business, service]
       %td= link_to 'Edit', edit_business_service_path(@business, service)
