@@ -7,7 +7,13 @@ module Skej
         @session = sesh
       end
 
-      def available_now
+      def available_now(base_date)
+        # Stash this for future use, as we will be using it to set a baseline date
+        # in order to derive a bunch of different appointments from.
+        @base_date = base_date
+
+        # For now just generate a bunch of valid Appointments.
+        # Using random dates (with realistic start/end ranges generated)
         mock_results
       end
 
@@ -32,10 +38,10 @@ module Skej
         end
 
         def generate_appointment(opts = {})
-
           biz_id = @session.business.id
           prv_id = @session.business.service_providers.first.id
           cst_id = @session.customer.id
+
           off_id = @session.chosen_office.id
           ses_id = @session.id
 
@@ -56,7 +62,7 @@ module Skej
             ap.customer_id = cst_id
             ap.office_id = off_id
             ap.created_by_session_id = ses_id
-            binding.pry
+
             # Ensure :start is transformed to a DateTime.
             # As well as applying any time_zone transformations.
             ap.start = opts[:start]

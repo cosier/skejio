@@ -6,7 +6,7 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     input = Skej::Warp.zone(@apt.store[:input_date].to_datetime, time_zone_offset) rescue nil
 
     # Load SMS users first initial date decoding
-    if input.nil? and @session.sms? and @session.store[:initial_date_input].present?
+    if input.nil? and @session.sms? and @session.store[:initial_date_decoded].present?
       log "Loading SMS Sessions :initial_date_input captured via :initial_decoder state"
       input = Skej::Warp.zone(@session.store[:initial_date_input].to_datetime, time_zone_offset) rescue nil
       @apt.store[:input_date] = input.to_s

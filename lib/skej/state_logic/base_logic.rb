@@ -16,7 +16,10 @@ module Skej
       # Thinks, then returns the payload
       # payload in this case is a Skej::Twiml::BaseTwiml instance.
       def process!
-        # Apply state logic and rules
+
+        # Apply state logic and rules— stored and primed in this instance.
+        # This ensures all instance variables are setup and defined for the
+        # view functions to utilize.
         thinker unless @thinked.present?
 
         # Mark this instance as having thinked already.
@@ -25,6 +28,15 @@ module Skej
         @thinked = true
       end
 
+      # For the current executing state, render some TwiML xml.
+      # This is usually requested by the controller via the Session entity.
+      #
+      # The Session will then delegate the rendering of TwiML to the currently
+      # active Logic module. The current logic module is defined by the current_state
+      # string, which is transformed into a concrete class, then instantiated.
+      #
+      # One way or another, at the end of a Customer request, this method is called
+      # to generate the final response for the request(s).
       def render
         unless @thinked
           # For some reason this module has not think'ed yet.
@@ -65,7 +77,7 @@ module Skej
       # Determines if the customer has input present for the
       # current state phase.
       def user_input?
-        params[:Body].present? || params[:Digits].present?
+        params[:Body] || params[:Digits]
       end
 
       # Clears all session input for the current request
@@ -99,6 +111,11 @@ module Skej
       # per business.
       def time_zone
         @session.chosen_office.time_zone if @session.chosen_office.present?
+      end
+
+      # Delegate to session office
+      def time_zone_offset
+        @session.chosen_office.time_zone_offset
       end
 
       # For the current Business on this Session,
@@ -465,8 +482,8 @@ module Skej
         ##################################################################
         # Assumption SWITCH
         #
-        # Business can assume and will offer change
-        # let the TwiML view blocks handle this switching
+        # Business can assume and will offer change.
+        # :et the TwiML view blocks handle this switching
         #
         # Also check that the customer did not already asked to change
         # ie. lookup #{state}_customer_asked_to_change
@@ -524,6 +541,11 @@ module Skej
         end
       end
 
+      # Set an id for the chosen model.
+      # The chosen model is determined at runtime based on which state
+      # is currently executing.
+      #
+      # Current chosen models supported are Office & Service models.
       def assign_chosen_id!(id)
         log "Assigning chosen id: #{id}"
         selector = false
@@ -545,7 +567,6 @@ module Skej
           # that would utilize this method.
           raise "This method (assign_chosen_id) is not supported on anything else besides Office & Service logic modules" unless selector
         end
-
 
         @session.store! "chosen_#{selector}_id", id
       end

@@ -40,19 +40,20 @@ class SchedulerSession < BaseSession
   # Based on the already set :chosen_office_id,
   # get the corresponding Office entity.
   def chosen_office
-    Office.where(business_id: business_id, id: store[:chosen_office_id]).first
+    query = { id: store[:chosen_office_id] || store[:chosen_office_selection_id], business_id: business.id }
+    Office.where(query).first
   end
 
   # Based on the already set :chosen_provider_id,
   # get the corresponding ServiceProvider entity (User).
   def chosen_provider
-    User.where(business_id: business_id, id: store[:chosen_provider_id]).first
+    User.where(id: store[:chosen_provider_id] || store[:chosen_provider_selection_id], business_id: business.id).first
   end
 
   # Based on the already set :chosen_service_id,
   # get the corresponding Service entity.
   def chosen_service
-    Service.where(business_id: business_id, id: store[:chosen_service_id]).first
+    Service.where(id: store[:chosen_service_id] || store[:chosen_service_selection_id], business_id: business.id).first
   end
 
   # Determines if we can show the name of the Service Provider during
@@ -61,7 +62,7 @@ class SchedulerSession < BaseSession
 
     # Get the specific Setting for the key Setting::USER_SELECTION,
     # specific to this business.
-    setting = Setting.business(business).key(Setting::USER_SELECTION)
+    setting = Setting.business(business).key(Setting::USER_SELECTION).first
 
     # Return the result of checking if the setting
     # value ==  Setting::USER_SELECTION_EXPRESS_I
