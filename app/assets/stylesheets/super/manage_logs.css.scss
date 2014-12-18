@@ -1,6 +1,11 @@
 @import "../colors";
 
 body.system_logs {
+
+  pre {
+    max-width:400px;
+  }
+
   $entry-border: $blue;
   tr.entry {
     td {

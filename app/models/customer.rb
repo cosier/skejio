@@ -39,6 +39,9 @@ class Customer < ActiveRecord::Base
         SystemLog.fact(title: 'customer', payload: "created -> " + customer.display_name)
       end
 
+      params = RequestStore.store[:params]
+      SystemLog.fact(title: 'customer', payload: "input -> #{params[:Body] || params[:Digits] || 'none-detected'}")
+
       customer
 
     end

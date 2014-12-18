@@ -26,7 +26,6 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       return save! input
     end
 
-
     if user_input?
       # Two possible types of input (:Body and :Digits)
       # Based on if the @session is sms? or voice?
@@ -67,7 +66,9 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
 
     # Log and go to next
     log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"
-    @apt.transition_to! :display_results
+
+    binding.pry
+    @apt.transition_to! :display_result
 
   end
 

@@ -22,10 +22,10 @@ class BaseSession < ActiveRecord::Base
       sesh   = false
 
       # Find a session specific to this:
-      # Business, Customer and within the last hour
+      # Business, Customer and within the last hour.
       query  = { customer_id: customer.id,
                  business_id: business.id,
-                 updated_at: 1.hour.ago..DateTime.now }
+                 created_at: 24.hour.ago..DateTime.now }
 
       existing = self.order(created_at: :desc).where(query).first
 

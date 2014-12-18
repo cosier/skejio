@@ -53,15 +53,16 @@ class Appointment < ActiveRecord::Base
     # TODO
   end
 
-  private
-
   def pretty_start
-    "#{start.hour}:#{start.minute} #{meridian(start)}"
+    "#{start.hour}:#{start.to_datetime.minute} #{meridian(start)}"
   end
 
   def pretty_end
-    "#{end_time.hour}:#{end_time.minute} #{meridian(end_time)}"
+    "#{end_time.hour}:#{end_time.to_datetime.minute} #{meridian(end_time)}"
   end
+
+
+  private
 
   def meridian(time)
     time.strftime('%p').upcase

@@ -5,8 +5,9 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     @thinked = true
     @apt   = @session.apt
     @state = @apt.state
+    binding.pry
 
-    if @apt.store[:input_date].nil?
+    if @apt.store[:appointment_input_date].nil?
       # If we don't have a date determined yet,
       # send the Customer to the :repeat_input_date state for further selection.
       log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
@@ -15,7 +16,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     else
       # We have a new local date input, let's make sure we update
       # the parent session as well.
-      @session.store! :input_date, @apt.store[:input_date]
+      @session.store! :appointment_input_date, @apt.store[:appointment_input_date]
     end
 
     if user_wants_change?
@@ -34,7 +35,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     # hash table of appointments indexed by ordering 1-10.
     #
     # As input, we provide the Customers desired input date, determined earlier.
-    @appointments = query.available_now(@apt.store[:input_date])
+    @appointments = query.available_now(@apt.store[:appointment_input_date])
 
     # If the Customer has entered input,
     # we need to match it to one of the potential Appointments (ordered).

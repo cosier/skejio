@@ -50,6 +50,10 @@ class AppointmentSelectionState < BaseSession
     @state ||= ::AppointmentStateMachine.new(self, transition_class: ::AppointmentSelectionTransition)
   end
 
+  def chosen_appointment
+    Appointment.find store[:chosen_appointment_id]
+  end
+
   private
 
   # Override base engine implementation to add the namespace "Appointments::"

@@ -6,9 +6,7 @@ class Skej::StateLogic::Appointments::FinalizeAppointment < Skej::StateLogic::Ba
   end
 
   def sms_and_voice
-    twiml do |b|
-      b.Message "Finalize your appointment!"
-    end
+    twiml_appointments_finalize_appointment(appointment: @apt.chosen_appointment)
   end
 
 end
