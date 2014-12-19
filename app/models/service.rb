@@ -6,7 +6,6 @@
 #  business_id :integer          not null
 #  name        :string(255)      not null
 #  description :text
-#  priority    :integer          default(1)
 #  duration    :integer          default(60)
 #  created_at  :datetime
 #  updated_at  :datetime

@@ -9,6 +9,7 @@
 #  updated_at  :datetime
 #  meta        :text
 #  device_type :integer
+#  is_finished :boolean          default(FALSE)
 #
 
 class SchedulerSession < BaseSession
