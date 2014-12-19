@@ -13,7 +13,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     # Also voice users are automatically routed on as well.
     if @apt.chosen_appointment or not can_silently_assume?
       log "directing voice customer directly to appointment finish"
-      return @apt.transition_to! :finish
+      return finish!
     end
 
     if @apt.store[:appointment_input_date].nil?
@@ -70,18 +70,31 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     def process_actions(original_input)
       # Normalize the customer input into an integer
       input = strip_to_int(original_input).to_i || 0
+      option_length = @menu_options.keys.length
 
       # If we have an unrecognized input
       return invalid_input! if input < 1
 
       # Process Appointment selection
-      if input > @menu_options.keys.length
+      if input > option_length
         log "Processing Customer Appointment Selection: #{input}"
-      # Process option handling (eg. change service / office)
+        appointment = @appointments[input - option_length - 1]
+        @apt.store! :chosen_appointment_id, appointment.id
+
+        finish!
       else
         key = @menu_options[input][:key]
         log "Processing Customer Option Selection: #{input} -> #{key}"
+        # Process option handling (eg. change service / office)
       end
+    end
+
+    def finish!
+      # Don't forget about the top level session guard criteria
+      @session.store! :appointment_selection, :complete
+
+      # Let's go there
+      @apt.transition_to! :finish
     end
 
     def invalid_input!

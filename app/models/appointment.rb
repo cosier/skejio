@@ -37,6 +37,8 @@ class Appointment < ActiveRecord::Base
     foreign_key: 'created_by_session_id',
     class_name: 'SchedulerSession'
 
+  after_create :log_creation
+
   # Returns a short one-liner of the Appointment details
   def label
     # eg. "Monday 1:30 pm to 2:00 pm"
@@ -71,6 +73,10 @@ class Appointment < ActiveRecord::Base
 
   def meridian(time)
     time.strftime('%p').upcase
+  end
+
+  def log_creation
+    SystemLog.fact(title: self.class.name.underscore, payload: "Created Appointment: <br/><pre>#{self.to_json}</pre>")
   end
 
   alias_attribute :end_time, :end
