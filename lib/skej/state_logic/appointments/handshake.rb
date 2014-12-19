@@ -15,7 +15,8 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
 
     if input.present?
       log "Customer initial date input <strong>found:</strong><br/><pre>[:appointment_input_date => #{input.to_s}]</pre>"
-      @apt.transition_to! :display_results
+      @apt.transition_to! :finalize_appointment
+      #@apt.transition_to! :display_result
 
     else
       log "Customer initial date input <strong>not found:</strong><br/><pre>[:appointment_input_date => #{input || 'nil' }]</pre>"

@@ -27,56 +27,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       return @apt.transition_to! :repeat_input_date
     end
 
-    # Hash table for ordered indexing of appointments.
-    # Which is used in the user selection phase as a decision selector.
-    #
-    # Generate a list of available time slots for this Session's Appointment
-    # hash table of appointments indexed by ordering 1-10.
-    #
-    # As input, we provide the Customers desired input date, determined earlier.
-    @appointments = query.available_now(@apt.store[:appointment_input_date])
-
-    # If the Customer has entered input,
-    # we need to match it to one of the potential Appointments (ordered).
-    #
-    # The first condition (just_shown_results?) means that we require the previous
-    # interaction to be the Appointment Results index.
-    #
-    # This guarantees we are processing the customer input at the right time.
-    if just_shown_results? and (input = user_input?)
-
-      # Normalize selection to an integer for precise hash lookup
-      selected = input.to_i - 1
-
-      # Clear this boolean as it's no longer true.
-      clear_just_shown_flag!
-
-      # Get the appointment from the ordered_appointents results.
-      #
-      # Here we are matching the users input as the index against an
-      # ordered collection of Appointments.
-      appointment = @appointments[selected - 1]
-
-      # Make the appointment by committing to the database.
-      # Will raise an exception immediately if not persisted successfully (!).
-      appointment.save!
-
-      log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
-      @apt.store! :chosen_appointment_id, appointment.id
-
-      log "advancing customer to appointment finalization step"
-      @apt.transition_to! :finalize_appointment
-
-    # If the customer wasn't just shown the results,
-    # then the only thing left to do— is to show the results!
-    else
-
-      # Set a boolean on the session store, that we are showing results.
-      just_shown_results!
-
-      # Do nothing else, as the View provided by sms_and_voice,
-      # will do the rest once the payload is requested via the Controller.
-    end
+    process_result_selection
   end
 
   def sms_and_voice
@@ -88,6 +39,50 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
   end
 
   private
+
+    def process_result_selection
+      # If the Customer has entered input,
+      # we need to match it to one of the potential Appointments (ordered).
+      #
+      # The first condition (just_shown_results?) means that we require the previous
+      # interaction to be the Appointment Results index.
+      #
+      # This guarantees we are processing the customer input at the right time.
+      if just_shown_results? and (input = user_input?)
+
+        # Normalize selection to an integer for precise hash lookup
+        selected = input.to_i - 1
+
+        # Clear this boolean as it's no longer true.
+        clear_just_shown_flag!
+
+        # Get the appointment from the ordered_appointents results.
+        #
+        # Here we are matching the users input as the index against an
+        # ordered collection of Appointments.
+        appointment = @appointments[selected - 1]
+
+        # Make the appointment by committing to the database.
+        # Will raise an exception immediately if not persisted successfully (!).
+        appointment.save!
+
+        log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
+        @apt.store! :chosen_appointment_id, appointment.id
+
+        log "advancing customer to appointment finalization step"
+        @apt.transition_to! :finalize_appointment
+
+      # If the customer wasn't just shown the results,
+      # then the only thing left to do— is to show the results!
+      else
+
+        # Set a boolean on the session store, that we are showing results.
+        just_shown_results!
+
+        # Do nothing else, as the View provided by sms_and_voice,
+        # will do the rest once the payload is requested via the Controller.
+      end
+    end
 
     # Check if we just shown the Customer results?
     #
@@ -115,11 +110,6 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     # Or avoiding typos.
     def just_shown_key
       :appointment_results_just_shown
-    end
-
-    # Memoize the query object based on this @session.
-    def query
-      @query ||= Skej::Appointments::Query.new(@session)
     end
 
     # Helper to determine if the Customer chose "Change".

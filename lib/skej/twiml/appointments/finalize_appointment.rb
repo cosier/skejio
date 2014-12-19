@@ -3,18 +3,14 @@ class Skej::Twiml::Appointments::FinalizeAppointment < Skej::Twiml::BaseTwiml
   def sms
     build_twiml do |b|
       b.Message """
-        Congratulations you have successfully booked your Appointment!\n
-        Appointment Details:\n
-        \n
+        Your Appointment Details:
         #{generate_appointment_details}
-        \n
-        __________ \n
-        You are now finished booking, have a nice day! \n
-        """
-
-      b.Message """
-        If you wish to book another appointment, \n
-        just send us another message with your preferred Date and Time \n
+        -----
+        your options:
+        1. Change Service
+        2. Change Office
+        3. Change Provider
+        4. OK
         """
     end
   end
@@ -31,7 +27,7 @@ class Skej::Twiml::Appointments::FinalizeAppointment < Skej::Twiml::BaseTwiml
 
 
   def generate_appointment_details
-    ap = options[:appointment]
+    ap = options[:appointments].first
 
     # TODO: customize this message further—
     # for example we can ommit the office if it is not important.
@@ -45,7 +41,7 @@ class Skej::Twiml::Appointments::FinalizeAppointment < Skej::Twiml::BaseTwiml
     details = """
       #{ap.start.strftime('%A')} the #{ap.start.day.ordinalize} at:\n
       #{ap.pretty_start} until #{ap.pretty_end}.
-      With #{ap.service_provider}, at the #{ap.office} Office.
+      With #{ap.service_provider.display_name}, at the #{ap.office.display_name} Office.
     """
 
     # Debug here

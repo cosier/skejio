@@ -500,7 +500,7 @@ module Skej
             elsif customer_entered_no?
               log 'customer entered no: proceeding to the next state'
               get["#{state}_customer_asked_to_change"] = false
-              get["chosen_#{state}_id"] = @supportable.id
+              assign_chosen_id! @supportable.id
 
               clear_session_input!
 
@@ -510,7 +510,7 @@ module Skej
             else
               log "customer entered unknown input: #{params[:Body] || params[:Digits]}"
               get["#{state}_customer_asked_to_change"] = true
-              # For a commit for this session changes
+              # Force a commit for this session changes
               @session.update_meta_store!
             end
 
@@ -518,6 +518,9 @@ module Skej
           else
             log "attempting to ask the Customer for Assumption confirmation"
             get["#{state}_confirming_assumption"] = true
+
+            # Also silently set the chosen model.
+            assign_chosen_id! @supportable.id
 
             advance!
           end
@@ -577,6 +580,11 @@ module Skej
         end
 
         @session.store! "chosen_#{selector}_id", id
+      end
+
+      # Memoize the query object based on this @session.
+      def query
+        @query ||= Skej::Appointments::Query.new(@session)
       end
 
       # Automated method and recommended interface for marking the
