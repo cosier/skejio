@@ -69,8 +69,8 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
         log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
         @apt.store! :chosen_appointment_id, appointment.id
 
-        log "advancing customer to appointment finalization step"
-        @apt.transition_to! :finalize_appointment
+        log "advancing customer to appointment summary step"
+        @apt.transition_to! :summary
 
       # If the customer wasn't just shown the results,
       # then the only thing left to do— is to show the results!

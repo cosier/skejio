@@ -15,8 +15,15 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
 
     if input.present?
       log "Customer initial date input <strong>found:</strong><br/><pre>[:appointment_input_date => #{input.to_s}]</pre>"
-      @apt.transition_to! :finalize_appointment
-      #@apt.transition_to! :display_result
+
+      # Here we are routing only SMS to the specialized single summary page.
+      if @session.sms?
+        @apt.transition_to! :summary
+
+      # Where as Voice users will be led to the appointment selection process.
+      else
+        @apt.transition_to! :display_result
+      end
 
     else
       log "Customer initial date input <strong>not found:</strong><br/><pre>[:appointment_input_date => #{input || 'nil' }]</pre>"

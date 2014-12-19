@@ -58,7 +58,7 @@ class SchedulerSession < BaseSession
 
   # Determines if we can show the name of the Service Provider during
   # Appointment Selection choices.
-  def show_service_providers_during_appointment_selection?
+  def show_service_providers?
 
     # Get the specific Setting for the key Setting::USER_SELECTION,
     # specific to this business.
@@ -67,6 +67,33 @@ class SchedulerSession < BaseSession
     # Return the result of checking if the setting
     # value ==  Setting::USER_SELECTION_EXPRESS_I
     setting.is? Setting::USER_SELECTION_EXPRESS_I
+  end
+
+  # A more descriptive alias — deprecated
+  # TODO: remove this usage throughout
+  alias_attribute :show_service_providers_during_appointment_selection?, :show_service_providers?
+
+  # Determines if the customer has the ability to change the default
+  # Service.
+  #
+  # This is based on whether the service_selection setting has a value
+  # of either, SERVICE_SELECTION_ASK or SERVICE_SELECTION_ASK_AND_ASSUME.
+  def can_change_service?
+    s = setting(Setting::SERVICE_SELECTION)
+    s.is? Setting::SERVICE_SELECTION_ASK or s.is? Setting::SERVICE_SELECTION_ASK_AND_ASSUME
+  end
+
+  # Determines if it is possible to change the office.
+  def can_change_office?
+    s = setting(Setting::OFFICE_SELECTION)
+    s.is? Setting::OFFICE_SELECTION_ASK or s.is? Setting::OFFICE_SELECTION_ASK_AND_ASSUME
+  end
+
+  # Determines if it is possible to change the provider.
+  # Currently this is only supported through the FULL_CONTROL setting.
+  def can_change_provider?
+    s = setting(Setting::USER_SELECTION)
+    s.is? Setting::USER_SELECTION_FULL_CONTROL
   end
 
   private

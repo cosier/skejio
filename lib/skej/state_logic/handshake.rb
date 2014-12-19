@@ -17,9 +17,11 @@ module Skej
           return advance!
         end
 
-        # Shake their hand, and the next request will be passed
-        # (see above condition)
-        @session.store! :handshake_shaked_hands,  true
+        # Shake their hand, and the next request will be passed.
+        #
+        # With the unless clause to protect against needless db commits
+        # if we are already shaken (from within this sub request).
+        @session.store!(:handshake_shaked_hands, true) unless @session.store[:handshake_shaked_hands].present?
 
         # If we made it this far, the sms/voice handlers for this class
         # will be called.

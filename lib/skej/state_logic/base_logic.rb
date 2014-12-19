@@ -587,6 +587,10 @@ module Skej
         @query ||= Skej::Appointments::Query.new(@session)
       end
 
+      def session
+        @session
+      end
+
       # Automated method and recommended interface for marking the
       # state as complete.
       #

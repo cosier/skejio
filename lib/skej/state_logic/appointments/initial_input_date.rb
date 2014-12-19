@@ -68,7 +68,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"
 
     #@apt.transition_to! :display_result
-    @apt.transition_to! :finalize_appointment
+    @apt.transition_to! :summary
 
   end
 

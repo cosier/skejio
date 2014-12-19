@@ -83,6 +83,27 @@ class BaseSession < ActiveRecord::Base
     #logic_engine((device_type and device_type.to_sym) || device || params[:action])
   end
 
+    # For the current Business on this Session,
+    # we can lookup a *key setting for this Business.
+    #
+    # All settings are stored as a Setting model, which belongs_to
+    # a Business.
+    #
+    # This provides simple settings lookup, while also caching lookups.
+    #
+    # Returns instance of Setting
+    def setting(key)
+      @setting_cache ||= {}
+      return @setting_cache[key] if @setting_cache[key].present?
+
+      log "looking up business setting: <strong>#{key}</strong>"
+      setting = Setting.business(business).key(key).first
+      raise "Unknown Setting key:#{key}" if setting.nil?
+
+      @setting_cache[key] = setting
+      setting
+    end
+
   def store!(key, value)
     SystemLog.fact(title: self.class.name.underscore, payload:"saving_session_metadata( <strong>#{key}</strong>, <strong>#{value}</strong> )")
     store[key] = value

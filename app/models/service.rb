@@ -32,7 +32,7 @@ class Service < ActiveRecord::Base
   alias_method :disabled, :disabled?
 
   def display_name
-    "#{id} / #{name} — #{business.display_name}"
+    name.titleize
   end
 
   def update_ordering

@@ -20,6 +20,10 @@ module Skej
         @opts
       end
 
+      def session
+        @opts[:session]
+      end
+
       # Dynamic device response type dispatch
       def build_device_response
         target_method = self.class.instance_method(@device)

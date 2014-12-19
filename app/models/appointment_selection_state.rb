@@ -51,7 +51,7 @@ class AppointmentSelectionState < BaseSession
   end
 
   def chosen_appointment
-    Appointment.find store[:chosen_appointment_id]
+    Appointment.find store[:chosen_appointment_id] if store[:chosen_appointment_id].present?
   end
 
   private

@@ -7,7 +7,7 @@ class SchedulerStateMachine < BaseMachine
                 :service_selection,
                 :provider_selection,
                 :appointment_selection,
-                :finished
+                :finish
 
 
   #############################################################
