@@ -11,7 +11,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     # then just delete the :chosen_appointment_id from the session store.
     #
     # Also voice users are automatically routed on as well.
-    if @apt.chosen_appointment or @session.voice?
+    if @apt.chosen_appointment or not can_silently_assume?
       log "directing voice customer directly to appointment finish"
       return @apt.transition_to! :finish
     end
@@ -42,33 +42,61 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     @appointments = query.available_now(@date)
 
     # Construct the menu options dynamically
-    add_menu "Text <num> to change the Service" if session.can_change_service?
-    add_menu "Text <num> to change the Office" if session.can_change_office?
-    add_menu "Text <num> to change the Provider" if session.can_change_provider?
-    add_menu "Text <num> to change the Date"
+    add_menu :service,  "Text <num> to change the Service" if session.can_change_service?
+    add_menu :office,   "Text <num> to change the Office" if session.can_change_office?
+    add_menu :provider, "Text <num> to change the Provider" if session.can_change_provider?
+    add_menu :date,     "Text <num> to change the Date"
+
+    # If we detect user input, then we need to start processing actions
+    process_actions user_input?
 
     log "engaging sms customer appointment summary"
   end
 
   def sms_and_voice
-    twiml_appointments_summary({
+    data = {
       appointments: @appointments,
       options_menu: option_menu,
       apps_menu:    appointment_menu
-    })
+    }
+
+    data[:invalid_input] = user_input? if @invalid_input.present?
+
+    twiml_appointments_summary(data)
   end
 
   private
 
-    def add_menu(text)
+    def process_actions(original_input)
+      # Normalize the customer input into an integer
+      input = strip_to_int(original_input).to_i || 0
+
+      # If we have an unrecognized input
+      return invalid_input! if input < 1
+
+      # Process Appointment selection
+      if input > @menu_options.keys.length
+        log "Processing Customer Appointment Selection: #{input}"
+      # Process option handling (eg. change service / office)
+      else
+        key = @menu_options[input][:key]
+        log "Processing Customer Option Selection: #{input} -> #{key}"
+      end
+    end
+
+    def invalid_input!
+      @invalid_input = true
+    end
+
+    def add_menu(key, text)
       @menu_options ||= {}
-      @menu_options[@menu_options.keys.length + 1] = text
+      @menu_options[@menu_options.keys.length + 1] = { key: key, text: text }
     end
 
     def option_menu
       menu = ""
-      @menu_options.each do |i, text|
-        menu << text.gsub('<num>', "#{i}") << " \n"
+      @menu_options.each do |i, hash|
+        menu << hash[:text].gsub('<num>', "#{i}") << " \n"
       end
       # return Compiled menu string
       menu

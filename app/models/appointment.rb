@@ -54,15 +54,20 @@ class Appointment < ActiveRecord::Base
   end
 
   def pretty_start
-    "#{start.hour}:#{start.to_datetime.minute} #{meridian(start)}"
+    "#{balance(start.hour)}:#{balance(start.to_datetime.minute)} #{meridian(start)}"
   end
 
   def pretty_end
-    "#{end_time.hour}:#{end_time.to_datetime.minute} #{meridian(end_time)}"
+    "#{balance(end_time.hour)}:#{balance(end_time.to_datetime.minute)} #{meridian(end_time)}"
   end
 
 
   private
+
+  def balance(digit)
+    return "0#{digit}" if digit.to_i < 10
+    digit
+  end
 
   def meridian(time)
     time.strftime('%p').upcase

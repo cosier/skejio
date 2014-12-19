@@ -2,8 +2,26 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
 
   def sms
     build_twiml do |b|
-      b.Message "#{generate_appointment_header}#{options[:options_menu]}\nChoose your appointment time:\n#{options[:apps_menu]}
-      ".squeeze(' ')
+      if options[:invalid_input]
+        @invalid_input = "Sorry we did not recognize your selection \"#{options[:invalid_input]}\", please try again.\n-------\n"
+      end
+
+      message = ""
+
+      # Prefix with invalid input message if exists
+      message << (@invalid_input || "")
+
+      # Start with the header
+      message << generate_appointment_header
+
+      # Dynamic change options
+      message << "#{options[:options_menu]}\n"
+
+      # Appointment selection list
+      message << "Choose your appointment time:\n"
+      message << options[:apps_menu]
+
+      b.Message message.squeeze(' ')
 
     end
   end

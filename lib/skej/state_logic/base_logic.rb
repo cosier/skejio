@@ -516,13 +516,21 @@ module Skej
 
           # Let's silently move the customer to the next state
           else
-            log "attempting to ask the Customer for Assumption confirmation"
-            get["#{state}_confirming_assumption"] = true
+            log "silently setting the Assumption model"
 
-            # Also silently set the chosen model.
-            assign_chosen_id! @supportable.id
+            # If we can silently assume / use the summary page,
+            # we will move on immediately.
+            if can_silently_assume?
+              # Also silently set the chosen model.
+              assign_chosen_id! @supportable.id
+              advance!
 
-            advance!
+            # Otherwise run with the multi step assumption confirmation
+            # (currently just for voice users)
+            else
+              get["#{state}_confirming_assumption"] = true
+            end
+
           end
 
 
@@ -589,6 +597,10 @@ module Skej
 
       def session
         @session
+      end
+
+      def can_silently_assume?
+        @session.sms?
       end
 
       # Automated method and recommended interface for marking the
