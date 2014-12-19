@@ -23,9 +23,12 @@ class BaseSession < ActiveRecord::Base
 
       # Find a session specific to this:
       # Business, Customer and within the last hour.
-      query  = { customer_id: customer.id,
-                 business_id: business.id,
-                 created_at: 24.hour.ago..DateTime.now }
+      query  = {
+        customer_id: customer.id,
+        business_id: business.id,
+        created_at: 24.hour.ago..DateTime.now,
+        is_finished: false
+      }
 
       existing = self.order(created_at: :desc).where(query).first
 
