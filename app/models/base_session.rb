@@ -14,7 +14,7 @@ class BaseSession < ActiveRecord::Base
     to: :state_machine
 
 
-  before_save :update_meta_store
+  before_save   :update_meta_store
 
   class << self
 
@@ -159,7 +159,43 @@ class BaseSession < ActiveRecord::Base
     params
   end
 
+
+  def simple_id
+    return uuid if uuid.present?
+    self.update!(uuid: find_unique_uuid) and uuid
+  end
+
+  # Automated method and recommended interface for marking the
+  # state as complete.
+  #
+  # Thus allowing the state guards to let you pass.
+  def mark_state_complete!
+    store[state.to_s] = :complete
+  end
+
+  alias_attribute :mark_as_completed!, :mark_state_complete!
+
   private
+
+
+
+  def find_unique_uuid(i = 0)
+    i = i + 1
+
+    # Based on the current iteration
+    if i < 10
+      num = Random.rand(100..999)
+    elsif i < 15
+      num = Random.rand(1000..99999)
+    else
+      num = Random.rand(1000..999999)
+    end
+
+    # If this is a unique number, return it
+    return num if self.class.where(uuid: num.to_s).first.nil?
+    # Otherwise continue recursively until we find a match
+    return find_unique_uuid(i)
+  end
 
   # Mini Logic factory
   def logic_engine(device)
