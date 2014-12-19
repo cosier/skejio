@@ -453,7 +453,7 @@ module Skej
 
           else
             @bad_selection = true
-            log "Oops, selection(#{@digits}) was not matched to any available Office"
+            log "Oops, selection(#{@digits}) was not matched to any available Option"
           end
         end
       end
@@ -483,12 +483,15 @@ module Skej
         # Assumption SWITCH
         #
         # Business can assume and will offer change.
-        # :et the TwiML view blocks handle this switching
+        # let the TwiML view blocks handle this switching
         #
         # Also check that the customer did not already asked to change
         # ie. lookup #{state}_customer_asked_to_change
         #
         if can_assume_and_change? and not get["#{state}_customer_asked_to_change"]
+
+          # Process the Customers answer to whether or not they want to use the
+          # Assumed values.
           if get["#{state}_confirming_assumption"]
             if customer_entered_yes?
               log 'customer entered yes: wished to change the default assumption'
@@ -507,13 +510,18 @@ module Skej
             else
               log "customer entered unknown input: #{params[:Body] || params[:Digits]}"
               get["#{state}_customer_asked_to_change"] = true
+              # For a commit for this session changes
+              @session.update_meta_store!
             end
+
+          # Let's silently move the customer to the next state
           else
             log "attempting to ask the Customer for Assumption confirmation"
             get["#{state}_confirming_assumption"] = true
+
+            advance!
           end
 
-          @session.update_meta_store!
 
         ##################################################################
         # Assumption SWITCH

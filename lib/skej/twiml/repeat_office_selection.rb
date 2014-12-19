@@ -4,14 +4,13 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Sorry we did not recognize the option \"#{session.input[:Body]}\" "
+          text = "Sorry we did not recognize the option \"#{session.input[:Body]}\" \n\n"
 
-          office_choices = ""
           options[:offices].map do |index, office|
-            office_choices << "Enter #{index} for #{office.name} \n"
+            text << "Enter #{index} for #{office.name} \n"
           end
 
-          b.Message office_choices
+          b.Message text
 
         end
       end

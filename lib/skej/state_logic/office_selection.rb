@@ -52,10 +52,9 @@ module Skej
           sanity: true
         }.reverse_merge!(get.symbolize_keys)
 
-
         # If we are asking for change, make sure the sub views
         # know that as well.
-        if get[:office_customer_asked_to_change].present?
+        if get[:office_selection_customer_asked_to_change].present?
 
           # We normalize the views usage of *ask* to a simple :ask key.
           # So it is more reusable across different situations.

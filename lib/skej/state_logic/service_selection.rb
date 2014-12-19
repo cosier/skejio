@@ -56,7 +56,7 @@ module Skej
         }.reverse_merge!(get.symbolize_keys)
 
         # Normalising :service...asking key to just :ask
-        if get[:service_customer_asked_to_change].present?
+        if get[:service_selection_customer_asked_to_change].present?
           view_locals[:ask] = true
         end
 

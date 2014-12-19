@@ -4,13 +4,13 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message "Please select a Provider for your Appointment"
+          text = "Please select a Provider for your Appointment\n"
 
-          provider_choices = ""
           options[:providers].map do |index, provider|
-            provider_choices << "Enter #{index} for #{provider.display_name} \n"
+            text << "Enter #{index} for #{provider.display_name} \n"
           end
-          b.Message provider_choices
+
+          b.Message text
         end
       end
 
