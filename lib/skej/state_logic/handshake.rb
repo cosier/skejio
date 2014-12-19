@@ -5,7 +5,8 @@ module Skej
       def think
 
         # Check if we have shaken hands yet?
-        if get[:handshake_shaked_hands].present?
+        # OR if we are SMS— so we can be skipped.
+        if @session.sms? || get[:handshake_shaked_hands].present?
 
           # Sets a property on the session that says
           # this state has completed
