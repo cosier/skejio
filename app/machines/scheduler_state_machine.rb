@@ -9,6 +9,7 @@ class SchedulerStateMachine < BaseMachine
                 :appointment_selection,
                 :finish
 
+  transition from: :finish, to: [:appointment_selection]
 
   #############################################################
   # Global before / after hooks

@@ -6,6 +6,8 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
         @invalid_input = "Sorry we did not recognize your selection \"#{options[:invalid_input]}\", please try again.\n-------\n"
       end
 
+      start = options[:appointments].first.start
+
       message = ""
 
       # Prefix with invalid input message if exists
@@ -18,7 +20,7 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
       message << "#{options[:options_menu]}\n"
 
       # Appointment selection list
-      message << "Choose your appointment time:\n"
+      message << "Choose your appointment time (#{start.strftime('%A')} - #{start.day.ordinalize}):\n"
       message << options[:apps_menu]
 
       b.Message message.squeeze(' ')

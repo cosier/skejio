@@ -29,13 +29,24 @@ class SchedulerSession < BaseSession
   has_one  :appointment_selection_state
   alias_attribute :apt, :appointment_selection_state
 
-  #validates_uniqueness_of :customer_id, :scope => :business_id
+  validates_uniqueness_of :uuid
   after_save :log_changes
 
   enum device_type: [:voice, :sms]
 
+  delegate :chosen_appointment, to: :apt
+
   def state_machine
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
+  end
+
+  def reset_appointment_selection!
+    store! :chosen_appointment_id, nil
+
+    # Reset the sub appointment state machine
+    apt.state.transition_to! :handshake
+    # Main Session state goes back into time
+    state.transition_to! :appointment_selection
   end
 
   # Based on the already set :chosen_office_id,

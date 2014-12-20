@@ -77,10 +77,14 @@ class BaseSession < ActiveRecord::Base
 
     # The latest state for this session
     # (using the db as a mutex across multiple procs)
-    fresh_state = self.class.find(id).current_state.to_sym
+    fresh_state = self.class.find(id).current_state.to_s
+
+    if self.respond_to? :apt and apt.present?
+      fresh_state << "_appointment_#{session.apt.state.current_state}"
+    end
 
     # Build the engine and stash it into the hash cache
-    @logic_cache[fresh_state] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
+    @logic_cache[fresh_state.to_sym] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
 
     # New engine every time
     #logic_engine((device_type and device_type.to_sym) || device || params[:action])
@@ -195,6 +199,10 @@ class BaseSession < ActiveRecord::Base
     return num if self.class.where(uuid: num.to_s).first.nil?
     # Otherwise continue recursively until we find a match
     return find_unique_uuid(i)
+  end
+
+  def session
+    self
   end
 
   # Mini Logic factory

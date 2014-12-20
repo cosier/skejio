@@ -2,7 +2,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
 
   def think
     @apt   = @session.apt
-    @state = @apt.state
+    @state = @apt.state if @apt.present?
 
     # If we have an appointment already chosen,
     # then we have no business in this Summary— as we're already done!
@@ -79,8 +79,9 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       if input > option_length
         log "Processing Customer Appointment Selection: #{input}"
         appointment = @appointments[input - option_length - 1]
-        @apt.store! :chosen_appointment_id, appointment.id
+        return invalid_input! if appointment.nil?
 
+        @apt.store! :chosen_appointment_id, appointment.id
         finish!
       else
         key = @menu_options[input][:key]

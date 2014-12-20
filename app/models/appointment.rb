@@ -80,5 +80,6 @@ class Appointment < ActiveRecord::Base
   end
 
   alias_attribute :end_time, :end
+  alias_attribute :start_time, :start
 
 end

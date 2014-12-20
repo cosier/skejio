@@ -9,7 +9,6 @@ module Skej
 
       def sms_and_voice
         log "appointment.logic.render"
-
         # Delegate to the logic renderer
         sub_render = appointment_state.logic.render
         sub_render

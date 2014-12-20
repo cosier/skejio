@@ -94,9 +94,7 @@ class BaseMachine
   end
 
   def next_state_by_priority
-    state = @@STATES_BY_PRIORITY[current_state_priority + 1]
-    raise "Next State not matched for: #{current_state_priority} / #{@object.current_state}" unless state
-    state
+    @@STATES_BY_PRIORITY[current_state_priority + 1] || @@STATES_BY_PRIORITY[1]
   end
 
   def last_state_by_priority
