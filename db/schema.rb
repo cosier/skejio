@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141220172359) do
+ActiveRecord::Schema.define(version: 20141221134427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(version: 20141220172359) do
     t.boolean  "is_finished",          default: false
     t.string   "uuid"
   end
+
+  add_index "appointment_selection_states", ["uuid"], name: "index_appointment_selection_states_on_uuid", using: :btree
 
   create_table "appointment_selection_transitions", force: true do |t|
     t.string   "to_state",                                      null: false
@@ -202,6 +204,8 @@ ActiveRecord::Schema.define(version: 20141220172359) do
     t.boolean  "is_finished", default: false
     t.string   "uuid"
   end
+
+  add_index "scheduler_sessions", ["uuid"], name: "index_scheduler_sessions_on_uuid", using: :btree
 
   create_table "services", force: true do |t|
     t.integer  "business_id",                null: false
