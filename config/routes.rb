@@ -70,6 +70,11 @@ Rails.application.routes.draw do
     match 'users/sign_out' => "devise/sessions#destroy", via: [:get]
   end
 
+  if Rails.env.development?
+    get '/dev/clear', to: 'dev#clear'
+  end
+
   root 'welcome#index'
+
 
 end
