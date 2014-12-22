@@ -10,13 +10,14 @@ class SchedulerStateMachine < BaseMachine
                 :finish
 
   transition from: :finish, to: [:appointment_selection]
+  transition from: :appointment_selection, to: [:office_selection, :service_selection, :provider_selection, :appointment_selection]
 
   #############################################################
   # Global before / after hooks
 
   # Log every transition attempted
   before_transition do |session, transition|
-    log "transitioning from: #{session.current_state}"
+    #log "transitioning from: #{session.current_state}"
   end
 
   # Log every transition complete
@@ -44,13 +45,14 @@ class SchedulerStateMachine < BaseMachine
     # Which will be explicitly set by the Logic module, if the state is truly complete.
     if session.store[curr_state] and session.store[curr_state].to_s == "complete"
       log """
-        TRANSITION APPROVED — current_state(<strong>#{curr_state}</strong>) -> <strong>#{session.state.next_state_by_priority}</strong>
-        <pre>session.store[#{curr_state}] == :complete</pre>
+        TRANSITION FROM CURRENT STATE APPROVED — <strong>#{curr_state}</strong>
       """
+
       true
 
     # Always let retry or handshake pass
     elsif curr_state == "retry" || curr_state == "handshake"
+
       true
 
     # Looks like the Logic module for this specific state hasn't been executed yet.
@@ -60,6 +62,16 @@ class SchedulerStateMachine < BaseMachine
     else
       log "TRANSITION DENIED — current_state(<strong>#{curr_state}</strong>) is incomplete"
       false
+    end
+  end
+
+  guard_transition :to => :finish do |session, transition|
+    # We need to go back if we still somehow don't have an appointment?
+    if session.chosen_appointment.nil?
+      session.reset_appointment_selection!
+      false
+    else
+      true
     end
   end
 

@@ -4,15 +4,14 @@ class Skej::Twiml::Appointments::DisplayResult < Skej::Twiml::BaseTwiml
     build_twiml do |b|
       # Use a single message to accomplish
       # the entire visual selection.
-      b.Message """
-      Here are your next available Appointments: \n
+      message = ""
+      message << "Here are your next available Appointments: \n"
+      message << generate_appointment_list
+      message << "\n"
+      message << "____\n"
+      message << "send *change* to choose a different appointment time."
 
-      #{generate_appointment_list}
-      \n
-      ____
-
-      send *change* to choose a different appointment time.
-      """
+      b.Message(message)
     end
   end
 

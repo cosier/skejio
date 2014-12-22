@@ -31,6 +31,7 @@ class SchedulerSession < BaseSession
 
   validates_uniqueness_of :uuid
   after_save :log_changes
+  before_save :prepare_uuid
 
   enum device_type: [:voice, :sms]
 
@@ -40,13 +41,38 @@ class SchedulerSession < BaseSession
     ::SchedulerStateMachine.new(self, transition_class: ::SchedulerSessionTransition)
   end
 
+  def appointment
+    # Shared across the request
+    @appoitment_cached ||= RequestStore.store[:appointment_session]
+    return @appointment_cached if @appointment_cached.present?
+
+    appointment = session.appointment_selection_states.first
+
+    # Optionally create the entity unless it already exists
+    appointment = AppointmentSelectionState.create(
+      business_id: session.business_id,
+      scheduler_session_id: session.id) unless appointment.present?
+
+    # load this instance's device paramter from the original
+    # session request
+    appointment.device_type = device_type
+    appointment.input = params
+
+    # Update the request store
+    RequestStore.store[:appointment_session] = appointment
+
+    # Here's an AppointmentSelectionState ready to go!
+    @appointment_cached ||= appointment
+  end
+
   def reset_appointment_selection!
     store! :chosen_appointment_id, nil
 
     # Reset the sub appointment state machine
-    apt.state.transition_to! :handshake
-    # Main Session state goes back into time
-    state.transition_to! :appointment_selection
+    appointment.state.transition_to! :handshake unless appointment.current_state.to_sym == :handshake
+
+    # Main Session state goes back into time, unless we are already there.
+    state.transition_to! :appointment_selection unless current_state.to_sym == :appointment_selection
   end
 
   # Based on the already set :chosen_office_id,
@@ -111,28 +137,5 @@ class SchedulerSession < BaseSession
     s = setting(Setting::USER_SELECTION)
     s.is? Setting::USER_SELECTION_FULL_CONTROL
   end
-
-  private
-
-  def log_changes
-    if v = versions.last and v.event == "update" and v.changeset.present? and self.changed?
-      meta = v.changeset["meta"]
-      if meta
-        before = JSON.parse(meta.first)
-        after  = JSON.parse(meta.last)
-        diff = {}
-
-        after.map do |k,v|
-          diff[k] = v if before[k] != after[k]
-        end
-
-        formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '')
-        log "detected session store changes: <br/>\n<pre>#{formatted_json}</pre>"
-      end
-    end
-  end
-
-
-
 
 end

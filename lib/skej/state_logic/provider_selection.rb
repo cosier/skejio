@@ -39,7 +39,7 @@ module Skej
 
 
         unless setting(:user_selection).user_selection_full_control?
-          log "Business setting for User_Selection is <strong>not FULL_CONTROL<strong>— skipping explicit provider selection"
+          log "Business setting for User_Selection is <strong>not FULL_CONTROL</strong>— skipping explicit provider selection"
           get[:chosen_provider_id] = :deferred
 
           mark_as_completed! and advance!
@@ -81,8 +81,8 @@ module Skej
           twiml_ask_provider_selection providers: @providers_ordered
         end
       end
-
     end
+
   end
 end
 

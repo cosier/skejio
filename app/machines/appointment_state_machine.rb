@@ -11,7 +11,7 @@ class AppointmentStateMachine < BaseMachine
   transition from: :initial_input_date, to: [:display_result, :initial_input_date, :repeat_input_date, :summary]
   transition from: :repeat_input_date, to: [:initial_input_date, :repeat_input_date]
   transition from: :display_result, to: [:summary, :repeat_input_date, :handshake]
-  transition from: :summary, to: [:repeat_input_date, :finish, :handshake]
+  transition from: :summary, to: [:repeat_input_date, :initial_input_date, :finish, :handshake, :summary]
   transition from: :finish, to: [:handshake, :finish]
 
   # Log every transition attempted
@@ -20,12 +20,12 @@ class AppointmentStateMachine < BaseMachine
   end
 
   # Log every transition complete
-  after_transition do |session, transition|
-    key = session.current_state.to_sym
+  after_transition do |appointment_session, transition|
+    key = appointment_session.current_state.to_sym
     log "transitioned to: <strong>#{key}</strong>"
 
     # Run the logic processing
-    session.logic.process!
+    appointment_session.logic.process!
   end
 
 end

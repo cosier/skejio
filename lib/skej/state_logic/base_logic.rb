@@ -4,6 +4,10 @@ module Skej
 
       include Skej::Endpoint
 
+      # Container for debug messages,
+      # which are later automatically fed to the TwiML view.
+      @debug = []
+
       # Initializes the class with a device type and the active Session
       def initialize(opts)
         @device = opts[:device].to_sym
@@ -38,13 +42,18 @@ module Skej
       # One way or another, at the end of a Customer request, this method is called
       # to generate the final response for the request(s).
       def render
-        unless @thinked
+
+        # Since thinking is handed differently for a sub statemachine loop,
+        # we exclude sub statemachine logic modules from this check.
+        if @thinked.nil? and not is_sub_logic?
+
           # For some reason this module has not think'ed yet.
           #
           # So instead of calling it directly and messing up potential state,
           # we will simply initiate a redirect request (HTTP from Twilio) back to us
           # for additional processing.
           log 'redirecting back to the same state — to force a logic reflow'
+          binding.pry
 
           twiml do |b|
             b.Redirect endpoint
@@ -73,6 +82,12 @@ module Skej
       end
 
       private
+
+      # Determines if the current logic instance (self) is a sub module.
+      # This is implied by using a sub namespace, ie. Skej::StateLogic::Appointments
+      def is_sub_logic?
+        self.class.name.underscore.include? "/appointments/"
+      end
 
       # Determines if the customer has input present for the
       # current state phase.
@@ -275,17 +290,12 @@ module Skej
       # Parent wrapper around the subclass definition
       # to provide logging and skipping facilities on the *think* method
       def thinker
+        if is_sub_logic?
+          log "processing business sublogic for: #{appointment_session.current_state}"
+        else
+          log "processing business logic for: #{scheduler_session.current_state}"
+        end
 
-        # Deprecated: logic for optional module think skipping
-        #
-        #if @@DONT_THINK[self.class.name.underscore].nil?
-        #  log "processing business logic"
-        #  think
-        #else
-        #  log "skipping business logic"
-        #end
-
-        log "processing business logic for: #{@session.current_state}"
         think
       end
 
@@ -389,7 +399,7 @@ module Skej
         klass = klass.constantize
 
         # Prepare view local variables
-        data = { device: @device, session: @session }
+        data = { device: @device, session: @session, debug: generate_debug_formatted_message }
         if args.length > 0 and args[0].kind_of? Hash
           data.merge! args[0]
         end
@@ -502,7 +512,7 @@ module Skej
               get["#{state}_customer_asked_to_change"] = false
               assign_chosen_id! @supportable.id
 
-              clear_session_input!
+              clear_input!
 
               # ADVANCE
               return advance!
@@ -510,17 +520,25 @@ module Skej
             else
               log "customer entered unknown input: #{params[:Body] || params[:Digits]}"
               get["#{state}_customer_asked_to_change"] = true
+
               # Force a commit for this session changes
               @session.update_meta_store!
             end
 
           # Let's silently move the customer to the next state
           else
-            log "silently setting the Assumption model"
+
+            # Catch retry attempts, and force selection.
+            # Instead of silently assuming.
+            if get["#{state}_retrying"].present?
+              log "acknowledging the retry attempt"
+              get["#{state}_retrying"] = false
+              process_input
 
             # If we can silently assume / use the summary page,
             # we will move on immediately.
-            if can_silently_assume?
+            elsif can_silently_assume?
+              log "silently setting the Assumption model"
               # Also silently set the chosen model.
               assign_chosen_id! @supportable.id
               advance!
@@ -558,6 +576,7 @@ module Skej
           clear_session_input!
           return advance!
         end
+
       end
 
       # Set an id for the chosen model.
@@ -601,6 +620,39 @@ module Skej
 
       def can_silently_assume?
         @session.sms?
+      end
+
+      def debug(str)
+        @debug ||= []
+        @debug << str
+      end
+
+      def generate_debug_formatted_message
+        @debug ||= []
+
+        # Optionally add some debug output
+        return false if @debug.empty? or Rails.env.production?
+
+        dbg = @debug.each_with_index { |d,i|
+         @debug[i] = "#{i + 1} - #{d}"
+        }.join('\n')
+
+        message = "\n"
+        #message << "-------------------\n"
+        message << "DEBUG MESSAGES: \n"
+        message << "#{dbg}\n"
+        message << "-------------------\n\n"
+        message
+      end
+
+      # Better named wrapper for the specific scheduler session
+      def scheduler_session
+        session
+      end
+
+      # Better named wrapper for the specific appointment session
+      def appointment_session
+        @session.appointment
       end
 
       # Automated method and recommended interface for marking the

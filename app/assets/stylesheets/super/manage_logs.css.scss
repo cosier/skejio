@@ -3,10 +3,11 @@
 body.system_logs {
 
   pre {
-    max-width:400px;
+    max-width:100;
   }
 
   $entry-border: $blue;
+
   tr.entry {
     td {
       border-top:    2px solid $entry-border;
@@ -29,6 +30,7 @@ body.system_logs {
       color:#888;
     }
   }
+
   tr.facts {
     overflow:hidden;
     .col.col-md-3.title {

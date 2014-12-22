@@ -35,6 +35,7 @@ class BaseMachine
           # Automatically register the retry back->transition
           transition from: state_name, to: :handshake unless state_name.to_sym == :handshake
           transition from: :retry, to: state_name
+          transition from: state_name, to: state_name
         end
       end if @@STATES_AVAILABLE
     end
@@ -73,7 +74,7 @@ class BaseMachine
     begin
       transition_to! next_state_by_priority
     rescue Statesman::GuardFailedError => e
-      log "unable to transition_next!"
+      log "unable to transition_next! \n#{e.message}"
       #retry_last_available_state
     end
   end

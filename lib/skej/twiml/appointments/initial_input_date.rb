@@ -2,10 +2,11 @@ class Skej::Twiml::Appointments::InitialInputDate < Skej::Twiml::BaseTwiml
 
     def sms(session)
       build_twiml do |b|
-        b.Message """
-        When would you like your next appointment?\n
-        (eg. tomorrow, wednesday, 15th, week end)
-        """
+        message = ""
+        message << "When would you like your next appointment?\n"
+        message << "(eg. tomorrow, wednesday, 15th, week end)"
+
+        b.Message(message)
       end
     end
 

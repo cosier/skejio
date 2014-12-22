@@ -1,7 +1,7 @@
 class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseLogic
 
   def think
-    @apt   = @session.appointment_selection_state
+    @apt   = @session.appointment
     @state = @apt.state
 
     @options = {
@@ -60,15 +60,17 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     # Apply a datetime offset shift, if the time_zone is available
     daterized = Skej::Warp.zone(daterized, time_zone_offset) if time_zone
 
-
     # Stash this datetime object as a string on the Appointment state
     @apt.store! :appointment_input_date, daterized.to_s
 
     # Log and go to next
     log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"
 
-    #@apt.transition_to! :display_result
-    @apt.transition_to! :summary
+    if can_silently_assume?
+      @apt.transition_to! :summary
+    else
+      @apt.transition_to! :display_result
+    end
 
   end
 

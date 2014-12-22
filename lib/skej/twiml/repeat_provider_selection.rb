@@ -4,9 +4,7 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          text = """
-          Sorry we did not recognize the option \"#{session.input[:Body]}\" \n\n
-          """
+          text = "Sorry we did not recognize the option \"#{session.input[:Body]}\" \n\n"
 
           options[:providers].map do |index, provider|
             text << "Enter #{index} for #{provider.display_name} \n"

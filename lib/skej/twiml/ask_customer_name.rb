@@ -4,10 +4,7 @@ module Skej
 
       def sms(session)
         build_twiml do |b|
-          b.Message """
-          Welcome to the Scheduler App!\n
-          To get started please tell us your full name.
-          """
+          b.Message "Welcome to the Scheduler App!\nTo get started please tell us your full name."
         end
       end
 

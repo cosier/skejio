@@ -5,8 +5,7 @@ module Skej
       def sms(session)
         build_twiml do |b|
           if options[:office_selection_confirming_assumption].present? and not options[:ask].present?
-            b.Message """We have chosen the office #{options[:default].name} for you.
-            \n Would you like to like to change it? (enter yes/no)"""
+            b.Message "We have chosen the office #{options[:default].name} for you.\nWould you like to like to change it? (enter yes/no)"
 
           else
             office_choices = "Please select a Office for your Appointment:\n"

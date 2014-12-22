@@ -9,6 +9,7 @@ class BaseSession < ActiveRecord::Base
   delegate :current_state,
     :process_state!,
     :can_transition_to?,
+    :transition_to,
     :transition_to!,
     :available_events,
     to: :state_machine
@@ -77,14 +78,21 @@ class BaseSession < ActiveRecord::Base
 
     # The latest state for this session
     # (using the db as a mutex across multiple procs)
-    fresh_state = self.class.find(id).current_state.to_s
+    if self.persisted?
+      fresh_state = self.class.find(id).current_state.to_s.dup
+    else
+      fresh_state = current_state
+    end
+
 
     if self.respond_to? :apt and apt.present?
-      fresh_state << "_appointment_#{session.apt.state.current_state}"
+      key = "#{fresh_state}_{session.apt.state.current_state}"
+    else
+      key = fresh_state
     end
 
     # Build the engine and stash it into the hash cache
-    @logic_cache[fresh_state.to_sym] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
+    @logic_cache[key.to_sym] ||= logic_engine((device_type and device_type.to_sym) || device || params[:action])
 
     # New engine every time
     #logic_engine((device_type and device_type.to_sym) || device || params[:action])
@@ -155,6 +163,8 @@ class BaseSession < ActiveRecord::Base
     self.save!
   end
 
+  alias_attribute :commit_meta_store!, :update_meta_store!
+
   def params
     RequestStore.store[:params]
   end
@@ -166,7 +176,11 @@ class BaseSession < ActiveRecord::Base
 
   def simple_id
     return uuid if uuid.present?
-    self.update!(uuid: find_unique_uuid) and uuid
+
+    self.uuid = find_unique_uuid and uuid
+    save!
+
+    uuid
   end
 
   # Automated method and recommended interface for marking the
@@ -179,24 +193,57 @@ class BaseSession < ActiveRecord::Base
 
   alias_attribute :mark_as_completed!, :mark_state_complete!
 
+  # Handles the retry of a specific transition state.
+  #
+  # Taking care to unmark the complete status, allowing the target state
+  # to be executed again (retried).
+  def retry!(t)
+    log "Retrying the state: #{t}"
+    # Need to UNMARK the target state's :complete marker.
+    # Otherwise once the state loads, it will skip itself again—
+    # due to the module thinking it's already complete.
+    if store[t] and store[t].to_s == "complete"
+      store[t] = false
+    end
+
+    retry_key = "#{t}_retrying"
+    # Also set that we are "retrying", so the logic module can behave accordingly.
+    store[retry_key] = true
+    store! retry_key, true
+
+
+    # Ensure the above change is serialized to the database before
+    # applying transition logic.
+    commit_meta_store!
+
+    transition_to! t
+  end
+
+
   private
 
-
-
+  # A recursive function to find a unique, but random set of digits.
+  # The goal is to produce the smallest number possible (min 4 digits).
+  #
+  # While maintaining uniqueness, and simplicity.
   def find_unique_uuid(i = 0)
     i = i + 1
 
-    # Based on the current iteration
-    if i < 10
+    # Based on the current iteration,
+    # we adjust the randomness factor.
+    if i < 5
+      num = Random.rand(10..99)
+    elsif i < 7
       num = Random.rand(100..999)
-    elsif i < 15
+    elsif i < 10
       num = Random.rand(1000..99999)
     else
-      num = Random.rand(1000..999999)
+      num = Random.rand(10000..999999)
     end
 
     # If this is a unique number, return it
     return num if self.class.where(uuid: num.to_s).first.nil?
+
     # Otherwise continue recursively until we find a match
     return find_unique_uuid(i)
   end
@@ -216,4 +263,28 @@ class BaseSession < ActiveRecord::Base
     SystemLog.fact(title: self.class.name.underscore, payload: msg)
   end
 
+  def prepare_uuid
+    simple_id
+  end
+
+  # Used for generating a delta diff of the current changes.
+  # Typically called by the after_save model callback.
+  def log_changes
+    if v = versions.last and v.event == "update" and v.changeset.present? and self.changed?
+      meta = v.changeset["meta"]
+      if meta
+        before = JSON.parse(meta.first)
+        after  = JSON.parse(meta.last)
+        diff = {}
+
+        after.each do |k,v|
+          diff[k] = v if before[k] != after[k]
+        end
+
+        formatted_json = diff.to_json.gsub(',', ',<br/>').gsub(/^\{/, '').gsub(/\}$/, '').squeeze(' ')
+        log "detected session store changes: <br/>\n<pre>#{formatted_json}</pre>" unless formatted_json.empty?
+
+      end
+    end
+  end
 end

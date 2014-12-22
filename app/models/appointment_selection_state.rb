@@ -25,25 +25,17 @@ class AppointmentSelectionState < BaseSession
   has_many :appointment_selection_transitions
   enum device_type: [:voice, :sms]
 
+  validates_uniqueness_of :uuid
+
+  after_save :log_changes
+  before_save :prepare_uuid
+
   class << self
 
     # Load a statemachine (AppointmentSelectionState -> AppointmentStateMachine)
     # instance for a given session.
     def machine(session)
-      appointment = session.appointment_selection_states.first
-
-      # Optionally create the entity unless it already exists
-      appointment = AppointmentSelectionState.create(
-        business_id: session.business_id,
-        scheduler_session_id: session.id) unless appointment.present?
-
-      # load this instance's device paramter from the original
-      # session request
-      appointment.device_type = session.device_type
-      appointment.input = session.input || RequestStore.store[:params]
-
-      # Here's an AppointmentSelectionState ready to go!
-      appointment
+      session.appointment
     end
   end
 
@@ -53,6 +45,9 @@ class AppointmentSelectionState < BaseSession
 
   def chosen_appointment
     Appointment.find store[:chosen_appointment_id] if store[:chosen_appointment_id].present?
+  end
+
+  def prepare!
   end
 
   private

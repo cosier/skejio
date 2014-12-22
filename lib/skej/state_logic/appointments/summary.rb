@@ -1,8 +1,8 @@
 class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
 
   def think
-    @apt   = @session.apt
-    @state = @apt.state if @apt.present?
+    @apt   = @session.appointment
+    @state = @apt.state
 
     # If we have an appointment already chosen,
     # then we have no business in this Summary— as we're already done!
@@ -11,32 +11,26 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     # then just delete the :chosen_appointment_id from the session store.
     #
     # Also voice users are automatically routed on as well.
-    if @apt.chosen_appointment or not can_silently_assume?
+    if @apt.chosen_appointment.present? or not can_silently_assume?
       log "directing voice customer directly to appointment finish"
       return finish!
     end
 
     if @apt.store[:appointment_input_date].nil?
-      # If we don't have a date determined yet,
-      # send the Customer to the :repeat_input_date state for further selection.
-      log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
-      return @apt.transition_to! :repeat_input_date
+      if get[:initial_date_decoded]
+        log ":initial_date_decoded found as a subsitute customer input_date"
+      else
+        # If we don't have a date determined yet,
+        # send the Customer to the :repeat_input_date state for further selection.
+        log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
+        return @apt.transition_to! :repeat_input_date
+      end
 
     else
       # We have a new local date input, let's make sure we update
       # the parent session as well.
       @date = @apt.store[:appointment_input_date]
-      @session.store! :appointment_input_date, @date
-    end
-
-    if user_wants_change?
-      log "customer requested time :change"
-      clear_input!
-
-      # w
-      # Bail out of the think process now,
-      # and go back to the :repeat_input_date for new date input.
-      return @apt.transition_to! :repeat_input_date
+      @session.store! :appointment_input_date, @date if @date
     end
 
     @appointments = query.available_now(@date)
@@ -48,7 +42,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     add_menu :date,     "Text <num> to change the Date"
 
     # If we detect user input, then we need to start processing actions
-    process_actions user_input?
+    process_actions if user_input?
 
     log "engaging sms customer appointment summary"
   end
@@ -61,16 +55,21 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     }
 
     data[:invalid_input] = user_input? if @invalid_input.present?
+    data[:insufficient_permission] = true if @insufficient_permission.present?
 
     twiml_appointments_summary(data)
   end
 
   private
 
-    def process_actions(original_input)
+    def process_actions(original_input = user_input?)
       # Normalize the customer input into an integer
       input = strip_to_int(original_input).to_i || 0
       option_length = @menu_options.keys.length
+
+      # Since we are using the input for this state, we need to clear it.
+      # Otherwise face massive recursiveness.
+      clear_input!
 
       # If we have an unrecognized input
       return invalid_input! if input < 1
@@ -79,15 +78,65 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       if input > option_length
         log "Processing Customer Appointment Selection: #{input}"
         appointment = @appointments[input - option_length - 1]
+        debug "chose appointment: #{input} - #{appointment.label}"
+
+        # GUARD:
+        # Handle bad input based on the existence of the appointment.
         return invalid_input! if appointment.nil?
 
         @apt.store! :chosen_appointment_id, appointment.id
         finish!
+
+
+      # Process option handling (eg. change service / office)
       else
+
+        # GUARD:
+        # Handle bad input based on the existence of the menu_options lookup.
+        return invalid_input! if @menu_options[input].nil?
+
         key = @menu_options[input][:key]
         log "Processing Customer Option Selection: #{input} -> #{key}"
-        # Process option handling (eg. change service / office)
+
+        # Branch logic for each possibility key
+        case key
+
+        when :office
+          # GUARD: against malicious attempts
+          return insufficient_permissions! unless  scheduler_session.can_change_office?
+
+          debug "office selection"
+          scheduler_session.retry! :office_selection
+
+        when :service
+          # GUARD: against malicious attempts
+          return insufficient_permissions! unless  scheduler_session.can_change_service?
+
+          debug "service selected"
+          scheduler_session.retry! :service_selection
+
+        when :provider
+          # GUARD: against malicious attempts
+          return insufficient_permissions! unless scheduler_session.can_change_provider?
+
+          debug "provider selected"
+          scheduler_session.retry! :provider_selection
+
+        when :date
+          # Customers are always allowed to change the date in all scenarios
+          debug "date change selected"
+          appointment_session.retry! :repeat_input_date
+
+        else
+          # This should actually not be reachable due to the return guard directly above.
+          # But if it does happen, we'll know how.
+          raise "Unmatched / Unkown Customer selection: #{input}:\n#{@menu_options.to_json}"
+        end
       end
+    end
+
+    def insufficient_permissions!
+      @insufficient_permission = true
     end
 
     def finish!
@@ -95,7 +144,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       @session.store! :appointment_selection, :complete
 
       # Let's go there
-      @apt.transition_to! :finish
+      @apt.transition_to :finish
     end
 
     def invalid_input!
