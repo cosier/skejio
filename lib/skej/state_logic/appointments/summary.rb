@@ -7,7 +7,6 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     if @apt.store[:appointment_input_date].nil?
       if get[:initial_date_decoded]
         log ":initial_date_decoded found as a subsitute customer input_date"
-        binding.pry
       else
         # If we don't have a date determined yet,
         # send the Customer to the :repeat_input_date state for further selection.
@@ -22,7 +21,11 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       @session.store! :appointment_input_date, @date if @date
     end
 
-    @appointments = query.available_now(@date)
+    if @date.nil?
+      log "date nil detected during summary display"
+    end
+
+    @appointments = query.available_now(@date) if @date
 
     # Construct the menu options dynamically
     add_menu :service,  "Text <num> to change the Service" if session.can_change_service?
@@ -77,11 +80,12 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
 
         log "Processing Customer Appointment Selection: #{input}"
         appointment = @appointments[input - option_length - 1]
-        debug "you chose appointment: #{input} - #{appointment.label}"
 
         # GUARD:
         # Handle bad input based on the existence of the appointment.
         return invalid_input! if appointment.nil?
+
+        debug "you chose appointment: #{input} - #{appointment.label}"
 
         # Appointment Finalizer
         appointment.commit!
@@ -150,6 +154,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     end
 
     def invalid_input!
+      debug "your input was invalid: #{user_input?}" if user_input.present?
       @invalid_input = true
     end
 

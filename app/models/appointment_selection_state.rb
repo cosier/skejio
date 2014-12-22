@@ -24,6 +24,7 @@ class AppointmentSelectionState < BaseSession
   belongs_to :business
 
   has_many :appointment_selection_transitions
+
   enum device_type: [:voice, :sms]
 
   validates_uniqueness_of :uuid

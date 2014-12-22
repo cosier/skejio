@@ -10,7 +10,7 @@ class AppointmentStateMachine < BaseMachine
   transition from: :handshake, to: [:initial_input_date, :display_result, :summary]
   transition from: :initial_input_date, to: [:display_result, :initial_input_date, :repeat_input_date, :summary]
   transition from: :repeat_input_date, to: [:initial_input_date, :repeat_input_date]
-  transition from: :display_result, to: [:summary, :repeat_input_date, :handshake]
+  transition from: :display_result, to: [:summary, :repeat_input_date, :initial_input_date, :handshake, :finish]
   transition from: :summary, to: [:repeat_input_date, :initial_input_date, :finish, :handshake, :summary]
   transition from: :finish, to: [:handshake, :finish]
 

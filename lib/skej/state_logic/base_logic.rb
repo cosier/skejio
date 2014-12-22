@@ -82,6 +82,11 @@ module Skej
 
       private
 
+      def invalid_input!
+        debug "your input was invalid: #{user_input?}" if user_input.present?
+        @invalid_input = true
+      end
+
       # Determines if the current logic instance (self) is a sub module.
       # This is implied by using a sub namespace, ie. Skej::StateLogic::Appointments
       def is_sub_logic?
@@ -90,8 +95,12 @@ module Skej
 
       # Determines if the customer has input present for the
       # current state phase.
-      def user_input?
+      def user_input
         params[:Body] || params[:Digits]
+      end
+
+      def user_input?
+        user_input
       end
 
       # Clears all session input for the current request
@@ -505,11 +514,11 @@ module Skej
           if get["#{state}_confirming_assumption"]
             if customer_entered_yes?
               log 'customer entered yes: wished to change the default assumption'
-              get["#{state}_customer_asked_to_change"] = true
+              @session.store! "#{state}_customer_asked_to_change", true
 
             elsif customer_entered_no?
               log 'customer entered no: proceeding to the next state'
-              get["#{state}_customer_asked_to_change"] = false
+              @session.store! "#{state}_customer_asked_to_change", false
               assign_chosen_id! @supportable.id
 
               clear_input!
@@ -519,10 +528,7 @@ module Skej
 
             else
               log "customer entered unknown input: #{params[:Body] || params[:Digits]}"
-              get["#{state}_customer_asked_to_change"] = true
-
-              # Force a commit for this session changes
-              @session.update_meta_store!
+              @session.store! "#{state}_customer_asked_to_change", true
             end
 
           # Let's silently move the customer to the next state
@@ -546,7 +552,7 @@ module Skej
             # Otherwise run with the multi step assumption confirmation
             # (currently just for voice users)
             else
-              get["#{state}_confirming_assumption"] = true
+              @session.store! "#{state}_confirming_assumption", true
             end
 
           end

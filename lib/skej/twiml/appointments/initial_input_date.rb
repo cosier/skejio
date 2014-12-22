@@ -12,8 +12,8 @@ class Skej::Twiml::Appointments::InitialInputDate < Skej::Twiml::BaseTwiml
 
     def voice(session)
       build_twiml do |b|
-        b.Say "Please select your next appointment date...."
-        b.gather action: endpoint do |g|
+        b.Gather action: endpoint(gathering: true), maxlength: 10, timeout: 10,  finishOnKey: "#", method: 'get' do |g|
+          g.Say "Please select your next appointment date...."
           g.Say "Press 1 for Today"
           g.Say "Press 2 for Monday"
           g.Say "Press 3 for Wednesday"

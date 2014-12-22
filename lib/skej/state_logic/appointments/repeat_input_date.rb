@@ -2,7 +2,6 @@ class Skej::StateLogic::Appointments::RepeatInputDate < Skej::StateLogic::BaseLo
 
   def think
     @apt = @session.appointment
-    binding.pry
 
     log 'clearing current customer date input'
     @session.store! :initial_date_input, nil
@@ -11,6 +10,7 @@ class Skej::StateLogic::Appointments::RepeatInputDate < Skej::StateLogic::BaseLo
     @apt.store! :input_date, nil if @apt.store[:input_date].present?
 
     log 'going back to :initial_date_input, now'
+
     @apt.transition_to! :initial_input_date
   end
 

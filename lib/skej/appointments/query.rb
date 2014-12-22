@@ -7,10 +7,10 @@ module Skej
         @session = sesh
       end
 
-      def available_now(base_date)
+      def available_now(base_time)
         # Stash this for future use, as we will be using it to set a baseline date
         # in order to derive a bunch of different appointments from.
-        @base_date = base_date
+        @base_time = base_time
 
         # For now just generate a bunch of valid Appointments.
         # Using random dates (with realistic start/end ranges generated)
@@ -24,7 +24,6 @@ module Skej
 
         def mock_results
           results = []
-          now = DateTime.now
 
           3.times do |n|
             results << generate_appointment
@@ -99,13 +98,18 @@ module Skej
 
         # Generate a random range to start with.
         def random_range_start
-          DateTime.now + (rand(1..30) * 30).minutes
+          base.to_datetime + (rand(1..30) * 30).minutes
         end
 
         # Add a random amount of blocks (30min per block)
         # to the end of an existing start.
         def random_range_end(start)
           start + (rand(1..5) * 30).minutes
+        end
+
+        # The date baseline we are going to be working off of.
+        def base
+          @base_time
         end
 
     end

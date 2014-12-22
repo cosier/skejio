@@ -11,7 +11,7 @@ class Skej::StateLogic::Appointments::Finish < Skej::StateLogic::BaseLogic
     #
     # And we will leave the sub appointment state as is
     # (currently :finish as well)
-    @session.state.transition_to! :finish unless @session.state.current_state.to_sym == :finish
+    @session.state.transition_to :finish unless @session.state.current_state.to_sym == :finish
 
   end
 

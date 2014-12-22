@@ -3,7 +3,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
   def think
 
     @thinked = true
-    @apt     = @session.apt
+    @apt     = @session.appointment
     @state   = @apt.state
 
     if @apt.store[:appointment_input_date].nil?
@@ -27,7 +27,15 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       return @apt.transition_to! :repeat_input_date
     end
 
+    @date = @apt.store[:appointment_input_date].to_datetime
+
+    if @date.nil?
+      log "date nil detected during display results"
+    end
+
+    @appointments = query.available_now(@date) if @date
     process_result_selection
+
   end
 
   def sms_and_voice
@@ -62,15 +70,19 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
         # ordered collection of Appointments.
         appointment = @appointments[selected - 1]
 
+        if appointment.nil?
+          return invalid_input!
+        end
+
         # Make the appointment by committing to the database.
         # Will raise an exception immediately if not persisted successfully (!).
-        appointment.save!
+        appointment.commit!
 
         log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
         @apt.store! :chosen_appointment_id, appointment.id
 
         log "advancing customer to appointment summary step"
-        @apt.transition_to! :summary
+        @apt.transition_to! :finish
 
       # If the customer wasn't just shown the results,
       # then the only thing left to do— is to show the results!
@@ -97,7 +109,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
 
     # Mark things as true— used during result displaying
     def just_shown_results!
-      get[just_shown_key] = true
+      @session.store! just_shown_key, true
     end
 
     # Clear this boolean flag (just_shown_key) on the @session.store hash

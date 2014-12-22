@@ -22,7 +22,7 @@ module Skej
         build_twiml do |b|
           option_length = Math.log10(options[:offices].length).to_i + 1
 
-          b.Gather action: endpoint(gathering: true), maxlength: option_length , timeout: 10,  finishOnKey: "#", method: 'get' do |g|
+          b.Gather action: endpoint(gathering: true), maxlength: option_length , timeout: 900,  finishOnKey: "#", method: 'get' do |g|
 
             if options[:office_selection_confirming_assumption].present? and not options[:ask].present?
               log "Asking the Customer for Assumption confirmation"

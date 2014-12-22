@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223110948) do
+ActiveRecord::Schema.define(version: 20141223193733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,9 +38,6 @@ ActiveRecord::Schema.define(version: 20141223110948) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "appointment_selection_transitions", ["appointment_selection_state_id"], name: "unique_transition_appointments", using: :btree
-  add_index "appointment_selection_transitions", ["sort_key", "appointment_selection_state_id"], name: "unique_transition_appointments_sorted", unique: true, using: :btree
 
   create_table "appointments", force: true do |t|
     t.integer  "business_id",                           null: false

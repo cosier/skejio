@@ -86,7 +86,7 @@ class BaseSession < ActiveRecord::Base
 
 
     if self.respond_to? :apt and apt.present?
-      key = "#{fresh_state}_{session.apt.state.current_state}"
+      key = "#{fresh_state}_{session.appointment.state.current_state}"
     else
       key = fresh_state
     end
