@@ -78,7 +78,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
         # Will raise an exception immediately if not persisted successfully (!).
         appointment.commit!
 
-        log "customer chose appointment: <br/><pre>#{appointment.to_json}</pre>"
+        log "customer chose appointment: <br/><pre>#{JSON.pretty_generate(JSON.parse(appointment.to_json))}</pre>"
         @apt.store! :chosen_appointment_id, appointment.id
 
         log "advancing customer to appointment summary step"
