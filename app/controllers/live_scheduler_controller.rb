@@ -86,6 +86,7 @@ class LiveSchedulerController < ApplicationController
     RequestStore.store[:log] = @log
     # Stash params for this request as well— for debugging
     RequestStore.store[:params] = params.dup
+    RequestStore.store[:params_original] = params.dup
   end
 
 
@@ -101,15 +102,48 @@ class LiveSchedulerController < ApplicationController
     # Innocent until proven guilty
     blocked = false
 
+    # Collection of digits from Twilio that are invalid.
+    #
+    # see the following link for exact details on these blocked digits.
+    # https://www.twilio.com/help/faq/voice/why-am-i-getting-calls-from-these-strange-numbers
+    known_invalids = ["7378742833", "2562533", "8656696", "266696687"]
+
+    # Special int only form of our From number
+    from_int = strip_to_int(from).to_s
+
     if from.present?
+      if known_invalids.include? from_int
+        log "Invalid Customer From number: matches known blocked / invalid numbers - #{from} - #{from_int}"
+        blocked = true
+      end
+
+    elsif from.length < 7
+      log "Invalid Customer From number: strangely short number - #{from}"
+      blocked = true
+
     else
-      log 'Invalid Customer From number: not present'
+      log "Invalid Customer From number: not present - #{from || 'nil'}"
       blocked = true
     end
 
+    # If anything got triggered,
+    # we will redirect to the blocked response.
     if blocked
-      redirect_to invalid_number_path
+      #redirect_to invalid_number_path(device: params[:action])
+      device = params[:action].to_sym
+
+      xml = Twilio::TwiML::Response.new do |b|
+        case device
+        when :sms
+          b.Say "Sorry, in order to use our services you must be calling from a non-blocked or public number."
+        when :voice
+          b.Message "Sorry, in order to use our services you must be texting from a non-blocked or public number."
+        end
+      end.text
+
+      render xml: xml
     end
+
   end
 
   ################################################################
@@ -172,6 +206,14 @@ class LiveSchedulerController < ApplicationController
   # Lazy log helper / wrapper
   def log(msg)
     SystemLog.fact(title: 'live-scheduler-controller', payload: msg)
+  end
+
+  # Strip a text string of everything except for integers
+  def strip_to_int(input)
+    return input unless input.present?
+    return input if input[/[\d.,]+/].nil?
+
+    input[/[\d.,]+/].gsub(',','.').to_i if input.present?
   end
 
 end
