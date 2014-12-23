@@ -10,6 +10,7 @@
 #  meta                 :text
 #  device_type          :integer
 #  is_finished          :boolean          default(FALSE)
+#  uuid                 :string(255)
 #
 
 class AppointmentSelectionState < BaseSession

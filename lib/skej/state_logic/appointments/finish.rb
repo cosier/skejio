@@ -1,7 +1,10 @@
 class Skej::StateLogic::Appointments::Finish < Skej::StateLogic::BaseLogic
   def think
-    @apt   = @session.appointment_selection_state
+    @apt   = @session.appointment
     @state = @apt.state
+
+    # At this point, this state is already completed.
+    mark_as_completed!
 
     # Transition the parent session state from
     # :appointment_selection -> :finish

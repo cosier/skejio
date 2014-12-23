@@ -43,6 +43,7 @@ module Skej
           cst_id = @session.customer.id
 
           off_id = @session.chosen_office.id
+          srv_id = @session.chosen_service.id
           ses_id = @session.id
 
           # Optionally merge in start and end dates,
@@ -61,19 +62,16 @@ module Skej
             ap.service_provider_id = prv_id
             ap.customer_id = cst_id
             ap.office_id = off_id
+            ap.service_id = srv_id
             ap.created_by_session_id = ses_id
 
             # Ensure :start is transformed to a DateTime.
             # As well as applying any time_zone transformations.
-            ap.start = opts[:start]
-              .to_datetime
-              .in_time_zone(@session.chosen_office.time_zone)
+            ap.start = Skej::Warp.zone(opts[:start], @session.chosen_office.time_zone)
 
             # Ensure :end is transformed to a DateTime.
             # As well as applying any time_zone transformations.
-            ap.end   = opts[:end]
-              .to_datetime
-              .in_time_zone(@session.chosen_office.time_zone)
+            ap.end   = Skej::Warp.zone(opts[:end], @session.chosen_office.time_zone)
 
           end
         end

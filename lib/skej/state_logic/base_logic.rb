@@ -53,7 +53,6 @@ module Skej
           # we will simply initiate a redirect request (HTTP from Twilio) back to us
           # for additional processing.
           log 'redirecting back to the same state — to force a logic reflow'
-          binding.pry
 
           twiml do |b|
             b.Redirect endpoint
@@ -102,10 +101,11 @@ module Skej
       #
       # We clear multiple values, just to be safe.
       def clear_input!
+        current = params[:Body] || params[:Digits]
+
         params[:Body] = nil
         params[:Digits] = nil
-        @session.input[:Body] = nil if @session.input.present?
-        @session.input[:Digits] = nil if @session.input.present?
+
         @session.clear_session_input!
       end
 

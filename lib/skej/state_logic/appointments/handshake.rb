@@ -9,8 +9,10 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     if input.nil? and @session.sms? and @session.store[:initial_date_decoded].present?
       log "Loading SMS Sessions :initial_date_decoded captured via :initial_decoder state"
 
-      date = Skej::NLP.parse(@session, @session.store[:initial_date_decoded])
-      @apt.store! :appointment_input_date, date.to_s unless date.to_s.blank?
+      input = Skej::NLP.parse(@session, @session.store[:initial_date_decoded])
+      binding.pry
+
+      @apt.store! :appointment_input_date, input.to_s unless input.to_s.blank?
 
       # Since we just used this above, we need to clear it after (input state invalidation)
       @session.store[:initial_date_decoded] = nil

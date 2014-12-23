@@ -67,7 +67,8 @@ class SchedulerStateMachine < BaseMachine
 
   guard_transition :to => :finish do |session, transition|
     # We need to go back if we still somehow don't have an appointment?
-    if session.chosen_appointment.nil?
+    if session.appointment.chosen_appointment.nil?  and counter(:session_reset_appointment_selection) < 3
+      inc! :session_reset_appointment_selection
       session.reset_appointment_selection!
       false
     else

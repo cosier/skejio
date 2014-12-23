@@ -4,21 +4,10 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     @apt   = @session.appointment
     @state = @apt.state
 
-    # If we have an appointment already chosen,
-    # then we have no business in this Summary— as we're already done!
-    #
-    # Now if you want to change the appointment and run this summary again,
-    # then just delete the :chosen_appointment_id from the session store.
-    #
-    # Also voice users are automatically routed on as well.
-    if @apt.chosen_appointment.present? or not can_silently_assume?
-      log "directing voice customer directly to appointment finish"
-      return finish!
-    end
-
     if @apt.store[:appointment_input_date].nil?
       if get[:initial_date_decoded]
         log ":initial_date_decoded found as a subsitute customer input_date"
+        binding.pry
       else
         # If we don't have a date determined yet,
         # send the Customer to the :repeat_input_date state for further selection.
@@ -43,6 +32,15 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
 
     # If we detect user input, then we need to start processing actions
     process_actions if user_input?
+
+    # If we have an appointment already chosen,
+    # then we have no business in this Summary— as we're already done!
+    #
+    # Also voice users (defined by not#can_silently_assume?) are automatically routed on as well.
+    if @apt.chosen_appointment.present? or not can_silently_assume?
+      log "directing customer to appointment finish"
+      return finish!
+    end
 
     log "engaging sms customer appointment summary"
   end
@@ -76,13 +74,17 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
 
       # Process Appointment selection
       if input > option_length
+
         log "Processing Customer Appointment Selection: #{input}"
         appointment = @appointments[input - option_length - 1]
-        debug "chose appointment: #{input} - #{appointment.label}"
+        debug "you chose appointment: #{input} - #{appointment.label}"
 
         # GUARD:
         # Handle bad input based on the existence of the appointment.
         return invalid_input! if appointment.nil?
+
+        # Appointment Finalizer
+        appointment.commit!
 
         @apt.store! :chosen_appointment_id, appointment.id
         finish!

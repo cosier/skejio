@@ -5,6 +5,22 @@ class BaseMachine
   # Class methods for StateMachine
   class << self
 
+    # Utility counter reader
+    # for the static guard context blocks
+    def counter(key)
+      entry = RequestStore.store[key]
+      entry = 0 if entry.nil?
+      entry = entry.to_i
+    end
+
+    # Utility counter incrementer
+    # for the static guard context blocks
+    def inc!(key)
+      entry = RequestStore.store[key]
+      entry = 0 if entry.nil?
+      RequestStore.store[key] = entry + 1
+    end
+
     # Define states dynamically
     def linear_states(*states)
       @@STATES_AVAILABLE = states
@@ -90,7 +106,11 @@ class BaseMachine
 
   def current_state_priority
     current_priority = @@PRIORITY_BY_STATE[@object.current_state.to_sym]
-    raise "Priority not matched for: #{@object.current_state}" unless current_priority
+
+    if current_priority.nil?
+      raise "Priority not matched for: #{@object.current_state}"
+    end
+
     current_priority
   end
 

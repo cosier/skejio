@@ -9,9 +9,9 @@ module Skej
           message = ""
           message << "Congratulations, you have successfully booked your Appointment!\n"
           message << "-------\n"
-          message << "#{ap.start.strftime('%A')} the #{ap.start.day}#{ap.start.day.ordinalize}\n"
-          message << "#{ap.chosen_service.display_name} #{provider_text} at #{ap.chosen_office}.\n"
-          message << "During #{ap.pretty_start} - #{ap.pretty_end}"
+          message << "#{ap.start.strftime('%A')} the #{ap.start.day.ordinalize}\n"
+          message << "#{ap.service.display_name} #{options[:provider_text]} at #{ap.office.display_name}.\n"
+          message << "During #{ap.pretty_start} - #{ap.pretty_end}\n"
           message << "-------\n"
           message << "If you want to edit your appointment — text \"change #{session.simple_id}\"\n"
 

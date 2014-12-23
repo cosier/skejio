@@ -26,7 +26,7 @@ class Office < ActiveRecord::Base
   after_create :update_ordering
 
   def display_name
-    "#{business.display_name} - #{name}"
+    "#{name.titleize}"
   end
 
   def update_ordering

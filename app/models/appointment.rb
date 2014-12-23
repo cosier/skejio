@@ -32,6 +32,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :office
   belongs_to :business
   belongs_to :customer
+  belongs_to :service
 
   belongs_to :session,
     foreign_key: 'created_by_session_id',
@@ -63,6 +64,11 @@ class Appointment < ActiveRecord::Base
     "#{balance(end_time.hour)}:#{balance(end_time.to_datetime.minute)} #{meridian(end_time)}"
   end
 
+  # Responsible for finalizing an appointment
+  def commit!
+    save! unless persisted?
+  end
+
 
   private
 
@@ -76,7 +82,7 @@ class Appointment < ActiveRecord::Base
   end
 
   def log_creation
-    SystemLog.fact(title: self.class.name.underscore, payload: "Created Appointment: <br/><pre>#{self.to_json}</pre>")
+    SystemLog.fact(title: self.class.name.underscore, payload: "Created Appointment: <br/><pre>#{JSON.pretty_generate(JSON.parse(self.to_json))}</pre>")
   end
 
   alias_attribute :end_time, :end
