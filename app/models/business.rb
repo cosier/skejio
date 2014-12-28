@@ -34,7 +34,7 @@ class Business < ActiveRecord::Base
   has_many :numbers,
     :through => :sub_accounts
 
-  validates_uniqueness_of :slug
+  #validates_uniqueness_of :slug
   validates_presence_of :slug
 
   before_validation :ensure_unique_slug
@@ -74,6 +74,23 @@ class Business < ActiveRecord::Base
     sub_accounts.first
   end
 
+  def ensure_unique_slug
+    # Don't mess with the slug if it's already defined manually.
+    return true if slug.present?
+
+    # slugify the name into something neat and tidy.
+    slg = name.parameterize
+
+    # Check for a previous entry,
+    # If found, append a random number
+    if Business.where(slug: slg).first
+      # Unique enough for our purposes
+      slg = "#{slg}-#{Random.rand(99999..999999)}"
+    end
+
+    self.slug = slg
+  end
+
   private
 
   def check_for_approval_processing
@@ -87,23 +104,4 @@ class Business < ActiveRecord::Base
         :friendly_name => response.friendly_name)
     end
   end
-
-
-  def ensure_unique_slug
-    # Don't mess with the slug if it's already defined manually.
-    return true if slug.present?
-
-    # slugify the name into something neat and tidy.
-    s = name.parameterize
-
-    # Check for a previous entry,
-    # If found, append a random number
-    if Business.where(slug: s).first
-      # Unique enough for our purposes
-      s = "#{s}-#{Random.rand(9999)}"
-    end
-
-    self.slug = s
-  end
-
 end

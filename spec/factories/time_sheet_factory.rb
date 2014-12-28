@@ -13,7 +13,5 @@
 
 FactoryGirl.define do
   factory :time_sheet do
-    business
-    schedule_rule
   end
 end

@@ -128,10 +128,14 @@ class Scplanner.Views.Schedules.TimeSheetView extends Backbone.View
     end_minute    = parseInt @$('select.end').val().split(':')[1]
     start_hour    = parseInt @$('select.start').val().split(':')[0]
     start_minute  = parseInt @$('select.start').val().split(':')[1]
+    provider_id   = @schedule_rule.get('service_provider_id')
+    service_id    = @schedule_rule.get('service_id')
 
     @entries.add_batch
       time_sheet_id: @model.id
       office_id: parseInt(@$('select.office').val())
+      provider_id: provider_id
+      service_id: service_id
       days:  @$('select.entry-days[multiple]').val()
 
       start_meridian: @$('select.start-meridian').val()

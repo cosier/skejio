@@ -617,7 +617,7 @@ module Skej
 
       # Memoize the query object based on this @session.
       def query
-        @query ||= Skej::Appointments::Query.new(@session)
+        @query ||= Skej::Appointments::QueryEngine.new(@session)
       end
 
       def session

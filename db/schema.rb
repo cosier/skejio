@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223193733) do
+ActiveRecord::Schema.define(version: 20141230183345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,8 @@ ActiveRecord::Schema.define(version: 20141223193733) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "floating_break",   default: 0
+    t.integer  "provider_id"
+    t.integer  "service_id"
   end
 
   create_table "businesses", force: true do |t|
@@ -118,6 +120,7 @@ ActiveRecord::Schema.define(version: 20141223193733) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "recording_name_url"
+    t.string   "email"
   end
 
   create_table "facts", force: true do |t|
@@ -257,6 +260,19 @@ ActiveRecord::Schema.define(version: 20141223193733) do
     t.datetime "updated_at"
   end
 
+  create_table "time_blocks", force: true do |t|
+    t.integer  "time_entry_id"
+    t.integer  "business_id"
+    t.integer  "time_sheet_id"
+    t.integer  "office_id"
+    t.integer  "provider_id"
+    t.integer  "day"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "start_time"
+    t.datetime "end_time"
+  end
+
   create_table "time_entries", force: true do |t|
     t.integer  "business_id",                   null: false
     t.integer  "office_id"
@@ -271,6 +287,8 @@ ActiveRecord::Schema.define(version: 20141223193733) do
     t.datetime "valid_until_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "provider_id"
+    t.integer  "service_id"
   end
 
   create_table "time_sheet_services", force: true do |t|

@@ -6,7 +6,7 @@ class ScheduleRulesController < BusinessesController
   before_filter :provide_business_basics, only: [:new, :edit, :show]
   before_filter :validate_requirements, only: [:new, :edit, :show]
   skip_load_resource only: [:create]
-  
+
   include EntryHelper
   helper :entry
   sidebar :schedule_rules
@@ -28,6 +28,8 @@ class ScheduleRulesController < BusinessesController
   end
 
   def create
+    binding.pry
+
     @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
     @schedule_rule.business_id = @business.id
 
@@ -48,7 +50,7 @@ class ScheduleRulesController < BusinessesController
 
         # Create Time Sheet Entries
         sheet[:entries].each do |entry|
-          entry[:business_id] = @bid
+          entry[:business_id]   = @bid
           entry[:time_sheet_id] = time_sheet.id
 
           entry = convert_meridians(entry)
@@ -57,6 +59,7 @@ class ScheduleRulesController < BusinessesController
           raise te.errors.to_json if not te.persisted?
 
         end if sheet[:entries]
+
       end if sheets
 
       # Create BreakShift(s) on the ScheduleRule
@@ -84,6 +87,8 @@ class ScheduleRulesController < BusinessesController
     end
 
     flash[:success] = "Schedule Rule saved"
+
+    binding.pry
 
     respond_with(@business, @schedule_rule) do |format|
       format.js { render json: @schedule_rule }

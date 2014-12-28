@@ -17,6 +17,8 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  floating_break   :integer          default(0)
+#  provider_id      :integer
+#  service_id       :integer
 #
 
 class BreakShift < ActiveRecord::Base

@@ -21,6 +21,7 @@
 #  is_active             :boolean          default(TRUE)
 #  created_at            :datetime
 #  updated_at            :datetime
+#  service_id            :integer          not null
 #
 
 class Appointment < ActiveRecord::Base

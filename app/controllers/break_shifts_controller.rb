@@ -1,9 +1,9 @@
+# Responsible for managing the breaks for an individual Service Provider.
 class BreakShiftsController < BusinessesController
   respond_to :json
   load_and_authorize_resource
 
   skip_load_resource only: [:create, :destroy]
-
 
   before_filter :set_break_shift, only: [:destroy]
 
@@ -22,6 +22,8 @@ class BreakShiftsController < BusinessesController
   end
 
   def create
+    binding.pry
+
     @break_shift = BreakShift.new(break_shift_params)
     @break_shift.save! if authorize! :create, @break_shift
 
@@ -31,7 +33,7 @@ class BreakShiftsController < BusinessesController
           business_id: @business.id,
           service_id: id,
           break_shift_id: @break_shift.id)
-      end      
+      end
     end
 
     if params[:break_shift][:offices]
@@ -40,9 +42,9 @@ class BreakShiftsController < BusinessesController
           business_id: @business.id,
           office_id: id,
           break_shift_id: @break_shift.id)
-      end      
+      end
     end
-    
+
     respond_with @business, @break_shift do |format|
       format.json { render json: @break_shift }
     end

@@ -86,7 +86,7 @@ class SchedulerSession < BaseSession
   # Based on the already set :chosen_provider_id,
   # get the corresponding ServiceProvider entity (User).
   def chosen_provider
-    if cpi = store[:chosen_provider_id] and cpi.to_sym == :deferred
+    if cpi = store[:chosen_provider_id] and cpi.to_s.to_sym == :deferred
       return false
     else
       User.where(id: store[:chosen_provider_id] || store[:chosen_provider_selection_id], business_id: business.id).first

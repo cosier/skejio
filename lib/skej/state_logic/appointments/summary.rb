@@ -25,7 +25,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       log "date nil detected during summary display"
     end
 
-    @appointments = query.available_now(@date) if @date
+    @appointments = query.available_on(@date) if @date
 
     # Construct the menu options dynamically
     add_menu :service,  "Text <num> to change the Service" if session.can_change_service?

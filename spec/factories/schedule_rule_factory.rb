@@ -11,8 +11,8 @@
 #
 
 FactoryGirl.define do
-  factory :schedule_rule do
-    service_provider
-    business
+
+  factory :schedule_rule, class: 'ScheduleRule' do
   end
+
 end

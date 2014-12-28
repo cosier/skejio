@@ -21,7 +21,7 @@ class Scplanner.Models.TimeSheet extends Backbone.Model
 
   services: ->
     co = new Scplanner.Collections.ServicesCollection()
-    
+
     model_services = []
     ui_services = @get('services') || []
 
@@ -31,7 +31,7 @@ class Scplanner.Models.TimeSheet extends Backbone.Model
 
     add = (service)->
       if service
-        co.add service 
+        co.add service
         console.debug "Service found: #{id}"
       else
         console.debug "Service not found: #{id}", @get('services'), break_service
@@ -40,7 +40,7 @@ class Scplanner.Models.TimeSheet extends Backbone.Model
       service = Scp.Co.Services.findWhere id: parseInt(model.id)
       add(service)
 
-    for id in ui_services 
+    for id in ui_services
       service = Scp.Co.Services.findWhere id: parseInt(id)
       add(service)
 

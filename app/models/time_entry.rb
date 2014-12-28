@@ -16,12 +16,18 @@
 #  valid_until_at :datetime
 #  created_at     :datetime
 #  updated_at     :datetime
+#  provider_id    :integer
+#  service_id     :integer
 #
 
 class TimeEntry < ActiveRecord::Base
   belongs_to :business
   belongs_to :office
   belongs_to :time_sheet
+
+  belongs_to :provider,
+    class_name: 'User',
+    foreign_key: 'provider_id'
 
   bitmask :day, :as => [
     :sunday,
@@ -45,7 +51,11 @@ class TimeEntry < ActiveRecord::Base
   end
 
   def hours
-    (end_hour - start_hour) + (end_minute - start_minute)
+    ((((end_hour - start_hour) * 60) + (end_minute - start_minute)) / 60).floor
+  end
+
+  def duration
+    (((end_hour - start_hour) * 60) + (end_minute - start_minute))
   end
 
 end

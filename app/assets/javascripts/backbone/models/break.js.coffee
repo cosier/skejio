@@ -54,22 +54,18 @@ class Scplanner.Models.Break extends Backbone.Model
     parseInt @get("#{type}_minute")
 
   offices: ->
-    ids = @get('offices')
+    office_id = @get('office_id')
     all_model = new Scp.Co.Offices.model
       name: 'All Offices'
 
-    if ids.length == 0
-      return [all_model]
-
-    if ids.length == Scp.Co.Offices.length
-      return [all_model]
-
     co = []
-    for id in ids
+    if office_id
       co.push Scp.Co.Offices.findWhere
-        id: parseInt(id)
+        id: parseInt(office_id)
+    else
+      co.push all_model
 
-    co
+    return co
 
   duration: ->
     mins = 0
@@ -122,14 +118,14 @@ class Scplanner.Models.Break extends Backbone.Model
 
     if from.toLowerCase() == 'now' and unt.toLowerCase() == 'forever'
       return '<span class=infinity>&infin;</span>'
-   
+
     if from.toLowerCase() == 'now'
       from = "<span class='muted'>Now</span>"
     else if from
       from = moment(from).format("MM/DD/YYYY")
     else
       from = '<span class=infinity>&infin;</span>'
-   
+
     if unt and unt.toLowerCase() == 'forever'
       unt = "<span class='muted'>Forever</span>"
     else if unt
@@ -144,7 +140,7 @@ class Scplanner.Models.Break extends Backbone.Model
     model_services = @get('services') || []
 
     for id in model_services
-      
+
       if Scp.Preload
         break_service = Scp.Preload.break_services.findWhere({ id: id })
 
@@ -156,7 +152,7 @@ class Scplanner.Models.Break extends Backbone.Model
 
 
       if service
-        co.push service 
+        co.push service
         console.debug "Service found: #{id}"
       else
         console.debug "Service not found: #{id}", @get('services'), break_service
@@ -201,7 +197,7 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
     else if a_index == b_index
       0
 
-      
+
 
   add_batch: (data)->
     console.debug 'add_batch', data
@@ -220,3 +216,5 @@ class Scplanner.Collections.BreaksCollection extends Backbone.Collection
         end_hour: data.end_hour
         end_minute:  data.end_minute
         end_meridian: data.end_meridian
+        provider_id: data.provider_id
+        service_id: data.service_id

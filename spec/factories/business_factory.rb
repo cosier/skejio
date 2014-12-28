@@ -19,11 +19,21 @@
 FactoryGirl.define do
 
   factory :business, class: 'Business' do
-    name Faker::Company.name
+    name "#{Faker::Company.name}-#{Random.rand(100..999)}"
 
     after(:create) do |business|
+
+      office   = create(:office, business_id: business.id)
+      service  = create(:service, business_id: business.id)
+      provider = create(:service_provider, business_id: business.id)
+
       business.sub_accounts << FactoryGirl.create(:sub_account)
+      business.users        << provider
+      business.offices      << office
+      business.services     << service
+      business.save!
     end
+
   end
 
 end

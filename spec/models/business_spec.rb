@@ -48,8 +48,26 @@ describe 'business permissions', :type => :model do
 
     let(:user){ create_user roles: [:super_admin] }
 
-    # The super_admin cannot do anything with a business
-    it{ should_not be_able_to :read,  create(:business)  }
+    # The super_admin do anything with a business
+    it{ should be_able_to :read,  create(:business)  }
+    it{ should be_able_to :edit,  create(:business)  }
+  end
+
+  context "when super_business_editor interacts with business" do
+
+    let(:user){ create_user roles: [:super_business_editor] }
+
+    # The super_business_editor do anything with a business
+    it{ should be_able_to :read,  create(:business)  }
+    it{ should be_able_to :edit,  create(:business)  }
+  end
+
+  context "when super_business_viewer interacts with business" do
+
+    let(:user){ create_user roles: [:super_business_viewer] }
+
+    # The super_business_viewer can only read a business
+    it{ should be_able_to :read,  create(:business)  }
     it{ should_not be_able_to :edit,  create(:business)  }
   end
 

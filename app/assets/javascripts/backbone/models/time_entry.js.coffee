@@ -70,7 +70,7 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
     else if a_index == b_index
       0
 
-      
+
 
   add_batch: (data)=>
     console.debug 'add_batch', data
@@ -85,4 +85,6 @@ class Scplanner.Collections.TimeEntriesCollection extends Backbone.Collection
         end_minute:  data.end_minute
         end_meridian: data.end_meridian
         office_id: data.office_id
+        provider_id: data.provider_id
+        service_id: data.service_id
         time_sheet_id: data.time_sheet_id

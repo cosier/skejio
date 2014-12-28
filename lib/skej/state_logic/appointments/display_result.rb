@@ -33,7 +33,7 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
       log "date nil detected during display results"
     end
 
-    @appointments = query.available_now(@date) if @date
+    @appointments = query.available_on(@date) if @date
     process_result_selection
 
   end

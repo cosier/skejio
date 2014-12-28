@@ -139,21 +139,25 @@ class Scplanner.Views.Schedules.BreakManagerView extends Backbone.View
     end_minute    = parseInt @$('select.end').val().split(':')[1]
     start_hour    = parseInt @$('select.start').val().split(':')[0]
     start_minute  = parseInt @$('select.start').val().split(':')[1]
+    provider_id   = @schedule_rule.get('service_provider_id')
+    service_id   = @schedule_rule.get('service_id')
 
     @breaks.add_batch
       schedule_rule_id: @schedule_rule and @schedule_rule.id
-      days: @$('select.entry-days[multiple]').val()
-      services: @$('select.choose-break-service').val() || []
-      offices: @$('select.choose-break-office').val() || []
+      days:           @$('select.entry-days[multiple]').val()
+      services:       @$('select.choose-break-service').val() || []
+      offices:        @$('select.choose-break-office').val() || []
       start_meridian: @$('select.start-meridian').val()
       end_meridian:   @$('select.end-meridian').val()
-      valid_from_at:     @$('input#valid_from').val()
-      valid_until_at:    @$('input#valid_until').val()
+      valid_from_at:  @$('input#valid_from').val()
+      valid_until_at: @$('input#valid_until').val()
       floating_break: @$('input.float').val()
-      start_hour:    start_hour
-      start_minute:  start_minute
-      end_hour:      end_hour
-      end_minute:    end_minute
+      start_hour:     start_hour
+      start_minute:   start_minute
+      end_hour:       end_hour
+      end_minute:     end_minute
+      provider_id:    provider_id
+      service_id: service_id
 
   add_break_entries: =>
     container = @$('table.breaks-manager tbody')
