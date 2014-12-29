@@ -16,7 +16,6 @@ module Skej
         # baseline date in order to derive a bunch of different appointments
         # from.
         set_base_time(base_time)
-
         time_entries = time_entries_for(base)
 
         # Transform TimeEntry(s) -> TimeBlock(s).
@@ -33,6 +32,23 @@ module Skej
         transform_blocks_to_appointments(optimized_blocks)
       end
 
+      # Return all valid TimeBlock(s) for a given base time.
+      def valid_blocks(base_time)
+        set_base_time(base_time)
+        time_entries = time_entries_for(base)
+
+        # Transform TimeEntry(s) -> TimeBlock(s).
+        all_blocks = extract_time_blocks(time_entries)
+
+        # Run Validation and Collision detection on all found known TimeBlock(s)
+        validate_time_blocks(all_blocks)
+      end
+
+      # Returns all valid Appointments for a given base time.
+      def valid_appointments(base_time)
+        transform_blocks_to_appointments(valid_blocks(base_time))
+      end
+
       private
 
       # Get all TimeEntry(s) that match the current session properties.
@@ -40,14 +56,10 @@ module Skej
       # +:target_date+ - A DateTime to base the TimeEntry collection query from.
       def time_entries_for(target_date)
         target_day = target_date.strftime('%A').downcase.to_sym
-        results = TimeEntry.where(build_query_params).with_day(target_day)
-        #binding.pry
-        results
+        TimeEntry.where(build_query_params).with_day(target_day)
       end
 
       def build_query_params
-        arel = TimeEntry.arel_table
-
         # From 100 years up to now
         valid_from_range  = (DateTime.now - 100.years)..DateTime.now
 
