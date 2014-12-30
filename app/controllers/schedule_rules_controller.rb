@@ -28,8 +28,6 @@ class ScheduleRulesController < BusinessesController
   end
 
   def create
-    binding.pry
-
     @schedule_rule.service_provider_id = params[:schedule_rule][:service_provider_id]
     @schedule_rule.business_id = @business.id
 
@@ -87,8 +85,6 @@ class ScheduleRulesController < BusinessesController
     end
 
     flash[:success] = "Schedule Rule saved"
-
-    binding.pry
 
     respond_with(@business, @schedule_rule) do |format|
       format.js { render json: @schedule_rule }

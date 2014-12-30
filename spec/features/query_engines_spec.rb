@@ -8,25 +8,11 @@ feature "QueryEngine", :type => :feature do
 
       session = create_scheduler_session
 
-      create_time_entries(session.chosen_provider, [
-        { start_hour: 9, end_hour: 20, day: :sunday      },
-        { start_hour: 9, end_hour: 20, day: :monday      },
-        { start_hour: 9, end_hour: 20, day: :tuesday     },
-        { start_hour: 9, end_hour: 20, day: :wednesday   },
-        { start_hour: 9, end_hour: 20, day: :thursday    },
-        { start_hour: 9, end_hour: 20, day: :friday      },
-        { start_hour: 9, end_hour: 20, day: :saturday    },
-      ])
+      create_time_entries session.chosen_provider,
+        [{ start_hour: 9, end_hour: 20, day: :wednesday }]
 
-      create_breaks(session.chosen_provider, [
-        { start_hour: 12, end_hour: 13, day: :sunday     },
-        { start_hour: 12, end_hour: 13, day: :monday     },
-        { start_hour: 12, end_hour: 13, day: :tuesday    },
-        { start_hour: 12, end_hour: 13, day: :wednesday  },
-        { start_hour: 12, end_hour: 13, day: :thursday   },
-        { start_hour: 12, end_hour: 13, day: :friday     },
-        { start_hour: 12, end_hour: 13, day: :saturday   },
-      ])
+      create_breaks session.chosen_provider,
+        [{ start_hour: 12, end_hour: 13, day: :wednesday }]
 
       Skej::Appointments::QueryEngine.new(session)
     }

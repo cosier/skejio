@@ -103,6 +103,10 @@ gem 'thin'
 gem 'request_store'
 
 group :development, :test do
+
+  gem 'guard-rspec', require: false
+  gem 'guard-zeus'
+
   # Enable pry and
   # byebug as prys step debugger
   gem 'pry-byebug'
