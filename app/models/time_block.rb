@@ -80,6 +80,10 @@ class TimeBlock < ActiveRecord::Base
     Skej::NLP.parse(time_entry, attributes["end_time"].to_datetime)
   end
 
+  def has_appointment?
+    collider.detect(self, :appointment_detector)
+  end
+
   private
 
   # Determine an amount of minutes in order to push
