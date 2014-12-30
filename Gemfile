@@ -104,8 +104,11 @@ gem 'request_store'
 
 group :development, :test do
 
-  gem 'guard-rspec', require: false
-  gem 'guard-zeus'
+  #gem 'guard'
+  #gem 'guard-rspec', require: false
+  #gem 'guard-zeus', require: false
+  #gem 'formatador', '0.2.5'
+
 
   # Enable pry and
   # byebug as prys step debugger
@@ -119,9 +122,11 @@ group :development, :test do
   # gem 'better_errors'
   # gem 'binding_of_caller'
   gem 'erb2haml'
+
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'zeus'
+
 end
 
 gem 'pry'

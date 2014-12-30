@@ -49,6 +49,18 @@ class BreakShift < ActiveRecord::Base
   validates_presence_of :schedule_rule
   validates_presence_of :business
 
+  class << self
+    def started_between(start_time, end_time, chain = self)
+      chain.where start_hour: start_time.hour..end_time.hour,
+                  start_minute: start_time.strftime('%M')..end_time.strftime('%M')
+    end
+
+    def ending_between(start_time, end_time, chain = self)
+      chain.where end_hour: start_time.hour..end_time.hour,
+                  end_minute: start_time.strftime('%M')..end_time.strftime('%M')
+    end
+  end
+
   def day_title
     day.first.to_s.titleize if day.length > 0
   end

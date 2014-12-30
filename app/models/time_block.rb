@@ -40,11 +40,14 @@ class TimeBlock < ActiveRecord::Base
   validates_presence_of :start_time
   validates_presence_of :end_time
 
-
+  # Returns a collection of all detected Collisions,
+  # by all individual detectors.
   def collisions
     collider.detect(self)
   end
 
+  # Determines if this TimeBlock is collision free.
+  # (Runs :all collision detectors)
   def collision_free?
     collisions.empty?
   end
@@ -53,8 +56,39 @@ class TimeBlock < ActiveRecord::Base
     time_entry.provider
   end
 
+  # Get an identical TimeBlock, but with the time ranges
+  # push a certain amount of blocks forward.
+  def next(count = 1)
+    dupe = self.dup
+    dupe.assign_attributes start_time: start_time + push(count), end_time: end_time + push(count)
+    dupe
+  end
+
+  # Get an identical TimeBlock, but with the time ranges
+  # push a certain amount of blocks backward.
+  def previous(count = 1)
+    dupe = self.dup
+    dupe.assign_attributes start_time: start_time + push(count), end_time: end_time + push(count)
+    dupe
+  end
+
+  def start_time
+    Skej::NLP.parse(time_entry, attributes["start_time"].to_datetime)
+  end
+
+  def end_time
+    Skej::NLP.parse(time_entry, attributes["end_time"].to_datetime)
+  end
+
   private
 
+  # Determine an amount of minutes in order to push
+  # the current time ranges (n) amount of blocks either forward or backward.
+  def push(count)
+    (count.to_i * time_entry.service.duration.to_i).minutes
+  end
+
+  # Mini Collider (memoized) factory
   def collider
     @collider ||= Skej::Appointments::Collider.new(session)
   end

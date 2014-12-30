@@ -97,8 +97,18 @@ module Skej
           # By rounding off with #floor, we go the easy route (no partial time blocks)
           blocks = (entry.duration / block_size).floor.times.map do |i|
 
-            start_time = entry_start + (i * block_size).minutes
-            end_time   = start_time + block_size.minutes
+            start_time = Skej::Warp.zone(
+              entry_start + (i * block_size).minutes,
+              session.chosen_office.time_zone)
+
+            end_time   = Skej::Warp.zone(
+              start_time + block_size.minutes,
+              session.chosen_office.time_zone)
+
+            target_day = Skej::NLP.parse(session, entry.day)
+                                  .strftime('%A')
+                                  .downcase
+                                  .to_sym
 
             TimeBlock.new(
               session: session,
@@ -106,13 +116,11 @@ module Skej
               business_id: session.business_id,
               time_sheet_id: entry.time_sheet_id,
               office_id: entry.office_id,
-              day: entry.day,
+              day: target_day,
               start_time: start_time,
               end_time: end_time)
 
           end
-
-          return blocks
         end.flatten
 
         return results
@@ -149,10 +157,6 @@ module Skej
       # Based on the minute duration of the chosen Service.
       def block_size
         session.chosen_service.duration
-      end
-
-      def session
-        @session
       end
 
       def generate_appointment(opts = {})
@@ -235,8 +239,21 @@ module Skej
         @base_time
       end
 
+      def session
+        @session
+      end
+
       def set_base_time(target)
-        target = target.to_datetime
+        if target.kind_of? String or target.kind_of? Symbol
+          # Allow for detection of Strings for NLP
+          target = Skej::NLP.parse(session, target)
+
+        else
+          # Otherwise just straight convert to a datetime,
+          # just to be sure.
+          target = target.to_datetime
+        end
+
         if target < DateTime.now
           @base_time = DateTime.now
         else

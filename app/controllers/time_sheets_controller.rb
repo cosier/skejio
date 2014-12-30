@@ -14,15 +14,15 @@ class TimeSheetsController < BusinessesController
   def update
     d = time_sheet_params
 
-    d[:valid_from_at]  = Chronic.parse d[:valid_from_at]
-    d[:valid_until_at] = Chronic.parse d[:valid_until_at]
+    d[:valid_from_at]  = Skej::NLP.parse(@business, d[:valid_from_at])
+    d[:valid_until_at] = Skej::NLP.parse(@business, d[:valid_until_at])
 
     if d[:services]
       @time_sheet.time_sheet_services.destroy_all
       d[:services].map { |id| Service.find(id) }.map do |service|
         @time_sheet.time_sheet_services.create!(
           service_id: service.id,
-          business_id: @business.id)      
+          business_id: @business.id)
       end
     end
 

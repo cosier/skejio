@@ -24,6 +24,7 @@ class TimeEntry < ActiveRecord::Base
   belongs_to :business
   belongs_to :office
   belongs_to :time_sheet
+  belongs_to :service
 
   belongs_to :provider,
     class_name: 'User',
