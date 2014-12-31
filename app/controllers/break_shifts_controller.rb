@@ -22,8 +22,6 @@ class BreakShiftsController < BusinessesController
   end
 
   def create
-    binding.pry
-
     @break_shift = BreakShift.new(break_shift_params)
     @break_shift.save! if authorize! :create, @break_shift
 

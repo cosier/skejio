@@ -84,6 +84,10 @@ class TimeBlock < ActiveRecord::Base
     collider.detect(self, :appointment_detector)
   end
 
+  def in_future?
+    start_time > DateTime.now
+  end
+
   private
 
   # Determine an amount of minutes in order to push

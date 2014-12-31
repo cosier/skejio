@@ -68,6 +68,11 @@ class Skej::Twiml::Appointments::DisplayResult < Skej::Twiml::BaseTwiml
 
       end if options[:appointments].present?
 
+      if options[:appointments].empty?
+        list << "Sorry we do not have open Appointments matching your date.\n"
+        list << "Please change the date and try again\n"
+      end
+
       # Return string compilation containing visual selection list.
       list
     end

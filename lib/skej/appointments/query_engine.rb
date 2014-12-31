@@ -132,7 +132,7 @@ module Skej
       #
       # +:time_blocks+ - All extracted TimeBlock(s) you wish to have validated.
       def validate_time_blocks(time_blocks)
-        time_blocks.select(&:collision_free?)
+        time_blocks.select(&:in_future?).select(&:collision_free?)
       end
 
       # Given a collection of TimeBlock(s),
@@ -243,7 +243,13 @@ module Skej
         @session
       end
 
-      def set_base_time(target)
+      def set_base_time(original_input)
+        unless original_input.present?
+          target = DateTime.now
+        else
+          target = original_input
+        end
+
         if target.kind_of? String or target.kind_of? Symbol
           # Allow for detection of Strings for NLP
           target = Skej::NLP.parse(session, target)

@@ -14,6 +14,8 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       7 => "Sunday"
     }
 
+    binding.pry
+
     # Check if we can abort early due to already having a date
     # This only applies for SMS users.
     if @session.sms? and input = @session.store[:initial_date_decoded]
@@ -62,6 +64,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
 
     # Stash this datetime object as a string on the Appointment state
     @apt.store! :appointment_input_date, daterized.to_s
+    clear_input!
 
     # Log and go to next
     log "setting <strong>appointment_input_date</strong> = <strong>#{daterized.to_s}</strong>"

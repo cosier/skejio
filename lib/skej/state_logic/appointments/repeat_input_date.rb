@@ -4,8 +4,11 @@ class Skej::StateLogic::Appointments::RepeatInputDate < Skej::StateLogic::BaseLo
     @apt = @session.appointment
 
     log 'clearing current customer date input'
+    @session.store! :initial_date_decoded, nil
     @session.store! :initial_date_input, nil
     @session.store! :initial_input_date, nil
+
+    binding.pry
 
     @apt.store! :input_date, nil if @apt.store[:input_date].present?
 

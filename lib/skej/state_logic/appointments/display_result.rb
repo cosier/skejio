@@ -6,6 +6,8 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     @apt     = @session.appointment
     @state   = @apt.state
 
+    @original_input = @apt.store[:appointment_input_date]
+
     if @apt.store[:appointment_input_date].nil?
       # If we don't have a date determined yet,
       # send the Customer to the :repeat_input_date state for further selection.
@@ -34,6 +36,14 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     end
 
     @appointments = query.available_on(@date) if @date
+
+    if @appointments.empty?
+      log "no appointment results detected: clearing customer input for a retry"
+      # If we have no results, we clear the appointment input and try again
+      @apt.transition_to! :repeat_input_date
+      return
+    end
+
     process_result_selection
 
   end
@@ -43,7 +53,11 @@ class Skej::StateLogic::Appointments::DisplayResult < Skej::StateLogic::BaseLogi
     # to a sub TwiML view.
     #
     # The view receives just the appointments to render.
-    twiml_appointments_display_results(appointments: @appointments)
+    if @appointments.present?
+      twiml_appointments_display_results(appointments: @appointments)
+    else
+      twiml_appointments_no_results(original_input: @original_input)
+    end
   end
 
   private

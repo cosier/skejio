@@ -96,11 +96,16 @@ module Skej
       # Determines if the customer has input present for the
       # current state phase.
       def user_input
-        params[:Body] || params[:Digits]
+        input = params[:Body] || params[:Digits]
+        if input.present?
+          return input
+        else
+          return false
+        end
       end
 
       def user_input?
-        user_input
+        user_input.present?
       end
 
       # Clears all session input for the current request

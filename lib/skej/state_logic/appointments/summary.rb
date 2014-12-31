@@ -3,6 +3,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
   def think
     @apt   = @session.appointment
     @state = @apt.state
+    @original_input = @apt.store[:appointment_input_date]
 
     if @apt.store[:appointment_input_date].nil?
       if get[:initial_date_decoded]
@@ -26,6 +27,13 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     end
 
     @appointments = query.available_on(@date) if @date
+
+    if @appointments.empty?
+      log "no appointment results detected: clearing customer input for a retry"
+      # If we have no results, we clear the appointment input and try again
+      @apt.transition_to! :repeat_input_date
+      return
+    end
 
     # Construct the menu options dynamically
     add_menu :service,  "Text <num> to change the Service" if session.can_change_service?
@@ -52,13 +60,18 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     data = {
       appointments: @appointments,
       options_menu: option_menu,
-      apps_menu:    appointment_menu
+      apps_menu:    appointment_menu,
+      original_input: @original_input
     }
 
     data[:invalid_input] = user_input? if @invalid_input.present?
     data[:insufficient_permission] = true if @insufficient_permission.present?
 
-    twiml_appointments_summary(data)
+    if @appointments.present?
+      twiml_appointments_summary(data)
+    else
+      twiml_appointments_no_results(data)
+    end
   end
 
   private
@@ -167,7 +180,8 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
       menu = ""
       @menu_options.each do |i, hash|
         menu << hash[:text].gsub('<num>', "#{i}") << " \n"
-      end
+      end if @menu_options.present?
+
       # return Compiled menu string
       menu
     end
@@ -179,7 +193,10 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     # +index+:: initial integer to start basing the appointment
     # listings off of (integer mappings for customer selection lookup).
     #
-    def appointment_menu(index = @menu_options.keys.length)
+    def appointment_menu(index = false)
+      index = @menu_options.keys.length if @menu_options.present?
+      index = 1 unless index.present?
+
       @appointments.map do |ap|
         # Increment our number count
         index = index + 1

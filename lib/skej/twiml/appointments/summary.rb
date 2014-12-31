@@ -11,7 +11,6 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
         @error = "Sorry you we cannot change that for this Appointment.\nPlease try another selection below.\n"
       end
 
-      start = options[:appointments].first.start
 
       # Init the message character container
       message = ""
@@ -21,6 +20,7 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
       # Prefix with any error message — if exists
       message << @error if @error.present?
 
+      start = options[:appointments].first.start
       # Start with the header
       message << generate_appointment_header
 
