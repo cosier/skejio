@@ -53,7 +53,7 @@ class TimeBlock < ActiveRecord::Base
   end
 
   def service_provider
-    time_entry.provider
+    time_entry.provider || session.chosen_provider
   end
 
   # Get an identical TimeBlock, but with the time ranges
@@ -85,7 +85,7 @@ class TimeBlock < ActiveRecord::Base
   end
 
   def in_future?
-    start_time > DateTime.now
+    start_time > (DateTime.now - 60.seconds)
   end
 
   private
@@ -93,7 +93,8 @@ class TimeBlock < ActiveRecord::Base
   # Determine an amount of minutes in order to push
   # the current time ranges (n) amount of blocks either forward or backward.
   def push(count)
-    (count.to_i * time_entry.service.duration.to_i).minutes
+    service = time_entry.service || session.chosen_service
+    (count.to_i * service.duration.to_i).minutes
   end
 
   # Mini Collider (memoized) factory

@@ -8,8 +8,6 @@ class Skej::StateLogic::Appointments::RepeatInputDate < Skej::StateLogic::BaseLo
     @session.store! :initial_date_input, nil
     @session.store! :initial_input_date, nil
 
-    binding.pry
-
     @apt.store! :input_date, nil if @apt.store[:input_date].present?
 
     log 'going back to :initial_date_input, now'

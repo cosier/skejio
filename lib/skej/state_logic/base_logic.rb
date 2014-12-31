@@ -105,7 +105,11 @@ module Skej
       end
 
       def user_input?
-        user_input.present?
+        if user_input.present?
+          return user_input
+        else
+          return false
+        end
       end
 
       # Clears all session input for the current request

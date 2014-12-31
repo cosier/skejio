@@ -14,10 +14,6 @@ feature "QueryEngine", :type => :feature do
       context "Using the current time as input — (basic query operations)" do
         let(:results) { engine.available_on DateTime.now }
 
-        it 'returns 3 appointments' do
-          expect(results.length).to be 3
-        end
-
         it 'should contain only Appointment members' do
           results.each { |result| expect(result).to be_a Appointment  }
         end

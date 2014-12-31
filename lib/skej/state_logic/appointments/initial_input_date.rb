@@ -14,8 +14,6 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       7 => "Sunday"
     }
 
-    binding.pry
-
     # Check if we can abort early due to already having a date
     # This only applies for SMS users.
     if @session.sms? and input = @session.store[:initial_date_decoded]
