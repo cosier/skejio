@@ -16,32 +16,74 @@ module Skej
         # baseline date in order to derive a bunch of different appointments
         # from.
         set_base_time(base_time)
+
+        # Fetch all TimeEntris related for this date query.
         time_entries = time_entries_for(base)
 
-        # Transform TimeEntry(s) -> TimeBlock(s).
-        all_blocks = extract_time_blocks(time_entries)
+        # Transform TimeEntry(s) -> TimeSlot(s).
+        available_slots = generate_time_slots(time_entries)
 
-        # Run Validation and Collision detection on all found known TimeBlock(s)
-        open_blocks = validate_time_blocks(all_blocks)
+        # Combine all sequential linear slots to into a single window.
+        # This produces multiple windows
+        windows = combine_linear_slots(available_slots)
+
+        # Generate TimeBlocks from the Available Slot ranges
+        open_time_blocks = generate_time_blocks(windows)
 
         # Optimize & Filter our wide collection of TimeBlocks.
-        optimized_blocks = optimize_time_blocks(open_blocks)
+        optimized_blocks = optimize_time_blocks(open_time_blocks)
 
         # Finally, present the TimeBlock(s) as Appointment records
         # to the Customer.
-        transform_blocks_to_appointments(optimized_blocks)
+        final = transform_blocks_to_appointments(optimized_blocks)
+
+        final
+      end
+
+      # Public api for returning all collisions for a given Range.
+      #
+      # The Range is transformed into a TimeBlock, and then pushed through
+      # the pipeline for natural detection of any collisions.
+      def collisions_for(range)
+        collider.detect TimeBlock.new(
+          start_time: range.begin,
+          end_time: range.end,
+          session: @session)
+      end
+
+      # Generate TimeSlots over a given range using the minimum service duration
+      def time_slots_for(time_entry)
+        count = (duration_for(time_entry.range) / block_size).floor.to_i
+        time = time_entry.start_time
+
+        slots = count.times.map do |i|
+          # Instantiate a new TimeSlot out of thin air (no backing store)
+          slot = TimeSlot.new time, time + block_size.minutes, time_entry
+
+          # Stash the current session onto the slot as well, so it may handle
+          # some of it's own session based logic.
+          slot.session = session
+
+          # finally increment the time for the next iteration
+          time = time + block_size.minutes
+
+          slot
+        end
+
+        # Detect deadspace at the TimeSlot layer.
+        # If found, we add a final TimeSlot to make up the difference.
+        if time < time_entry.end_time
+          slots << TimeSlot.new(time, time_entry.end_time, time_entry)
+        end
+
+        # Return the aggregated slot collection
+        slots
       end
 
       # Return all valid TimeBlock(s) for a given base time.
       def valid_blocks(base_time)
         set_base_time(base_time)
         time_entries = time_entries_for(base)
-
-        # Transform TimeEntry(s) -> TimeBlock(s).
-        all_blocks = extract_time_blocks(time_entries)
-
-        # Run Validation and Collision detection on all found known TimeBlock(s)
-        validate_time_blocks(all_blocks)
       end
 
       # Returns all valid Appointments for a given base time.
@@ -49,37 +91,115 @@ module Skej
         transform_blocks_to_appointments(valid_blocks(base_time))
       end
 
+      def all_time_entries(target_date = false)
+        # If not target_date set, use midnight of the current day.
+        target_date = Skej::NLP.parse(@session, 'midnight') - 1.day unless target_date
+        time_entries_for(target_date)
+      end
+
+      def extract_available_slots(time_entry)
+        time_slot_ranges = time_slot_ranges_for(time_entry)
+        collision_ranges = collision_ranges_for(time_entry)
+
+        # Fetch the actual TimeSlot instances (not just ranges)
+        time_slots = time_slots_for(time_entry)
+
+        # Apply intersection to both time_slot_ranges and collision_ranges
+        intersections = time_slot_ranges.intersect_with(collision_ranges)
+
+        # Iterate over all found intersections and remove any time_slots which
+        # also intersect with any of the intersections.
+        valid_slots = intersections.compact.map do |x|
+          time_slots.select do |ts|
+            if not [ts.range, x].flatten.intersection.present?
+              ts
+            end
+          end
+        end.flatten.uniq { |o| o.start_time }
+
+        # If we have empty valid slots, that is an indicator that no
+        # we found no intersections to process.
+        #
+        # Therefore we need to set all time_slots as valid
+        valid_slots = time_slots if valid_slots.empty?
+
+
+        # return all valid TimeSlots found
+        valid_slots
+      end
+
       private
+
+      # Returns the amount of minutes that occur between a DateTime range
+      def duration_for(range)
+        raise "Range cannot be nil" if range.nil?
+        raise "Durations can only be calculated for ranges" unless range.kind_of? Range
+        ((range.end - range.begin) * 24 * 60).to_i
+      end
+
+      def collision_ranges_for(time_entry)
+         Ranges::Seq.new collider.detect(time_entry).map(&:range)
+      end
+
+      def time_slot_ranges_for(time_entry)
+        Ranges::Seq.new time_slots_for(time_entry).map(&:range)
+      end
 
       # Get all TimeEntry(s) that match the current session properties.
       #
       # +:target_date+ - A DateTime to base the TimeEntry collection query from.
       def time_entries_for(target_date)
-        target_day = target_date.strftime('%A').downcase.to_sym
-        TimeEntry.where(build_query_params).with_day(target_day)
+        target_day = Skej::NLP.parse(session, target_date.to_s).strftime('%A').downcase.to_sym
+        TimeEntry.where(build_query_params).with_day(target_day).map do |entry|
+          entry.session = session and entry
+        end
       end
 
-      def build_query_params
-        # From 100 years up to now
-        valid_from_range  = (DateTime.now - 100.years)..DateTime.now
+      # Produces TimeSlot(s) from a collection of TimeEntries
+      def generate_time_slots(time_entries)
+        time_entries.map { |entry| extract_available_slots(entry) }.flatten
+      end
 
-        # From now up to 100 years
-        valid_until_range = DateTime.now..(DateTime.now + 100.years)
+      # Produces TimeSlot(s) from a collection of TimeSlotWindows
+      def generate_time_blocks(windows)
+        binding.pry
+        results = windows.map do |window|
 
-        query_params = {
-          business_id:    session.business.id,
-          office_id:      [session.chosen_office.id, nil],
-          service_id:     [session.chosen_service.id, nil],
-          valid_until_at: [valid_until_range, nil],
-          valid_from_at:  [valid_from_range, nil],
-          is_enabled:     true
-        }
+          # Create a date based n todays date, but with the time changed to
+          # that of the entry start/end.
+          entry_start = base.change(hour: window.start_time.hour, minute: entry.start_time.minute)
 
-        if session.chosen_provider.present?
-          query_params[:provider_id] = [session.chosen_provider.id, nil]
-        end
+          # By rounding off with #floor, we go the easy route (no partial time blocks)
+          # Note: iterator is zero based.
+          blocks = (window.duration / block_size).floor.times.map do |i|
 
-        query_params
+            start_time = Skej::Warp.zone(
+              entry_start + (i * block_size).minutes,
+              session.chosen_office.time_zone)
+
+            end_time   = Skej::Warp.zone(
+              start_time + block_size.minutes,
+              session.chosen_office.time_zone)
+
+            target_day = Skej::NLP.parse(session, entry.day)
+                                  .strftime('%A')
+                                  .downcase
+                                  .to_sym
+
+            TimeBlock.new(
+              session: session,
+              time_entry_id: entry.id,
+              business_id: session.business_id,
+              time_sheet_id: entry.time_sheet_id,
+              office_id: entry.office_id,
+              day: target_day,
+              start_time: start_time,
+              end_time: end_time)
+
+          end
+        end.flatten
+
+        return results
       end
 
       # Slice up many TimeEntry(s) records into even more tiny slices,
@@ -125,6 +245,71 @@ module Skej
 
         return results
       end
+
+      def combine_linear_slots(slots)
+        last_slot  = false
+        end_time   = false
+        start_time = false
+        pending     = false # Tracks the current continuity chain
+        count      = 0
+        aggregate  = []
+        debug = []
+
+        slots.sort_by(&:start_time).each_with_index do |slot, i|
+          # Very close to each other, mark it as a continuation
+          # to the end_time.
+          if not last_slot or slot.start_time < (end_time + 30.seconds)
+            debug << "slot:#{slot.start_time} - neighboar detected"
+            end_time = slot.end_time
+
+            if not last_slot
+              start_time = slot.start_time
+            end
+
+          else
+            debug << "slot:#{slot.start_time} - gap detected"
+            start_time = slot.start_time
+            end_time = slot.end_time
+            pending = true
+          end
+
+          last_slot = slot
+        end
+
+        if pending
+          aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
+        end
+
+        puts debug.join("\n")
+
+        binding.pry
+        aggregate
+      end
+
+      def build_query_params
+        # From 100 years up to now
+        valid_from_range  = (DateTime.now - 100.years)..DateTime.now
+
+        # From now up to 100 years
+        valid_until_range = DateTime.now..(DateTime.now + 100.years)
+
+        query_params = {
+          business_id:    session.business.id,
+          office_id:      [session.chosen_office.id, nil],
+
+          service_id:     [session.chosen_service.id, nil],
+          valid_until_at: [valid_until_range, nil],
+          valid_from_at:  [valid_from_range, nil],
+          is_enabled:     true
+        }
+
+        if session.chosen_provider.present?
+          query_params[:provider_id] = [session.chosen_provider.id, nil]
+        end
+
+        query_params
+      end
+
 
       # Given a collection of TimeBlock(s),
       # return only the ones that have no detectable collisions
@@ -246,6 +431,10 @@ module Skej
 
       def session
         @session
+      end
+
+      def collider
+        @collider ||= Skej::Appointments::Collider.new(session)
       end
 
       def set_base_time(original_input)

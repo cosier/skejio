@@ -22,6 +22,8 @@
 #
 
 class BreakShift < ActiveRecord::Base
+  attr_accessor :session
+
   belongs_to :schedule_rule
   belongs_to :office
   belongs_to :business
@@ -67,6 +69,32 @@ class BreakShift < ActiveRecord::Base
 
   def hours
     (end_hour - start_hour) + (end_minute - start_minute)
+  end
+
+  def range
+    start_time..end_time
+  end
+
+  def start_time
+    Skej::Warp.zone DateTime.new(
+      now.year, now.month, now.day, start_hour, start_minute), offset
+  end
+
+  def end_time
+    Skej::Warp.zone DateTime.new(
+      now.year, now.month, now.day, end_hour, end_minute), offset
+  end
+
+  def now
+    if session.present?
+      now = Skej::NLP.midnight(session)
+    else
+      now = DateTime.now
+    end
+  end
+
+  def offset
+    session.chosen_office.time_zone if session
   end
 
 

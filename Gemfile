@@ -91,6 +91,8 @@ gem 'chronic'
 
 gem 'statesman'
 gem 'paper_trail', '~> 3.0.6'
+gem 'range_with_gaps'
+gem 'range_operators'
 
 # Add bool conversion
 gem 'wannabe_bool'

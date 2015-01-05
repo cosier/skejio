@@ -12,28 +12,44 @@ module AppointmentSupport
       session.store! :chosen_service_id, service.id
       session.store! :chosen_provider_id, provider.id
 
-      create_schedule_rule(business_id: business.id, service_provider_id: provider.id)
+      create_schedule_rule(
+        business_id: business.id,
+        service_provider_id: provider.id)
+
       session
   end
 
   def create_schedule_rule(opts = {})
     @schedule_rule = create(:schedule_rule, opts)
-    @time_sheet    = create(:time_sheet, schedule_rule_id: @schedule_rule.id, business_id: session.business_id)
+    @time_sheet    = create(:time_sheet,
+                            schedule_rule_id: @schedule_rule.id,
+                            business_id: session.business_id)
 
-    return @schedule_rule
+    @schedule_rule
   end
 
   def create_engine(opts = {})
     session = create_scheduler_session
 
+    duration = opts[:service_duration] || opts[:service_duration] || opts[:service]
+
     # Allow customisation of the Service duration,
     # and consequently the size of all TimeBlock(s) calculations.
-    if opts[:service_duration].present?
-      session.chosen_service.update! duration: opts[:service_duration]
+    if duration.present?
+      session.chosen_service.update!(duration: duration)
     end
+
+    # Add additional services based on provided service durations
+    opts[:services].map { |mins|
+      session.business.services.create!(
+        duration: mins,
+        name: Faker::Internet.domain_word)
+    } if opts[:services].present?
 
     create_time_entries session.chosen_provider, opts[:time_entries]
     create_breaks session.chosen_provider, opts[:break_entries]
+    create_appointments opts[:appointments]
+
     Skej::Appointments::QueryEngine.new(session)
   end
 
@@ -55,6 +71,7 @@ module AppointmentSupport
       day = Skej::NLP.parse(session, entry[:day].to_s).strftime('%A').downcase.to_sym
       entry.delete :day
 
+
       params = entry.reverse_merge provider_id: provider_id,
                                    business_id: session.business_id,
                                    time_sheet_id: @time_sheet.id,
@@ -71,7 +88,15 @@ module AppointmentSupport
     end
   end
 
+  def create_appointments(appointments)
+    return if appointments.nil?
+
+    # TODO: implement appointment support generation.
+  end
+
   def create_breaks(provider, breaks)
+    return if breaks.nil?
+
     breaks.each do |entry|
       start_hour = (entry[:start_hour] || Random.rand(1..10).hours).to_i
       end_hour   = (entry[:end_hour]   || time_start + Random.rand(1..10)).to_i

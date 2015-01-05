@@ -30,6 +30,8 @@ class TimeEntry < ActiveRecord::Base
     class_name: 'User',
     foreign_key: 'provider_id'
 
+  attr_accessor :session
+
   bitmask :day, :as => [
     :sunday,
     :monday,
@@ -57,6 +59,32 @@ class TimeEntry < ActiveRecord::Base
 
   def duration
     (((end_hour - start_hour) * 60) + (end_minute - start_minute))
+  end
+
+  def range
+    start_time..end_time
+  end
+
+  def start_time
+    Skej::Warp.zone DateTime.new(
+      now.year, now.month, now.day, start_hour, start_minute), offset
+  end
+
+  def end_time
+    Skej::Warp.zone DateTime.new(
+      now.year, now.month, now.day, end_hour, end_minute), offset
+  end
+
+  def offset
+    session.chosen_office.time_zone if session
+  end
+
+  def now
+    if session.present?
+      now = Skej::NLP.midnight(session)
+    else
+      now = DateTime.now
+    end
   end
 
 end

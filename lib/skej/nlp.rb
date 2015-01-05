@@ -32,5 +32,9 @@ module Skej
 
     end
 
+    def self.midnight(session)
+      self.parse(session, "midnight") - 1.day
+    end
+
   end
 end

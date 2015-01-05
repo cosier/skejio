@@ -6,7 +6,7 @@ module Skej
         def detect(timeblock)
           matches = []
           matches << primary_block(timeblock)
-          matches << boundary_blocks(timeblock)
+          #matches << boundary_blocks(timeblock)
           matches.flatten.uniq
         end
 
@@ -46,11 +46,39 @@ module Skej
         end
 
         def process_block(tb)
-          base_query = BreakShift.where(params).with_day(day tb)
-          started    = BreakShift.started_between(tb.start_time, tb.end_time, base_query).all
-          ending     = BreakShift.ending_between(tb.start_time, tb.end_time, base_query).all
+          collided = []
+          tb_range    = Skej::Ranges::Seq.new(tb.range)
+          breakshifts = Skej::Ranges::Seq.new
 
-          [started, ending].flatten
+          all_breaks(tb).each do |bs|
+            breakshifts.add(bs.range)
+          end
+
+          intersections = (tb_range & breakshifts)
+          if intersections.present?
+
+            # Arrayify our intersection results for consistency
+            intersections = [intersections] unless intersections.kind_of? Array
+
+            intersections.each do |inter|
+              results = BreakShift.where(params)
+                .where("start_hour >= #{inter.begin.hour}")
+                .where("start_minute >= #{inter.begin.minute}")
+                .where("end_hour <= #{inter.end.hour}")
+                .where("end_minute <= #{inter.end.minute}")
+
+              collided << results.map { |b| b.session = session and b }
+            end
+          end
+
+          collided.flatten
+        end
+
+        def all_breaks(tb)
+          BreakShift.where(params)
+            .with_day(day tb)
+            .all
+            .map { |b| b.session = session and b }
         end
 
         def params
