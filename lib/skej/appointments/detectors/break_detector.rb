@@ -7,7 +7,9 @@ module Skej
           matches = []
           matches << primary_block(timeblock)
           #matches << boundary_blocks(timeblock)
-          matches.flatten.uniq
+          pre_collect = matches.flatten.uniq
+          binding.pry
+          pre_collect.map { |el| el }
         end
 
         private
@@ -15,12 +17,6 @@ module Skej
         # Find any Breaks for a given TimeBlock
         def primary_block(tb)
           process_block(tb)
-        end
-
-        # Determines the Day Of the Week in accordance to Office timezone and
-        # natural language processing.
-        def day(tb)
-          Skej::NLP.parse(session, tb.start_time).strftime('%A').downcase.to_sym
         end
 
         def boundary_blocks(primary_timeblock)
@@ -45,12 +41,12 @@ module Skej
           matches.flatten
         end
 
-        def process_block(tb)
+       def process_block(tb)
           collided = []
           tb_range    = Skej::Ranges::Seq.new(tb.range)
           breakshifts = Skej::Ranges::Seq.new
 
-          all_breaks(tb).each do |bs|
+          all(tb).each do |bs|
             breakshifts.add(bs.range)
           end
 
@@ -74,7 +70,7 @@ module Skej
           collided.flatten
         end
 
-        def all_breaks(tb)
+        def all(tb)
           BreakShift.where(params)
             .with_day(day tb)
             .all

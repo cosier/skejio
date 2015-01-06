@@ -98,31 +98,28 @@ module Skej
       end
 
       def extract_available_slots(time_entry)
-        time_slot_ranges = time_slot_ranges_for(time_entry)
-        collision_ranges = collision_ranges_for(time_entry)
+        time_slot_ranges = time_slot_ranges_for time_entry
+        collision_ranges = collision_ranges_for time_entry
 
         # Fetch the actual TimeSlot instances (not just ranges)
-        time_slots = time_slots_for(time_entry)
-
-        # Apply intersection to both time_slot_ranges and collision_ranges
-        intersections = time_slot_ranges.intersect_with(collision_ranges)
+        time_slots    = time_slots_for time_entry
+        intersections = collision_ranges.with time_slot_ranges
 
         # Iterate over all found intersections and remove any time_slots which
         # also intersect with any of the intersections.
-        valid_slots = intersections.compact.map do |x|
-          time_slots.select do |ts|
-            if not [ts.range, x].flatten.intersection.present?
-              ts
-            end
-          end
-        end.flatten.uniq { |o| o.start_time }
+        invalid_slots = intersections.compact.map { |x|
+          time_slots.select { |ts|
+            range = ts.range.begin + 10.seconds..ts.range.end - 10.seconds
+            ts if [range, x].flatten.intersection.present?
+          }
+        }.flatten.uniq { |o| o.start_time }
 
+        valid_slots = time_slots.select { |ts| ts unless invalid_slots.include? ts }
         # If we have empty valid slots, that is an indicator that no
         # we found no intersections to process.
         #
         # Therefore we need to set all time_slots as valid
-        valid_slots = time_slots if valid_slots.empty?
-
+        valid_slots = time_slots if valid_slots.empty? and collision_ranges.ranges.empty?
 
         # return all valid TimeSlots found
         valid_slots
@@ -138,7 +135,7 @@ module Skej
       end
 
       def collision_ranges_for(time_entry)
-         Ranges::Seq.new collider.detect(time_entry).map(&:range)
+        Ranges::Seq.new collider.detect(time_entry).compact.map(&:range)
       end
 
       def time_slot_ranges_for(time_entry)
@@ -162,12 +159,11 @@ module Skej
 
       # Produces TimeSlot(s) from a collection of TimeSlotWindows
       def generate_time_blocks(windows)
-        binding.pry
         results = windows.map do |window|
 
           # Create a date based n todays date, but with the time changed to
           # that of the entry start/end.
-          entry_start = base.change(hour: window.start_time.hour, minute: entry.start_time.minute)
+          entry_start = base.change(hour: window.start_time.hour, minute: window.start_time.minute)
 
           # By rounding off with #floor, we go the easy route (no partial time blocks)
           # Note: iterator is zero based.
@@ -181,17 +177,17 @@ module Skej
               start_time + block_size.minutes,
               session.chosen_office.time_zone)
 
-            target_day = Skej::NLP.parse(session, entry.day)
+            target_day = Skej::NLP.parse(session, window.day)
                                   .strftime('%A')
                                   .downcase
                                   .to_sym
 
             TimeBlock.new(
               session: session,
-              time_entry_id: entry.id,
+              time_entry_id: window.time_entry.id,
               business_id: session.business_id,
-              time_sheet_id: entry.time_sheet_id,
-              office_id: entry.office_id,
+              time_sheet_id: window.time_sheet_id,
+              office_id: window.office_id,
               day: target_day,
               start_time: start_time,
               end_time: end_time)
@@ -250,7 +246,7 @@ module Skej
         last_slot  = false
         end_time   = false
         start_time = false
-        pending     = false # Tracks the current continuity chain
+        pending    = false # Tracks the current continuity chain
         count      = 0
         aggregate  = []
         debug = []
@@ -259,15 +255,18 @@ module Skej
           # Very close to each other, mark it as a continuation
           # to the end_time.
           if not last_slot or slot.start_time < (end_time + 30.seconds)
-            debug << "slot:#{slot.start_time} - neighboar detected"
+            debug << "slot:#{slot.start_time} - neighbor detected"
             end_time = slot.end_time
 
             if not last_slot
               start_time = slot.start_time
             end
 
+
           else
             debug << "slot:#{slot.start_time} - gap detected"
+            aggregate << TimeSlot.new(start_time, end_time, slot.time_entry)
+
             start_time = slot.start_time
             end_time = slot.end_time
             pending = true
@@ -280,9 +279,6 @@ module Skej
           aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
         end
 
-        puts debug.join("\n")
-
-        binding.pry
         aggregate
       end
 
@@ -338,8 +334,8 @@ module Skej
         time_blocks.map do |tb|
           generate_appointment(
             prv_id: tb.service_provider.id,
-            start:  tb.start_time,
-            end:    tb.end_time)
+            start_start:  tb.start_time,
+            end_time:    tb.end_time)
         end
       end
 
@@ -360,8 +356,8 @@ module Skej
 
         # Optionally merge in start and end dates,
         # if not already provided.
-        opts.reverse_merge! start: random_range_start
-        opts.reverse_merge! end: random_range_end(opts[:start])
+        opts.reverse_merge! start_time: random_range_start
+        opts.reverse_merge! end_time: random_range_end(opts[:start_time])
 
         # Instantiate an Appointment model with all the
         # right properties.
@@ -379,14 +375,14 @@ module Skej
 
           # Ensure :start is transformed to a DateTime.
           # As well as applying any time_zone transformations.
-          ap.start = Skej::Warp.zone(
-            opts[:start],
+          ap.start_time = Skej::Warp.zone(
+            opts[:start_time],
             @session.chosen_office.time_zone)
 
           # Ensure :end is transformed to a DateTime.
           # As well as applying any time_zone transformations.
-          ap.end   = Skej::Warp.zone(
-            opts[:end],
+          ap.end_time   = Skej::Warp.zone(
+            opts[:end_time],
             @session.chosen_office.time_zone)
 
         end

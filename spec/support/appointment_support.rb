@@ -1,22 +1,28 @@
 module AppointmentSupport
 
+  def create_customer(opts = {})
+    @customer = create(:customer, opts)
+  end
+
   def create_scheduler_session(opts = {})
-      @session = session = create(:scheduler_session)
-      business = session.business
+      @customer = create_customer(opts[:customer])
 
-      office   = opts[:office] || business.offices.first
-      service  = opts[:service] || business.services.first
-      provider = opts[:provider] || business.service_providers.first
+      @session  = create(:scheduler_session, customer_id: @customer.id)
+      @business = @session.business
 
-      session.store! :chosen_office_id, office.id
-      session.store! :chosen_service_id, service.id
-      session.store! :chosen_provider_id, provider.id
+      @office   = opts[:office] || @business.offices.first
+      @service  = opts[:service] || @business.services.first
+      @provider = opts[:provider] || @business.service_providers.first
+
+      @session.store! :chosen_office_id, @office.id
+      @session.store! :chosen_service_id, @service.id
+      @session.store! :chosen_provider_id, @provider.id
 
       create_schedule_rule(
-        business_id: business.id,
-        service_provider_id: provider.id)
+        business_id: @business.id,
+        service_provider_id: @provider.id)
 
-      session
+      @session
   end
 
   def create_schedule_rule(opts = {})
@@ -91,7 +97,56 @@ module AppointmentSupport
   def create_appointments(appointments)
     return if appointments.nil?
 
-    # TODO: implement appointment support generation.
+    # Appointment Parameters:
+    #
+    # -:start_hour:
+    # -:start_minute:
+    # -:end_hour:
+    # -:end_minute:
+    appointments.each do |a|
+      opts = a.reverse_merge( start_hour: 1,
+                              start_minute: 0,
+                              end_hour: 1,
+                              end_minute: 0 )
+
+      Appointment.create! create_appointment_option(opts)
+    end
+
+  end
+
+  def create_appointment_option(opts)
+    appointment = {
+      business_id: @session.business_id,
+      office_id: @office.id,
+      customer_id: @customer.id,
+      service_id: @service.id,
+      service_provider_id: @provider.id,
+      created_by_session_id: @session.id,
+      start_time: appointment_time( opts[:start_hour],
+                                    opts[:start_minute],
+                                    opts[:day]),
+
+      end_time:   appointment_time( opts[:end_hour],
+                                    opts[:end_minute],
+                                    opts[:day])
+    }
+
+    #binding.pry
+    appointment
+  end
+
+  def appointment_time(hour, minute, day = :today)
+    # Provide a default, if nil gets passed in
+    day = :today unless day.present?
+
+    # Use session away parsing of the day
+    date = Skej::NLP.parse(@session, day.to_s)
+
+    # Convert the datetime in a readable Day of the Week
+    day = date.strftime('%A').downcase.to_sym
+
+    # Update the NLP datetime to have the correct time for this appointment.
+    date.change(hour: hour, min: minute)
   end
 
   def create_breaks(provider, breaks)

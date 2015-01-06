@@ -7,10 +7,6 @@ module Skej
           @session = opts[:session]
         end
 
-        def detect(time)
-          []
-        end
-
         private
 
         def start_time
@@ -23,6 +19,16 @@ module Skej
 
         def session
           @session
+        end
+
+        def initialize_start_time(time)
+          @start_time = time
+        end
+
+        # Determines the Day Of the Week in accordance to Office timezone and
+        # natural language processing.
+        def day(tb)
+          Skej::NLP.parse(session, tb.start_time).strftime('%A').downcase.to_sym
         end
 
       end

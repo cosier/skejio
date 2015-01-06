@@ -24,4 +24,12 @@ class TimeSlot
     start_time..end_time
   end
 
+  def day
+    :wednesday
+  end
+
+  delegate :office_id, to: :time_entry
+  delegate :time_sheet_id, to: :time_entry
+
+
 end

@@ -35,6 +35,9 @@ RSpec.configure do |config|
   require_relative 'support/factory_girl'
   require_relative 'support/twilio_test_toolkit_patch.rb'
 
+  # Abort immediately upon first failure
+  config.fail_fast = true
+
   # Setup Twilio testing lib - capybara2+
   config.include TwilioSupport
   config.include AppointmentSupport

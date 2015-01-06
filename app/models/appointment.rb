@@ -8,8 +8,8 @@
 #  office_id             :integer          not null
 #  customer_id           :integer          not null
 #  created_by_session_id :integer          not null
-#  start                 :datetime
-#  end                   :datetime
+#  start_time            :datetime
+#  end_time              :datetime
 #  organizer             :text
 #  description           :text
 #  summary               :text
@@ -41,6 +41,22 @@ class Appointment < ActiveRecord::Base
 
   after_create :log_creation
 
+  scope :business, ->(business) {
+    if business.kind_of? Business
+      where business_id: business.id
+    else
+      where business_id: business
+    end
+  }
+
+  scope :start, ->(st) {
+    where("start_time >= '#{st}'")
+  }
+
+  scope :ended, ->(et) {
+    where("end_time >= '#{et}'")
+  }
+
   # Returns a short one-liner of the Appointment details
   def label
     # eg. "Monday 1:30 pm to 2:00 pm"
@@ -58,7 +74,7 @@ class Appointment < ActiveRecord::Base
   end
 
   def pretty_start
-    "#{balance(start.hour)}:#{balance(start.to_datetime.minute)} #{meridian(start)}"
+    "#{balance(start_time.hour)}:#{balance(start_time.to_datetime.minute)} #{meridian(start_time)}"
   end
 
   def pretty_end
@@ -70,6 +86,9 @@ class Appointment < ActiveRecord::Base
     save! unless persisted?
   end
 
+  def range
+    start_time.to_datetime..end_time.to_datetime
+  end
 
   private
 
@@ -83,10 +102,9 @@ class Appointment < ActiveRecord::Base
   end
 
   def log_creation
-    SystemLog.fact(title: self.class.name.underscore, payload: "Created Appointment: <br/><pre>#{JSON.pretty_generate(JSON.parse(self.to_json))}</pre>")
+    SystemLog.fact(
+      title: self.class.name.underscore,
+      payload: "Created Appointment: <br/><pre>#{JSON.pretty_generate(JSON.parse(self.to_json))}</pre>")
   end
-
-  alias_attribute :end_time, :end
-  alias_attribute :start_time, :start
 
 end
