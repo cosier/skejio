@@ -5,44 +5,15 @@ module Skej
 
         def detect(timeblock)
           matches = []
-          matches << primary_block(timeblock)
-          #matches << boundary_blocks(timeblock)
+          matches << process_block(timeblock)
           pre_collect = matches.flatten.uniq
-          binding.pry
           pre_collect.map { |el| el }
         end
 
-        private
-
-        # Find any Breaks for a given TimeBlock
-        def primary_block(tb)
-          process_block(tb)
-        end
-
-        def boundary_blocks(primary_timeblock)
-          # We don't need to check the boundary blocks if we don't need to
-          # push our own break sideways.
-          return [] if process_block(primary_timeblock).empty?
-
-          matches = []
-          tb      = primary_timeblock
-          left    = process_block(tb.previous)
-          right   = process_block(tb.next)
-
-          if tb.next.has_appointment? and tb.next(2).has_appointment?
-            matches << right
-          end
-
-          if tb.previous.has_appointment? and tb.previous(2).has_appointment?
-            matches << left
-          end
-
-          # Return the aggregated left & right collisions.
-          matches.flatten
-        end
+      private
 
        def process_block(tb)
-          collided = []
+          collided    = []
           tb_range    = Skej::Ranges::Seq.new(tb.range)
           breakshifts = Skej::Ranges::Seq.new
 
@@ -63,11 +34,14 @@ module Skej
                 .where("end_hour <= #{inter.end.hour}")
                 .where("end_minute <= #{inter.end.minute}")
 
-              collided << results.map { |b| b.session = session and b }
+              collided << results.select { |b|
+                b.session = session
+                b.can_float? ? b : nil
+              }
             end
           end
 
-          collided.flatten
+          collided.flatten.compact
         end
 
         def all(tb)

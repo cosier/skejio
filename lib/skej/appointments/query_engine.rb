@@ -115,6 +115,7 @@ module Skej
         }.flatten.uniq { |o| o.start_time }
 
         valid_slots = time_slots.select { |ts| ts unless invalid_slots.include? ts }
+
         # If we have empty valid slots, that is an indicator that no
         # we found no intersections to process.
         #
@@ -246,7 +247,7 @@ module Skej
         last_slot  = false
         end_time   = false
         start_time = false
-        pending    = false # Tracks the current continuity chain
+        flushed    = false # Tracks the current continuity chain
         count      = 0
         aggregate  = []
         debug = []
@@ -257,11 +258,11 @@ module Skej
           if not last_slot or slot.start_time < (end_time + 30.seconds)
             debug << "slot:#{slot.start_time} - neighbor detected"
             end_time = slot.end_time
+            flushed = false
 
             if not last_slot
               start_time = slot.start_time
             end
-
 
           else
             debug << "slot:#{slot.start_time} - gap detected"
@@ -269,13 +270,14 @@ module Skej
 
             start_time = slot.start_time
             end_time = slot.end_time
-            pending = true
+            flushed = true
+
           end
 
           last_slot = slot
         end
 
-        if pending
+        unless flushed
           aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
         end
 

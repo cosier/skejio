@@ -37,7 +37,12 @@ class Office < ActiveRecord::Base
 
   def time_zone_offset
     require 'timezone_parser'
-    match = TimezoneParser.getOffsets(time_zone).first / 60 / 60
+    if tz = TimezoneParser.getOffsets(time_zone).first
+      match = tz / 60 / 60
+    else
+      match = false
+    end
+
     SystemLog.fact title: 'Office', payload:  "parsing time_zone_offset: #{time_zone} -> #{match}"
     match
   end

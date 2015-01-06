@@ -14,6 +14,7 @@ feature "QueryEngine", :type => :feature do
     let(:engine) {
       create_engine(
         service_duration: 60, # 60 minute blocks
+        services: [60, 120],
         time_entries: [{ start_hour: 9, end_hour: 15, day: :now }],
         break_entries: [{ start_hour: 12, end_hour: 13, day: :now }])
     }
@@ -56,15 +57,15 @@ feature "QueryEngine", :type => :feature do
     describe '#extract_available_slots' do
       let(:time_slots) { engine.extract_available_slots(engine.all_time_entries.first) }
 
-      it 'should produce exactly 3 available slots' do
-        expect(time_slots.count).to be 3
+      it 'should produce exactly 2 available slots' do
+        expect(time_slots.count).to be 2
       end
 
       it 'should produce [9:00-9:15] first' do
-        expect(time_slots.first.range.begin.hour).to be 9
-        expect(time_slots.first.range.begin.minute).to be 0
-        expect(time_slots.first.range.end.hour).to be 9
-        expect(time_slots.first.range.end.minute).to be 15
+        expect(time_slots[0].range.begin.hour).to be 9
+        expect(time_slots[0].range.begin.minute).to be 0
+        expect(time_slots[0].range.end.hour).to be 9
+        expect(time_slots[0].range.end.minute).to be 15
       end
 
       it 'should produce [9:15-9:30] second' do
@@ -72,13 +73,6 @@ feature "QueryEngine", :type => :feature do
         expect(time_slots[1].range.begin.minute).to be 15
         expect(time_slots[1].range.end.hour).to be 9
         expect(time_slots[1].range.end.minute).to be 30
-      end
-
-      it 'should produce [9:45-10:00] last' do
-        expect(time_slots.last.range.begin.hour).to be 9
-        expect(time_slots.last.range.begin.minute).to be 45
-        expect(time_slots.last.range.end.hour).to be 10
-        expect(time_slots.last.range.end.minute).to be 0
       end
 
     end
@@ -97,8 +91,62 @@ feature "QueryEngine", :type => :feature do
 
   #############################################
   # SCENARIO: 3
+  context "Available TimeSlots with Floating Breaks" do
+    let(:engine) {
+
+      # Notes:
+      # 4 TimeSlots expected, since we have no appointments set, we won't
+      # run into any Break collisions (as the break can float).
+      create_engine(
+        service_duration: 15,
+        services:       [10, 15, 20, 30], # minimum 10 minute TimeBlocks
+
+        # TimeEntry   9:00-10:00 - 9 hour shift 36 slots
+        time_entries:   [{ start_hour: 10, end_hour: 11, day: :now }],
+
+        # Break       10:30-11:00 - 30 minute break - with ability to
+        #             float -+ 30 mins.
+        break_entries:  [
+          { start_hour: 10,
+            start_minute: 30,
+            end_hour: 11,
+            day: :now,
+            floating_break: 30 }
+        ])
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) { engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 4 available slots' do
+        expect(time_slots.count).to be 4
+      end
+    end
+
+    # Test the available Appointments returned by the API
+    # Note: These are Available Appointments, not existing ones.
+    describe '#available_on' do
+      let(:appointments) { engine.available_on(DateTime.now) }
+
+      # Due to the amount of available time slots, we should always have
+      # at least 3 available appointment responses.
+      it 'should have at least 3 appointments' do
+        expect(appointments.count).to be >= 3
+      end
+    end
+
+  end # END SCENARIO: 3
+
+
+  #############################################
+  # SCENARIO: 4
   context "Available TimeSlots with Many Appointment Collision" do
     let(:engine) {
+      # Notes:
+      # Expecting 22 free TimeBlocks:
+      #   9 hours - 3 appointments - 0.5 break = 5.5 open hours
+      #   5.5 hours / 15 minutes = 22 units
       create_engine(
         service_duration: 15,
         services:       [10, 15, 20, 30], # minimum 10 minute TimeBlocks
@@ -115,11 +163,6 @@ feature "QueryEngine", :type => :feature do
           { start_hour: 13, end_hour: 14 }, # 4 slots
           { start_hour: 15, end_hour: 16 }, # 4 slots
         ])
-
-      # Notes:
-      # Expecting 22 free TimeBlocks:
-      #   9 hours - 3 appointments - 0.5 break = 5.5 open hours
-      #   5.5 hours / 15 minutes = 22 units
     }
 
     # Test the available TimeSlots returned by the API
@@ -142,6 +185,5 @@ feature "QueryEngine", :type => :feature do
         expect(appointments.count).to be >= 3
       end
     end
-  end # END SCENARIO: 2
-
+  end # END SCENARIO: 4
 end

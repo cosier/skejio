@@ -63,6 +63,12 @@ class BreakShift < ActiveRecord::Base
     end
   end
 
+  def can_float?
+    return false if floating_break.nil? or floating_break <= 0
+    false
+  end
+
+
   def day_title
     day.first.to_s.titleize if day.length > 0
   end
