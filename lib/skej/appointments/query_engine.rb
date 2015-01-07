@@ -98,8 +98,8 @@ module Skej
       end
 
       def extract_available_slots(time_entry)
-        time_slot_ranges = time_slot_ranges_for time_entry
-        collision_ranges = collision_ranges_for time_entry
+        time_slot_ranges = time_slot_ranges_for(time_entry)
+        collision_ranges = collision_ranges_for(time_entry)
 
         # Fetch the actual TimeSlot instances (not just ranges)
         time_slots    = time_slots_for time_entry
@@ -114,7 +114,8 @@ module Skej
           }
         }.flatten.uniq { |o| o.start_time }
 
-        valid_slots = time_slots.select { |ts| ts unless invalid_slots.include? ts }
+        valid_slots = time_slots.select { |ts|
+          ts unless invalid_slots.include? ts }.flatten.uniq
 
         # If we have empty valid slots, that is an indicator that no
         # we found no intersections to process.

@@ -64,7 +64,9 @@ class BreakShift < ActiveRecord::Base
   end
 
   def can_float?
-    return false if floating_break.nil? or floating_break <= 0
+    return false if floating_break.nil? or floating_break.to_i <= 0
+    return true if floating_break.to_i > 0
+
     false
   end
 

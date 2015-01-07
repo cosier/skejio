@@ -158,11 +158,15 @@ module AppointmentSupport
       enabled    = entry.key? :is_enabled ? entry[:is_enabled] : true
 
       provider_id = entry.key? :provider_id ? entry[:provider_id] : session.chosen_provider.id
-      office_id   = entry.key? :office_id ? entry[:office_id] : session.chosen_office.id
+      office_id   = entry.key? :office_id   ? entry[:office_id]   : session.chosen_office.id
 
       float = entry.key? :float ? entry[:float].to_i : 0
+      entry.delete :float
 
-      day = Skej::NLP.parse(session, entry[:day].to_s).strftime('%A').downcase.to_sym
+      day = Skej::NLP.parse(session, entry[:day].to_s)
+                     .strftime('%A')
+                     .downcase.to_sym
+
       entry.delete :day
 
       params = entry.reverse_merge provider_id: provider_id,

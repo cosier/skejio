@@ -17,30 +17,40 @@ module Skej
           tb_range    = Skej::Ranges::Seq.new(tb.range)
           breakshifts = Skej::Ranges::Seq.new
 
-          all(tb).each do |bs|
-            breakshifts.add(bs.range)
-          end
+          all(tb).each { |bs| breakshifts.add(bs.range) }
 
           intersections = (tb_range & breakshifts)
           if intersections.present?
 
             # Arrayify our intersection results for consistency
             intersections = [intersections] unless intersections.kind_of? Array
-
             intersections.each do |inter|
-              results = BreakShift.where(params)
-                .where("start_hour >= #{inter.begin.hour}")
-                .where("start_minute >= #{inter.begin.minute}")
-                .where("end_hour <= #{inter.end.hour}")
-                .where("end_minute <= #{inter.end.minute}")
 
-              collided << results.select { |b|
+              # Query for our BreakShift candidates within the current
+              # TimeBlock begin/end range.
+              matches = BreakShift.where(params)
+                .where("start_hour   >= #{inter.begin.hour}")
+                .where("start_minute >= #{inter.begin.minute}")
+                .where("end_hour     <= #{inter.end.hour}")
+                .where("end_minute   <= #{inter.end.minute}")
+
+              # Only Add Breaks to the final collided collection,
+              # IF they have passed floating inspection as well.
+              #
+              # Calling #can_float? on a BreakShift will determine the
+              # if it can be floated elsewhere, and thus not need be counted
+              # as a direct BreakShift hit.
+              #
+              collided << matches.select { |b|
                 b.session = session
-                b.can_float? ? b : nil
+                # Only return true for those who cannot float,
+                # and are therefore unmovable and valid collision.
+                b.can_float? ? nil : true
               }
             end
           end
 
+          # Return the aggregated collection of all collided BreakShift entities
           collided.flatten.compact
         end
 
