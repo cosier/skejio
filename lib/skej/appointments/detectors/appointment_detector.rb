@@ -49,11 +49,17 @@ module Skej
         end
 
         def params
+
           data = {
             business_id: session.business_id,
-            office_id: session.chosen_office.id,
-            service_provider_id: session.chosen_provider.id
+            office_id: session.chosen_office.id
           }
+
+          if session.chosen_provider
+            data[:service_provider_id] = session.chosen_provider.id
+          end
+
+          data
         end
 
       end
