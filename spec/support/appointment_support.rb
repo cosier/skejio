@@ -160,7 +160,7 @@ module AppointmentSupport
       provider_id = entry.key? :provider_id ? entry[:provider_id] : session.chosen_provider.id
       office_id   = entry.key? :office_id   ? entry[:office_id]   : session.chosen_office.id
 
-      float = entry.key? :float ? entry[:float].to_i : 0
+      float = entry[:float] || 0
       entry.delete :float
 
       day = Skej::NLP.parse(session, entry[:day].to_s)

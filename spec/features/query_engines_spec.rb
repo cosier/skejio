@@ -207,4 +207,59 @@ feature "QueryEngine", :type => :feature do
       end
     end
   end # END SCENARIO: 4
+
+  #############################################################################
+  # SCENARIO: 5
+  #############################################################################
+  context "Available TimeSlots with a forced Break Float" do
+    let(:engine) {
+      # Notes:
+      # Expecting 6 free TimeBlocks due to the ability to float
+      # the 1 break we have. Allowing us to provide that break timeslot
+      # to the customer as well.
+      #
+      # Since we have no appointment collisions here, this is just a empty
+      # floating test scenario.
+      #
+      create_engine(
+        service_duration: 10,  # Chosen service will have a duration of this
+        services:        [15], # Any additional services to be created
+
+        # TimeEntry   8:00-9:00 - 1 hour shift 6 slots
+        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
+
+        # Break       8:30-8:40 - 10 minute break - 1 slot
+        break_entries:  [{ start_hour: 8,
+                           start_minute: 30,
+                           end_hour: 8,
+                           end_minute: 40,
+                           float: 10,
+                           day: :now }],
+
+        # Appointment - none
+        appointments:   [])
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 6 available slots' do
+        expect(time_slots.count).to be 6
+      end
+    end
+
+    # Test the available Appointments returned by the API
+    # Note: These are Available Appointments, not existing ones.
+    describe '#available_on' do
+      let(:appointments) { engine.available_on(DateTime.now) }
+
+      # Due to the amount of available time slots, we should always have
+      # at least 3 available appointment responses.
+      it 'should have at least 3 appointments' do
+        expect(appointments.count).to be >= 3
+      end
+    end
+  end # END SCENARIO: 4
 end

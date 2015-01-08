@@ -70,7 +70,6 @@ class BreakShift < ActiveRecord::Base
     false
   end
 
-
   def day_title
     day.first.to_s.titleize if day.length > 0
   end
