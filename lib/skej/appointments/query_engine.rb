@@ -148,7 +148,11 @@ module Skej
       #
       # +:target_date+ - A DateTime to base the TimeEntry collection query from.
       def time_entries_for(target_date)
-        target_day = Skej::NLP.parse(session, target_date.to_s).strftime('%A').downcase.to_sym
+        target_day = Skej::NLP.parse(session, target_date.to_s)
+                              .strftime('%A')
+                              .downcase
+                              .to_sym
+
         TimeEntry.where(build_query_params).with_day(target_day).map do |entry|
           entry.session = session and entry
         end
@@ -276,7 +280,7 @@ module Skej
           last_slot = slot
         end
 
-        aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
+        aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry) if last_slot
         aggregate.uniq
       end
 
@@ -432,8 +436,10 @@ module Skej
       end
 
       def set_base_time(original_input)
+        now = Skej::NLP.parse(session, :now)
+
         unless original_input.present?
-          target = DateTime.now
+          target = now
         else
           target = original_input
         end
@@ -448,8 +454,8 @@ module Skej
           target = target.to_datetime
         end
 
-        if target < DateTime.now
-          @base_time = DateTime.now
+        if target < now
+          @base_time = now
         else
           @base_time = target
         end

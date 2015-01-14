@@ -2,15 +2,22 @@ require 'rails_helper'
 
 feature "QueryEngine", :type => :feature do
 
+
+  # Test cleanup
+  before(:each) do
+    TimeEntry.destroy_all
+    BreakShift.destroy_all
+  end
+
+  # All tests are normalized to now by default
+  #around(:each) do |test|
+    #travel_to(now) { test.run }
+  #end
+
   #############################################################################
   # SCENARIO: 1
   #############################################################################
   context "Available TimeSlots with Collisions" do
-
-    before(:each) do
-      TimeEntry.destroy_all
-      BreakShift.destroy_all
-    end
 
     let(:engine) {
       create_engine(
@@ -22,7 +29,7 @@ feature "QueryEngine", :type => :feature do
 
     describe '#available_on' do
       context "Using the current time as input — (basic query operations)" do
-        let(:results) { engine.available_on DateTime.now }
+        let(:results) { engine.available_on :now }
 
         it 'should contain only Appointment members' do
           results.each { |result| expect(result).to be_a Appointment  }
@@ -46,10 +53,16 @@ feature "QueryEngine", :type => :feature do
         services:       [10, 15, 20, 30], # minimum 10 minute TimeBlocks
 
         # TimeEntry   9:00-10:00 - 1 hour
-        time_entries:   [{ start_hour: 9, end_hour: 10, day: :now }], # 1hr block
+        time_entries:   [{ start_hour: 9,
+                           end_hour: 10,
+                           day: :now }],
 
         # Break       9:30-9:40 - 10 minutes
-        break_entries:  [{ start_hour: 9, start_minute: 30, end_hour: 9, end_minute: 40, day: :now }],
+        break_entries:  [{ start_hour: 9,
+                           start_minute: 30,
+                           end_hour: 9,
+                           end_minute: 40,
+                           day: :now }],
 
         # Appointment 9:40-10:00 - 20 minutes
         appointments:   [{ start_hour: 9, start_minute: 40, end_hour: 10 }])
@@ -82,7 +95,7 @@ feature "QueryEngine", :type => :feature do
     # Test the available Appointments returned by the API
     # Note: These are Available Appointments, not existing ones.
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on(:now) }
 
       it 'should have 2 appointments' do
         expect(appointments.count).to be 2
@@ -133,7 +146,7 @@ feature "QueryEngine", :type => :feature do
     # Test the available Appointments returned by the API
     # Note: These are Available Appointments, not existing ones.
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on(:now) }
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
@@ -198,7 +211,7 @@ feature "QueryEngine", :type => :feature do
     # Test the available Appointments returned by the API
     # Note: These are Available Appointments, not existing ones.
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on(:now) }
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
@@ -253,7 +266,7 @@ feature "QueryEngine", :type => :feature do
     # Test the available Appointments returned by the API
     # Note: These are Available Appointments, not existing ones.
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on(:now) }
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
@@ -303,7 +316,7 @@ feature "QueryEngine", :type => :feature do
     end
 
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on(:now) }
       it 'should have only 3 available appointments' do
         expect(appointments.count).to be 2
       end
@@ -352,7 +365,7 @@ feature "QueryEngine", :type => :feature do
     # Test the available Appointments returned by the API
     # Note: These are Available Appointments, not existing ones.
     describe '#available_on' do
-      let(:appointments) { engine.available_on(DateTime.now) }
+      let(:appointments) { engine.available_on("now") }
 
       it 'should have only 3 available appointments' do
         expect(appointments.count).to be >= 3

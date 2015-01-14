@@ -306,6 +306,7 @@ PLATFORMS
 
 DEPENDENCIES
   TimezoneParser
+  activesupport
   annotate
   bitmask_attributes
   bootstrap-multiselect-rails

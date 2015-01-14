@@ -58,6 +58,7 @@ gem 'devise'
 
 # Bitmasks for arbritrary activerecord fields
 gem 'bitmask_attributes'
+gem 'activesupport'
 
 # API toolkits
 gem 'twilio-ruby', '~> 3.12'

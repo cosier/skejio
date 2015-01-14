@@ -18,6 +18,7 @@ require_relative './rails_helper'
 require 'twilio-test-toolkit'
 require 'factory_girl'
 require 'database_cleaner'
+require 'active_support/testing/time_helpers'
 
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
@@ -35,6 +36,7 @@ RSpec.configure do |config|
   require_relative 'support/factory_girl'
   require_relative 'support/twilio_test_toolkit_patch.rb'
 
+
   # Abort immediately upon first failure
   config.fail_fast = true
 
@@ -51,6 +53,7 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, :type => :controller
 
   config.extend  ControllerMacros, :type => :controller
+  config.include ActiveSupport::Testing::TimeHelpers
 
   config.before(:suite) do
    DatabaseCleaner.strategy = :transaction
