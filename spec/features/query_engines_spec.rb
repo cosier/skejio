@@ -114,7 +114,7 @@ feature "QueryEngine", :type => :feature do
             start_minute: 30,
             end_hour: 11,
             day: :now,
-            floating_break: 30 }
+            float: 30 }
         ])
     }
 
@@ -211,7 +211,7 @@ feature "QueryEngine", :type => :feature do
   #############################################################################
   # SCENARIO: 5
   #############################################################################
-  context "Available TimeSlots with a forced Break Float" do
+  context "Break timeslot should be usable if not sandwiched by Appointments" do
     let(:engine) {
       # Notes:
       # Expecting 6 free TimeBlocks due to the ability to float
@@ -225,7 +225,7 @@ feature "QueryEngine", :type => :feature do
         service_duration: 10,  # Chosen service will have a duration of this
         services:        [15], # Any additional services to be created
 
-        # TimeEntry   8:00-9:00 - 1 hour shift 6 slots
+        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
         time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
 
         # Break       8:30-8:40 - 10 minute break - 1 slot
@@ -261,5 +261,103 @@ feature "QueryEngine", :type => :feature do
         expect(appointments.count).to be >= 3
       end
     end
-  end # END SCENARIO: 4
+  end # END SCENARIO: 5
+
+  #############################################################################
+  # SCENARIO: 6
+  #############################################################################
+  context "Break between 2 Appointments should not be floatable" do
+    let(:engine) {
+      # Notes:
+      # Expecting 3 free TimeBlocks, due to 2 appointments and a non-movable
+      # Break- which is floatable.
+      #
+      create_engine(
+        service_duration: 10,  # Chosen service will have a duration of this
+        services:        [15], # Any additional services to be created
+
+        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
+        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
+
+        # Break       8:30-8:40 - 10 minute break - 1 slot
+        break_entries:  [{ start_hour: 8,
+                           start_minute: 30,
+                           end_hour: 8,
+                           end_minute: 40,
+                           float: 10,
+                           day: :now }],
+
+        appointments:   [
+          { start_hour: 8, start_minute: 20, end_minute: 30},  # 1 slot
+          { start_hour: 8, start_minute: 40, end_minute: 50}]) # 1 slot
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 3 available slots' do
+        expect(time_slots.count).to be 3
+      end
+    end
+
+    describe '#available_on' do
+      let(:appointments) { engine.available_on(DateTime.now) }
+      it 'should have only 3 available appointments' do
+        expect(appointments.count).to be 2
+      end
+    end
+  end # END SCENARIO: 6
+
+
+  #############################################################################
+  # SCENARIO: 7
+  #############################################################################
+  context "Break after an Appointments can still float right" do
+    let(:engine) {
+      # Notes:
+      # Expecting 3 free TimeBlocks, due to 2 appointments and a non-movable
+      # Break- which is floatable.
+      #
+      create_engine(
+        service_duration: 10,  # Chosen service will have a duration of this
+        services:        [15], # Any additional services to be created
+
+        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
+        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
+
+        # Break       8:30-8:40 - 10 minute break - 1 slot (will float)
+        break_entries:  [{ start_hour: 8,
+                           start_minute: 30,
+                           end_hour: 8,
+                           end_minute: 40,
+                           float: 10,
+                           day: :now }],
+
+        # Single Appointment to the left of the Break - 1 slot
+        appointments:   [{ start_hour: 8, start_minute: 20, end_minute: 30}])
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 5 available slots' do
+        expect(time_slots.count).to be 5
+      end
+    end
+
+    # Test the available Appointments returned by the API
+    # Note: These are Available Appointments, not existing ones.
+    describe '#available_on' do
+      let(:appointments) { engine.available_on(DateTime.now) }
+
+      it 'should have only 3 available appointments' do
+        expect(appointments.count).to be >= 3
+      end
+    end
+  end # END SCENARIO: 7
+
 end

@@ -27,6 +27,7 @@ class BreakShift < ActiveRecord::Base
   belongs_to :schedule_rule
   belongs_to :office
   belongs_to :business
+  belongs_to :service
 
   has_many :break_services,
     :dependent => :destroy
@@ -64,10 +65,36 @@ class BreakShift < ActiveRecord::Base
   end
 
   def can_float?
-    return false if floating_break.nil? or floating_break.to_i <= 0
-    return true if floating_break.to_i > 0
+    if floating_break > 0
+      provider = User.find(provider_id)
 
-    false
+      left_start_time = start_time - floating_break.minutes - 30.seconds
+      left_end_time   = start_time
+
+      right_start_time = end_time
+      right_end_time   = end_time + floating_break.minutes + 30.seconds
+
+      base  = Appointment.where(service_provider_id: provider_id)
+      left, right = [],[]
+
+      # Backwards time query for left sided appointments
+      left  << base.where(start_time:  left_start_time..left_end_time).to_a
+      left  << base.where(end_time:    left_start_time..left_end_time).to_a
+
+      # Forward based time queries for right sided appointments
+      right << base.where(start_time: right_start_time..right_end_time).to_a
+      right << base.where(end_time:   right_start_time..right_end_time).to_a
+
+      # Floatable if we can go either left or right
+      if left.flatten.empty? or right.flatten.empty?
+        return true
+      else
+        return false
+      end
+
+    else
+      return false
+    end
   end
 
   def day_title

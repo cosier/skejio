@@ -106,7 +106,7 @@ module AppointmentSupport
     appointments.each do |a|
       opts = a.reverse_merge( start_hour: 1,
                               start_minute: 0,
-                              end_hour: 1,
+                              end_hour: a[:start_hour] || 1,
                               end_minute: 0 )
 
       Appointment.create! create_appointment_option(opts)
@@ -155,10 +155,10 @@ module AppointmentSupport
     breaks.each do |entry|
       start_hour = (entry[:start_hour] || Random.rand(1..10).hours).to_i
       end_hour   = (entry[:end_hour]   || time_start + Random.rand(1..10)).to_i
-      enabled    = entry.key? :is_enabled ? entry[:is_enabled] : true
+      enabled    = entry.key?(:is_enabled) ? entry[:is_enabled] : true
 
-      provider_id = entry.key? :provider_id ? entry[:provider_id] : session.chosen_provider.id
-      office_id   = entry.key? :office_id   ? entry[:office_id]   : session.chosen_office.id
+      provider_id = entry.key?(:provider_id) ? entry[:provider_id] : session.chosen_provider.id
+      office_id   = entry.key?(:office_id)  ? entry[:office_id]   : session.chosen_office.id
 
       float = entry[:float] || 0
       entry.delete :float
