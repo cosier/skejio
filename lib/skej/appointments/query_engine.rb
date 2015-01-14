@@ -256,33 +256,28 @@ module Skej
         slots.sort_by(&:start_time).each_with_index do |slot, i|
           # Very close to each other, mark it as a continuation
           # to the end_time.
-          if not last_slot or slot.start_time < (end_time + 30.seconds)
+
+          start_time = slot.start_time unless last_slot
+          end_time   = slot.end_time unless last_slot
+
+          if slot.start_time < (end_time + 30.seconds)
             debug << "slot:#{slot.start_time} - neighbor detected"
             end_time = slot.end_time
-            flushed = false
 
-            if not last_slot
-              start_time = slot.start_time
-            end
-
-          else
+          elsif last_slot
             debug << "slot:#{slot.start_time} - gap detected"
             aggregate << TimeSlot.new(start_time, end_time, slot.time_entry)
 
             start_time = slot.start_time
             end_time = slot.end_time
-            flushed = true
 
           end
 
           last_slot = slot
         end
 
-        unless flushed
-          aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
-        end
-
-        aggregate
+        aggregate << TimeSlot.new(start_time, end_time, last_slot.time_entry)
+        aggregate.uniq
       end
 
       def build_query_params
