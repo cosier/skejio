@@ -22,8 +22,9 @@ module Skej
       private
 
       # Optimizer factory builder
-      def o(module_name)
-        "skej/appointments/optimizations/#{module_name.to_s.underscore}".classify.constantize
+      def o(mod)
+        namespace = "skej/appointments/optimizations/#{mod.to_s.underscore}"
+        namespace.classify.constantize
       end
 
       def process_optimizations(time_blocks)

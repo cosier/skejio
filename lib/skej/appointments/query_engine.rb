@@ -199,55 +199,19 @@ module Skej
               end_time: end_time)
 
           end
+
+          blocks
+
         end.flatten
 
         return results
       end
 
-      # Slice up many TimeEntry(s) records into even more tiny slices,
-      # individually called a TimeBlock
+      # Responsible combining a collection of slots into common groups,
+      # defined by touching boundaries.
       #
-      # +:time_entries+ - A collection of TimeEntry(s) activerecord
-      # model instances.
-      def extract_time_blocks(time_entries)
-        results = time_entries.map do |entry|
-
-          # Create a date based n todays date, but with the time changed to
-          # that of the entry start/end.
-          entry_start = base.change(hour: entry.start_hour, minute: entry.start_minute)
-
-          # By rounding off with #floor, we go the easy route (no partial time blocks)
-          blocks = (entry.duration / block_size).floor.times.map do |i|
-
-            start_time = Skej::Warp.zone(
-              entry_start + (i * block_size).minutes,
-              session.chosen_office.time_zone)
-
-            end_time   = Skej::Warp.zone(
-              start_time + block_size.minutes,
-              session.chosen_office.time_zone)
-
-            target_day = Skej::NLP.parse(session, entry.day)
-                                  .strftime('%A')
-                                  .downcase
-                                  .to_sym
-
-            TimeBlock.new(
-              session: session,
-              time_entry_id: entry.id,
-              business_id: session.business_id,
-              time_sheet_id: entry.time_sheet_id,
-              office_id: entry.office_id,
-              day: target_day,
-              start_time: start_time,
-              end_time: end_time)
-
-          end
-        end.flatten
-
-        return results
-      end
-
+      # +:slots: - Array / Collection of TimeSlot(s)
+      #
       def combine_linear_slots(slots)
         last_slot  = false
         end_time   = false
@@ -336,7 +300,7 @@ module Skej
         time_blocks.map do |tb|
           generate_appointment(
             prv_id: tb.service_provider.id,
-            start_start:  tb.start_time,
+            start_time:  tb.start_time,
             end_time:    tb.end_time)
         end
       end
@@ -359,7 +323,9 @@ module Skej
         # Optionally merge in start and end dates,
         # if not already provided.
         opts.reverse_merge! start_time: random_range_start
-        opts.reverse_merge! end_time: random_range_end(opts[:start_time])
+        opts.reverse_merge! end_time:   random_range_end(opts[:start_time])
+
+
 
         # Instantiate an Appointment model with all the
         # right properties.
