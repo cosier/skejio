@@ -373,4 +373,114 @@ feature "QueryEngine", :type => :feature do
     end
   end # END SCENARIO: 7
 
+  #############################################################################
+  # SCENARIO: 8
+  #############################################################################
+  context "Break before an Appointments can still float left" do
+    let(:engine) {
+      # Notes:
+      # Expecting 3 free TimeBlocks, due to 2 appointments and a non-movable
+      # Break- which is floatable.
+      #
+      create_engine(
+        service_duration: 10,  # Chosen service will have a duration of this
+        services:        [15], # Any additional services to be created
+
+        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
+        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
+
+        # Break       8:30-8:40 - 10 minute break - 1 slot (will float)
+        break_entries:  [{ start_hour: 8,
+                           start_minute: 30,
+                           end_hour: 8,
+                           end_minute: 40,
+                           float: 10,
+                           day: :now }],
+
+        # Single Appointment to the left of the Break - 1 slot
+        appointments:   [{ start_hour: 8, start_minute: 40, end_minute: 50}])
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 5 available slots' do
+        expect(time_slots.count).to be 5
+      end
+    end
+
+    # Test the available Appointments returned by the API
+    # Note: These are Available Appointments, not existing ones.
+    describe '#available_on' do
+      let(:appointments) { engine.available_on("now") }
+
+      it 'should have only 3 available appointments' do
+        expect(appointments.count).to be >= 3
+      end
+
+      it 'should contain the correct time slots' do
+        binding.pry
+        expect(appointments[0].start_time.hour).to be 8
+      end
+
+    end
+  end # END SCENARIO: 8
+
+  #############################################################################
+  # SCENARIO: 9
+  #############################################################################
+  context "Window generation should yield no deadspace" do
+    let(:engine) {
+      # Notes:
+      # Expecting 3 free TimeBlocks, due to 2 appointments and a non-movable
+      # Break- which is floatable.
+      #
+      create_engine(
+        service_duration: 10,  # Chosen service will have a duration of this
+        services:        [15], # Any additional services to be created
+
+        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
+        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
+
+        # Break       8:30-8:40 - 10 minute break - 1 slot (will float)
+        break_entries:  [{ start_hour: 8,
+                           start_minute: 30,
+                           end_hour: 8,
+                           end_minute: 40,
+                           float: 10,
+                           day: :now }],
+
+        # Single Appointment to the left of the Break - 1 slot
+        appointments:   [{ start_hour: 8, start_minute: 40, end_minute: 50}])
+    }
+
+    # Test the available TimeSlots returned by the API
+    describe '#extract_available_slots' do
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
+
+      it 'should produce exactly 5 available slots' do
+        expect(time_slots.count).to be 5
+      end
+    end
+
+    # Test the available Appointments returned by the API
+    # Note: These are Available Appointments, not existing ones.
+    describe '#available_on' do
+      let(:appointments) { engine.available_on("now") }
+
+      it 'should have only 3 available appointments' do
+        expect(appointments.count).to be >= 3
+      end
+
+      it 'should contain the correct time slots' do
+        expect(appointments[0].start_time.hour).to be 8
+        expect(appointments[0].end_time.minute).to be 10
+      end
+
+    end
+  end # END SCENARIO: 8
+
 end
