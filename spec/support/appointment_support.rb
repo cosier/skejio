@@ -71,12 +71,16 @@ module AppointmentSupport
         provider_id = (entry.key? :provider_id) ? entry[:provider_id] : session.chosen_provider.id
       end
 
-      office_id   = (entry.key? :office_id) ? entry[:office_id] : session.chosen_office.id
-      service_id   = (entry.key? :service_id) ? entry[:service_id] : session.chosen_service.id
+      office_id   = (entry.key? :office_id)  ? entry[:office_id]  : session.chosen_office.id
+      service_id  = (entry.key? :service_id) ? entry[:service_id] : session.chosen_service.id
 
-      day = Skej::NLP.parse(session, entry[:day].to_s).strftime('%A').downcase.to_sym
+      day_target = entry[:day] || :midnight
+      day = Skej::NLP.parse(session, day_target.to_s)
+                     .strftime('%A')
+                     .downcase
+                     .to_sym
+
       entry.delete :day
-
 
       params = entry.reverse_merge provider_id: provider_id,
                                    business_id: session.business_id,
@@ -114,6 +118,38 @@ module AppointmentSupport
 
   end
 
+  def apt_expect!(apt, conds)
+    # Container for all the misses
+    m = []
+
+    # Get the time objects to match against
+    st = apt.start_time
+    et = apt.end_time
+
+    # Conditions to match against the time object
+    sh = conds[0] || 01
+    sm = conds[1] || 00
+    eh = conds[2] || 01
+    em = conds[3] || 00
+
+    # Record the mismatches into the misses container
+    if st.present?
+      m << "start hour:#{st.hour} > expected:#{sh}"  unless st.hour == sh
+      m << "start min:#{st.minute} > expected:#{sm}" unless st.minute == sm
+    end
+
+    if et.present?
+      m << "end hour:#{et.hour} > expected:#{eh}"  unless et.hour == eh
+      m << "end min:#{et.minute} > expected:#{em}" unless et.minute == em
+    end
+
+    # Abort on any found mismatches
+    raise """Invalid Appointment Matches:\n\n#{m.join("\n")}""" unless m.empty?
+
+    # Ensure we only return true for present mismatches, even though we raise.
+    #expect(m.present?).to be false
+  end
+
   def create_appointment_option(opts)
     appointment = {
       business_id: @session.business_id,
@@ -131,11 +167,10 @@ module AppointmentSupport
                                     opts[:day])
     }
 
-    #binding.pry
     appointment
   end
 
-  def appointment_time(hour, minute, day = :today)
+  def appointment_time(hour, minute, day = :midnight)
     # Provide a default, if nil gets passed in
     day = :today unless day.present?
 
