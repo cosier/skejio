@@ -11,7 +11,7 @@ module FactoryMacros
       options[:business] = false
     end
 
-    user = create(:user, options)
+    create(:user, options)
   end
 
 

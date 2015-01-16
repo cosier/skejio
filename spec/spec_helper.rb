@@ -15,7 +15,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require_relative './rails_helper'
-require 'twilio-test-toolkit'
+#require 'twilio-test-toolkit'
 require 'factory_girl'
 require 'database_cleaner'
 require 'active_support/testing/time_helpers'
@@ -28,23 +28,23 @@ require 'rspec/core' unless defined? RSpec.configure
 RSpec.configure do |config|
 
   require_relative 'support/helpers/schedule_rules_spec_helper'
-  require_relative 'support/twilio_support'
+  #require_relative 'support/twilio_support'
   require_relative 'support/appointment_support'
   require_relative 'support/devise_macros'
   require_relative 'support/factory_macros'
 
   require_relative 'support/factory_girl'
-  require_relative 'support/twilio_test_toolkit_patch.rb'
+  #require_relative 'support/twilio_test_toolkit_patch.rb'
 
 
   # Abort immediately upon first failure
   config.fail_fast = true
 
   # Setup Twilio testing lib - capybara2+
-  config.include TwilioSupport
+  #config.include TwilioSupport
   config.include AppointmentSupport
   config.include ScheduleRulesSpecHelper
-  config.include TwilioTestToolkit::DSL
+  #config.include TwilioTestToolkit::DSL
 
   config.extend  FactoryGirl::Syntax::Methods, :type => :feature
   config.include FactoryGirl::Syntax::Methods

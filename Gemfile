@@ -137,7 +137,7 @@ gem 'faker'
 
 
 group :test do
-  gem 'twilio-test-toolkit'
+  #gem 'twilio-test-toolkit'
   gem 'rspec-rails'
   gem 'capybara'
   gem 'database_cleaner'
