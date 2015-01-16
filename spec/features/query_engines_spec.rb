@@ -16,7 +16,7 @@ feature "QueryEngine", :type => :feature do
     }
 
     describe '#available_on' do
-      context "Using the current time as input — (basic query operations)" do
+      context "Using the current time as input" do
         let(:results) { engine.available_on :now }
 
         it 'should contain only Appointment members' do
@@ -58,24 +58,11 @@ feature "QueryEngine", :type => :feature do
 
     # Test the available TimeSlots returned by the API
     describe '#extract_available_slots' do
-      let(:time_slots) { engine.extract_available_slots(engine.all_time_entries.first) }
+      let(:time_slots) {
+        engine.extract_available_slots(engine.all_time_entries.first) }
 
       it 'should produce exactly 2 available slots' do
         expect(time_slots.count).to be 2
-      end
-
-      it 'should produce [9:00-9:15] first' do
-        expect(time_slots[0].range.begin.hour).to be 9
-        expect(time_slots[0].range.begin.minute).to be 0
-        expect(time_slots[0].range.end.hour).to be 9
-        expect(time_slots[0].range.end.minute).to be 15
-      end
-
-      it 'should produce [9:15-9:30] second' do
-        expect(time_slots[1].range.begin.hour).to be 9
-        expect(time_slots[1].range.begin.minute).to be 15
-        expect(time_slots[1].range.end.hour).to be 9
-        expect(time_slots[1].range.end.minute).to be 30
       end
 
     end
@@ -88,6 +75,12 @@ feature "QueryEngine", :type => :feature do
       it 'should have 2 appointments' do
         expect(appointments.count).to be 2
       end
+
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [9,00, 9,15]
+        apt_expect! appointments[1], [9,15, 9,30]
+      end
+
     end
   end # END SCENARIO: 2
 
@@ -125,7 +118,6 @@ feature "QueryEngine", :type => :feature do
         engine.extract_available_slots engine.all_time_entries.first
       }
 
-
       it 'should produce exactly 4 available slots' do
         expect(time_slots.count).to be 4
       end
@@ -138,8 +130,15 @@ feature "QueryEngine", :type => :feature do
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
-      it 'should have at least 3 appointments' do
-        expect(appointments.count).to be >= 3
+      it 'should have 4 appointments' do
+        expect(appointments.count).to be 4
+      end
+
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [10,00, 10,15]
+        apt_expect! appointments[1], [10,15, 10,30]
+        apt_expect! appointments[2], [10,30, 10,45]
+        apt_expect! appointments[3], [10,45, 11,00]
       end
     end
 
@@ -152,7 +151,7 @@ feature "QueryEngine", :type => :feature do
   context "Available TimeSlots with Many Appointment Collision" do
     let(:engine) {
       # Notes:
-      # Expecting 18 free TimeBlocks:
+      # Expecting 22 free TimeBlocks:
       #
       #   9 Hour TimeEntry  = 36 TimeSlots
       #   _________________________
@@ -161,7 +160,7 @@ feature "QueryEngine", :type => :feature do
       #   3 Appointments    = 12 TimeSlots
       #   _________________________
       #
-      #   36 - 14 = Available 14 TimeSlots
+      #   36 - 16 = Available 22 TimeSlots
       #
       #
       create_engine(
@@ -203,9 +202,10 @@ feature "QueryEngine", :type => :feature do
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
-      it 'should have at least 3 appointments' do
-        expect(appointments.count).to be >= 3
+      it 'should have 22 appointments' do
+        expect(appointments.count).to be 22
       end
+
     end
   end # END SCENARIO: 4
 
@@ -246,7 +246,7 @@ feature "QueryEngine", :type => :feature do
       let(:time_slots) {
         engine.extract_available_slots(engine.all_time_entries.first) }
 
-      it 'should produce exactly 6 available slots' do
+      it 'should produce 6 available slots' do
         expect(time_slots.count).to be 6
       end
     end
@@ -258,9 +258,19 @@ feature "QueryEngine", :type => :feature do
 
       # Due to the amount of available time slots, we should always have
       # at least 3 available appointment responses.
-      it 'should have at least 3 appointments' do
-        expect(appointments.count).to be >= 3
+      it 'should have 6 appointments' do
+        expect(appointments.count).to be 6
       end
+
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [8,00, 8,10]
+        apt_expect! appointments[1], [8,10, 8,20]
+        apt_expect! appointments[2], [8,20, 8,30]
+        apt_expect! appointments[3], [8,30, 8,40]
+        apt_expect! appointments[4], [8,40, 8,50]
+        apt_expect! appointments[5], [8,50, 9,00]
+      end
+
     end
   end # END SCENARIO: 5
 
@@ -305,9 +315,17 @@ feature "QueryEngine", :type => :feature do
 
     describe '#available_on' do
       let(:appointments) { engine.available_on(:now) }
+
       it 'should have only 3 available appointments' do
         expect(appointments.count).to be 3
       end
+
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [8,00, 8,10]
+        apt_expect! appointments[1], [8,10, 8,20]
+        apt_expect! appointments[2], [8,50, 9,00]
+      end
+
     end
   end # END SCENARIO: 6
 
@@ -355,9 +373,18 @@ feature "QueryEngine", :type => :feature do
     describe '#available_on' do
       let(:appointments) { engine.available_on("now") }
 
-      it 'should have only 3 available appointments' do
-        expect(appointments.count).to be >= 3
+      it 'should have only 5 available appointments' do
+        expect(appointments.count).to be 5
       end
+
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [8,00, 8,10]
+        apt_expect! appointments[1], [8,10, 8,20]
+        apt_expect! appointments[2], [8,30, 8,40] # the floated break
+        apt_expect! appointments[3], [8,40, 8,50]
+        apt_expect! appointments[4], [8,50, 9,00]
+      end
+
     end
   end # END SCENARIO: 7
 
@@ -466,11 +493,13 @@ feature "QueryEngine", :type => :feature do
         expect(appointments.count).to be 5
       end
 
-      it 'should contain the correct time slots' do
-        expect(appointments[0].start_time.hour).to be 8
-        expect(appointments[0].end_time.minute).to be 10
+      it 'should contain the exact time slots' do
+        apt_expect! appointments[0], [8,00, 8,10]
+        apt_expect! appointments[1], [8,10, 8,20]
+        apt_expect! appointments[2], [8,20, 8,30]
+        apt_expect! appointments[3], [8,30, 8,40]
+        apt_expect! appointments[4], [8,50, 9,00]
       end
-
 
     end
   end # END SCENARIO: 9
