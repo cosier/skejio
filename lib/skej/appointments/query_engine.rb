@@ -36,8 +36,6 @@ module Skej
         # Finally, present the TimeBlock(s) as Appointment records
         # to the Customer.
         final = transform_blocks_to_appointments(optimized_blocks)
-
-        final
       end
 
       # Public api for returning all collisions for a given Range.
@@ -169,11 +167,13 @@ module Skej
 
           # Create a date based n todays date, but with the time changed to
           # that of the entry start/end.
-          entry_start = base.change(hour: window.start_time.hour, minute: window.start_time.minute)
+          entry_start = base.change(
+            hour: window.start_time.hour,
+            min: window.start_time.minute)
 
           # By rounding off with #floor, we go the easy route (no partial time blocks)
           # Note: iterator is zero based.
-          blocks = (window.duration / block_size).floor.times.map do |i|
+          blocks = (window.duration / block_size).floor.times.map { |i|
 
             start_time = Skej::Warp.zone(
               entry_start + (i * block_size).minutes,
@@ -198,13 +198,8 @@ module Skej
               start_time: start_time,
               end_time: end_time)
 
-          end
-
-          blocks
-
-        end.flatten
-
-        return results
+          }
+        end.flatten # results
       end
 
       # Responsible combining a collection of slots into common groups,
@@ -333,6 +328,7 @@ module Skej
         # Note: This is not saved to the database yet.
         # (most likely pending confirmation/selection at this point)
         Appointment.new do |ap|
+
           # Required fields
           ap.business_id = biz_id
           ap.service_provider_id = prv_id

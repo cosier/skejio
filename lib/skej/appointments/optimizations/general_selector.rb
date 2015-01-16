@@ -3,6 +3,8 @@ module Skej
     module Optimizations
       class GeneralSelector < BaseOptimizer
         def process(input)
+          return input # tmp disable
+
           # Invalid input guard
           return input if input.nil? or input.empty?
 
