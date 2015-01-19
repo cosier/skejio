@@ -459,19 +459,11 @@ feature "QueryEngine", :type => :feature do
         service_duration: 10,  # Chosen service will have a duration of this
         services:        [15], # Any additional services to be created
 
-        # TimeEntry   8:00-9:00 - 1 hour shift - 6 slots
-        time_entries:   [{ start_hour: 8, end_hour: 9, day: :now }],
-
-        # Break       8:30-8:40 - 10 minute break - 1 slot (will float)
-        break_entries:  [{ start_hour: 8,
-                           start_minute: 30,
-                           end_hour: 8,
-                           end_minute: 40,
-                           float: 10,
+        # TimeEntry   8:00-9:05 - 1 hour shift - 6 slots
+        time_entries:   [{ start_hour: 8,
+                           end_hour: 9,
+                           end_minute: 05,
                            day: :now }],
-
-        # Single Appointment to the left of the Break - 1 slot
-        appointments:   [{ start_hour: 8, start_minute: 40, end_minute: 50}])
     }
 
     # Test the available TimeSlots returned by the API
@@ -479,8 +471,8 @@ feature "QueryEngine", :type => :feature do
       let(:time_slots) {
         engine.extract_available_slots(engine.all_time_entries.first) }
 
-      it 'should produce exactly 5 available slots' do
-        expect(time_slots.count).to be 5
+      it 'should produce exactly 7 available slots' do
+        expect(time_slots.count).to be 7
       end
     end
 

@@ -36,13 +36,18 @@ class Number < ActiveRecord::Base
   end
 
   def update_remote_source
-    Skej::Twilio.update_number(sid: sid,
-                               sub_account_sid: sub_account.sid,
-                               sms_url: sms_url, 
-                               voice_url: voice_url, 
-                               status_url: status_url,
-                               friendly_name: friendly_name, 
-                               sms_method: sms_method, 
-                               voice_method: voice_method)
+    unless Rails.env.test?
+      number_params = {
+        sid: sid,
+        sub_account_sid: sub_account.sid,
+        sms_url: sms_url,
+        voice_url: voice_url,
+        status_url: status_url,
+        friendly_name: friendly_name,
+        sms_method: sms_method,
+        voice_method: voice_method
+      }
+      Skej::Twilio.update_number(number_params)
+    end
   end
 end

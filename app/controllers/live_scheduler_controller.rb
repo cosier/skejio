@@ -57,6 +57,7 @@ class LiveSchedulerController < ApplicationController
 
   private
 
+
   # Gets the TwiML xml text and render it to the Customer.
   #
   # @twiml is a TwiML builder object provided to us by the
