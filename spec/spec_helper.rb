@@ -19,6 +19,7 @@ require_relative './rails_helper'
 require 'factory_girl'
 require 'database_cleaner'
 require 'active_support/testing/time_helpers'
+require 'xmlrpc/parser'
 
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
@@ -30,6 +31,7 @@ RSpec.configure do |config|
   require_relative 'support/helpers/schedule_rules_spec_helper'
   #require_relative 'support/twilio_support'
   require_relative 'support/appointment_support'
+  require_relative 'support/scheduler_support'
   require_relative 'support/devise_macros'
   require_relative 'support/factory_macros'
 
@@ -43,6 +45,8 @@ RSpec.configure do |config|
   # Setup Twilio testing lib - capybara2+
   #config.include TwilioSupport
   config.include AppointmentSupport
+  config.include SchedulerSupport
+
   config.include ScheduleRulesSpecHelper
   #config.include TwilioTestToolkit::DSL
 
