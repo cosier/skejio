@@ -46,6 +46,8 @@ RSpec.configure do |config|
   #config.include TwilioSupport
   config.include AppointmentSupport
   config.include SchedulerSupport
+  config.extend SchedulerSupport
+  config.extend AppointmentSupport
 
   config.include ScheduleRulesSpecHelper
   #config.include TwilioTestToolkit::DSL

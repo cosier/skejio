@@ -52,7 +52,7 @@ feature "QueryEngine", :type => :feature do
                            end_minute: 40,
                            day: :now }],
 
-        # Appointment 9:40-10:00 - 20 minutes
+        # Appointment 9:40-10:00 - 20
         appointments:   [{ start_hour: 9, start_minute: 40, end_hour: 10 }])
     }
 
