@@ -16,7 +16,7 @@ feature 'Scheduler', :type => :feature do
     scheduler_register_customer!
     visit twilio_sms_path(scheduler_request)
 
-    expect(message.include? "success").to be true
+    expect(message.start_with? "when would you like").to be true
   end
 
 
