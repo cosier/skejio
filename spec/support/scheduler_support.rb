@@ -2,8 +2,9 @@ module SchedulerSupport
 
   # Prepares request parameters for the Scheduler controller requests
   def scheduler_request
+    b = business
     Hash.new.tap do |h|
-      h[:To] = business.sub_account.numbers.first.phone_number
+      h[:To] = b.sub_account.numbers.first.phone_number
       # If we have a Customer registered for use, then use their phone_number
       if customer_is_registered?
         h[:From] = @customer.phone_number
@@ -28,7 +29,8 @@ module SchedulerSupport
 
   def message
     # turn the response body into an XML document for investigating
-    doc = Nokogiri::XML(response.body)
+    data = response rescue page
+    doc = Nokogiri::XML(data.body)
 
     # Get the child of the first child, which is the children of the <Response>
     children = doc.children.first.children

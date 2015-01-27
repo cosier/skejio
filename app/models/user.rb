@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
 
   after_create :update_ordering
 
-  attr_accessor :can_schedule
+  attr_accessor :can_schedule, :business_id, :phone
 
   # Check the roles bitmask like this:
   # user.roles?(:admin)

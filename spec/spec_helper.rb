@@ -44,10 +44,10 @@ RSpec.configure do |config|
 
   # Setup Twilio testing lib - capybara2+
   #config.include TwilioSupport
-  config.include AppointmentSupport
-  config.include SchedulerSupport
   config.extend SchedulerSupport
   config.extend AppointmentSupport
+  config.include AppointmentSupport
+  config.include SchedulerSupport
 
   config.include ScheduleRulesSpecHelper
   #config.include TwilioTestToolkit::DSL
