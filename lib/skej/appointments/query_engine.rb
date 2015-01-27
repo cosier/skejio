@@ -252,9 +252,8 @@ module Skej
 
         query_params = {
           business_id:    session.business.id,
-          office_id:      [session.chosen_office.id, nil],
-
-          service_id:     [session.chosen_service.id, nil],
+          office_id:      [(session.chosen_office.id rescue nil), nil],
+          service_id:     [(session.chosen_service.id rescue nil), nil],
           valid_until_at: [valid_until_range, nil],
           valid_from_at:  [valid_from_range, nil],
           is_enabled:     true

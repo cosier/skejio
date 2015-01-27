@@ -463,7 +463,7 @@ feature "QueryEngine", :type => :feature do
         time_entries:   [{ start_hour: 8,
                            end_hour: 9,
                            end_minute: 05,
-                           day: :now }],
+                           day: :now }])
     }
 
     # Test the available TimeSlots returned by the API

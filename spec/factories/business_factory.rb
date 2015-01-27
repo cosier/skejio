@@ -28,14 +28,13 @@ FactoryGirl.define do
 
       provider = create(:user, business_id: business.id)
       provider.roles << :service_provider
-      provider.save!
-
+      #provider.save!
       #binding.pry
 
       business.sub_accounts << FactoryGirl.create(:sub_account)
-      #business.users        << provider
-      #business.offices      << office
-      #business.services     << service
+      business.users        << provider
+      business.offices      << office
+      business.services     << service
       business.save!
     end
 
