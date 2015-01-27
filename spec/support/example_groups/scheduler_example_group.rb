@@ -11,7 +11,7 @@ module SchedulerExampleGroup
   RSpec.configure do |config|
     config.include self,
       :type => :feature,
-      :example_group => { :file_path => %r(spec/features/scheduler) }
+      :file_path => %r(spec/features/scheduler)
   end
 
 end
