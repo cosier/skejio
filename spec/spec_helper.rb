@@ -15,6 +15,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require_relative './rails_helper'
+
 #require 'twilio-test-toolkit'
 require 'factory_girl'
 require 'database_cleaner'
@@ -23,8 +24,6 @@ require 'xmlrpc/parser'
 
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
-require 'rspec/rails'
-require 'rails'
 
 RSpec.configure do |config|
 
