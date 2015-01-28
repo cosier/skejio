@@ -1,28 +1,24 @@
 module SchedulerExampleGroup
-  extend ActiveSupport::Concern
-  extend RSpec::ExampleGroups
+  extend BaseExampleGroup
 
   # RSpec ExampleGroup installation 
   RSpec.configure do |config|
     config.include self,
-      :type => :feature,
-      :file_path => %r(spec/features)
-  end
-
-  included do
-    # todo
+      :type => :request,
+      :file_path => %r(spec/requests)
   end
 
   def sms(opts = {})
-    opts[:Body] = opts[:msg] if opts[:msg]
+    opts[:Body] = opts[:msg]
+    opts.delete(:msg)
     opts.reverse_merge! scheduler_request(opts)
-    visit twilio_sms_path(opts)
+
+    get twilio_sms_path(opts)
   end
 
   def voice(opts = {})
-    opts[:Body] = opts[:msg] if opts[:msg]
     opts.reverse_merge! scheduler_request(opts)
-    visit twilio_voice_path(opts)
+    get twilio_voice_path(opts)
   end
 
   def business(opts = {})

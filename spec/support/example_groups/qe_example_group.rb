@@ -1,10 +1,10 @@
 module QEExampleGroup
-  extend ActiveSupport::Concern
+  extend BaseExampleGroup
 
   RSpec.configure do |config|
     config.include self,
-      :type => :feature,
-      :file_path => %r(spec/features)
+      :type => :request,
+      :file_path => %r(spec/requests)
   end
 
   def create_customer(opts = {})

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Scheduler', :type => :feature do
+feature 'Scheduler', type: :request do
 
   before(:each) do 
     # Ensure our customer is registered first
@@ -38,8 +38,10 @@ feature 'Scheduler', :type => :feature do
 
     sms msg: 'hello!'
     sms msg: 'tomorrow'
-
+  
     tomorrow = Skej::NLP.parse session, 'tomorrow'
+    binding.pry
+
     expect(message.include? 'tomorrow').to be true
   end
 
