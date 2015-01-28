@@ -57,10 +57,8 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include FactoryMacros, :type => :model
-  
-  if defined? Devise
-    config.include Devise::TestHelpers, :type => :controller
-  end
+
+  config.include Devise::TestHelpers, :type => :controller
 
   config.extend  ControllerMacros, :type => :controller
   config.include ActiveSupport::Testing::TimeHelpers
