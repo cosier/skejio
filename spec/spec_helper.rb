@@ -20,11 +20,12 @@ require 'factory_girl'
 require 'database_cleaner'
 require 'active_support/testing/time_helpers'
 require 'xmlrpc/parser'
+require 'devise'
 
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
-# require 'rspec/rails'
-
+require 'rspec/rails'
+require 'rails'
 
 RSpec.configure do |config|
 
