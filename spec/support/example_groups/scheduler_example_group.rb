@@ -1,3 +1,5 @@
+require_relative './base_example_group'
+
 module SchedulerExampleGroup
   extend ::BaseExampleGroup
 
