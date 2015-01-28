@@ -1,7 +1,7 @@
 module SchedulerExampleGroup
-  extend BaseExampleGroup
+  extend ::BaseExampleGroup
 
-  # RSpec ExampleGroup installation 
+  # RSpec ExampleGroup installation
   RSpec.configure do |config|
     config.include self,
       :type => :request,

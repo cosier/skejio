@@ -1,5 +1,5 @@
 module QEExampleGroup
-  extend BaseExampleGroup
+  extend ::BaseExampleGroup
 
   RSpec.configure do |config|
     config.include self,
