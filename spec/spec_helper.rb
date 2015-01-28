@@ -20,7 +20,6 @@ require 'factory_girl'
 require 'database_cleaner'
 require 'active_support/testing/time_helpers'
 require 'xmlrpc/parser'
-require 'devise'
 
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
@@ -57,7 +56,10 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include FactoryMacros, :type => :model
-  config.include Devise::TestHelpers, :type => :controller
+  
+  if defined? Devise
+    config.include Devise::TestHelpers, :type => :controller
+  end
 
   config.extend  ControllerMacros, :type => :controller
   config.include ActiveSupport::Testing::TimeHelpers
