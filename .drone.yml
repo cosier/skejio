@@ -1,0 +1,13 @@
+image: ruby2.0.0
+script:
+  - cp config/database.drone.yml config/database.yml
+  - bundle install
+  - psql -c 'create database test;' -U postgres -h 127.0.0.1
+  - bundle exec rake db:schema:load
+  - bundle exec rspec spec
+services:
+  - postgres
+notify:
+  email:
+    recipients:
+      - email@example.com
