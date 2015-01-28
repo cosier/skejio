@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Scheduler', type: :request do
 
-  before(:each) do 
+  before(:each) do
     # Ensure our customer is registered first
     scheduler_register_customer!
     ensure_session_loaded!
@@ -27,7 +27,7 @@ feature 'Scheduler', type: :request do
     # Ensure our customer is registered first
     scheduler_register_customer!
     sms msg: 'hi, I would like an appointment please!'
-    
+
     expect(message.start_with? 'when would you like').to be true
   end
 
@@ -38,9 +38,8 @@ feature 'Scheduler', type: :request do
 
     sms msg: 'hello!'
     sms msg: 'tomorrow'
-  
+
     tomorrow = Skej::NLP.parse session, 'tomorrow'
-    binding.pry
 
     expect(message.include? 'tomorrow').to be true
   end

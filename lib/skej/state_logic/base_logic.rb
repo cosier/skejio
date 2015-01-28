@@ -622,7 +622,6 @@ module Skej
         end
 
         int_id = id.id rescue id
-        binding.pry
         @session.store! "chosen_#{selector}_id", int_id
       end
 
