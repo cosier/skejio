@@ -5,6 +5,7 @@ class Skej::Twiml::Appointments::InitialInputDate < Skej::Twiml::BaseTwiml
         message = ""
         message << "When would you like your next appointment?\n"
         message << "(eg. tomorrow, wednesday, 15th, week end)"
+        message << "-#{Random.rand(1..100)}" if Rails.env.test?
 
         b.Message(message)
       end

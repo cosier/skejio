@@ -21,7 +21,8 @@ module Skej
         # Automatic pass, not enough offices to choose from.
         if @services.length < 2
           log "Available Services < 2 <br/><strong>Skipping Customer Selection of Services</strong>"
-          get[:chosen_service_id] = @services.first and @services.first.id
+
+          get[:chosen_service_id] = (@services.first and @services.first.id)
 
           # Mark completed and go to the next transition
           mark_as_completed! and advance!

@@ -3,6 +3,7 @@ module Skej
     class InitialDecoder < BaseLogic
 
       def think
+        
         # Check the sessions device_type enum (see the model Enum)
         # Which is either :sms or :voice
         #

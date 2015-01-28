@@ -621,7 +621,9 @@ module Skej
           raise "This method (assign_chosen_id) is not supported on anything else besides Office & Service logic modules" unless selector
         end
 
-        @session.store! "chosen_#{selector}_id", id
+        int_id = id.id rescue id
+        binding.pry
+        @session.store! "chosen_#{selector}_id", int_id
       end
 
       # Memoize the query object based on this @session.

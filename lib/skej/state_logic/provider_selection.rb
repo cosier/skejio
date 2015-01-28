@@ -32,7 +32,7 @@ module Skej
           mark_as_completed!
 
           # Choose the only available provider for this business
-          get[:chosen_provider_id] = @providers.first and @providers.first.id
+          get[:chosen_provider_id] = (@providers.first and @providers.first.id)
 
           return advance!
         end
