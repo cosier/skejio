@@ -22,6 +22,8 @@ require 'database_cleaner'
 require 'active_support/testing/time_helpers'
 require 'xmlrpc/parser'
 
+require 'devise/test_helpers'
+
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
 
