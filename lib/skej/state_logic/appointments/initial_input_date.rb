@@ -3,6 +3,7 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
   def think
     @apt   = @session.appointment
     @state = @apt.state
+    @store = @session.store
 
     @options = {
       1 => "Today",
@@ -13,17 +14,20 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       6 => "Saturday",
       7 => "Sunday"
     }
+    
+    # Predetermined user date input
+    pinput = @store[:initial_date_decoded]
 
     # Check if we can abort early due to already having a date
     # This only applies for SMS users.
-    if @session.sms? and input = @session.store[:initial_date_decoded]
-      log "Detected SMS User with Initial Date already set <span class='muted'>(#{input})</span>"
+    if @session.sms? and pinput 
+      log "Detected SMS User with Initial Date already set <span class='muted'>(#{pinput})</span>"
       # Now that we have used the :initial_date_decoded, make sure we clear it.
       # So that future attempts to change the date will be able to avoid this branch.
       @session.store! :initial_date_decoded, nil
 
       # And proceed to the next
-      return save! input
+      return save! pinput
     end
 
     if user_input?
@@ -37,7 +41,6 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
       # And proceed to the next
       return save! input
     end
-
   end
 
   def sms_and_voice
@@ -56,10 +59,12 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     log "using office time_zone offset: #{time_zone || 'none'}"
 
     daterized = parsed_date.to_datetime if parsed_date
-
+    binding.pry
+    
     # Apply a datetime offset shift, if the time_zone is available
     daterized = Skej::Warp.zone(daterized, time_zone_offset) if time_zone
 
+    binding.pry
     # Stash this datetime object as a string on the Appointment state
     @apt.store! :appointment_input_date, daterized.to_s
     clear_input!

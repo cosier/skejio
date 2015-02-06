@@ -91,6 +91,20 @@ class Business < ActiveRecord::Base
     self.slug = slg
   end
 
+  def settings(opts = {})
+    opts.each do |k,v|
+      if v.kind_of? String
+        val = v
+      else
+        raise "Unsupported value type: #{v.class.name}"
+      end
+      Setting.create! key: k, value: val, business_id: id
+    end
+
+    # Return self for chaining
+    self
+  end
+
   private
 
   def check_for_approval_processing

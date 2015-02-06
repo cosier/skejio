@@ -11,7 +11,9 @@ module SchedulerExampleGroup
   end
 
   def sms(opts = {})
-    opts[:Body] = opts[:msg]
+    opts = { Body: opts.to_s } unless opts.kind_of? Hash
+      
+    opts[:Body] = opts[:msg] unless opts[:Body].present?
     opts.delete(:msg)
     opts.reverse_merge! scheduler_request(opts)
 

@@ -12,6 +12,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
         # If we don't have a date determined yet,
         # send the Customer to the :repeat_input_date state for further selection.
         log ":input_date is empty, <strong>returning to :repeat_input_date</strong>"
+        # binding.pry if Rails.env.testing?
         return @apt.transition_to! :repeat_input_date
       end
 
@@ -29,10 +30,11 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
     @appointments = query.available_on(@date) if @date
 
     if @appointments.empty?
-      log "no appointment results detected: clearing customer input for a retry"
+      log "no appointment results detected based on customer input: #{@date}"
+
       # If we have no results, we clear the appointment input and try again
-      @apt.transition_to! :repeat_input_date
-      return
+      @apt.store! :appointment_input_date, nil
+      @session.store! :appointment_input_date, nil
     end
 
     # Construct the menu options dynamically
@@ -201,7 +203,7 @@ class Skej::StateLogic::Appointments::Summary < Skej::StateLogic::BaseLogic
         # Increment our number count
         index = index + 1
         "Text #{index} for:  #{ap.pretty_start} to #{ap.pretty_end}\n"
-      end.join
+      end.join if @appointments.present?
     end
 
 

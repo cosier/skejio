@@ -8,7 +8,7 @@ module Skej
         # Processing customer input as their name,
         # unless they already have a name
         process_name_input(cust) unless cust.has_name?
-
+        
         if get[:customer_name].present? || cust.has_name?
 
           # Update the session get with customer_registration as completed
@@ -28,6 +28,7 @@ module Skej
       end
 
       def sms_and_voice
+        @session.store! :user_registration_asked, true
         log "asking for customer name"
         twiml_ask_customer_name
       end
@@ -46,7 +47,7 @@ module Skej
 
           # If there is an available message body,
           # then we are assuming that is their name
-          if @session.input[:Body].present?
+          if @session.input[:Body].present? and @session.store[:user_registration_asked]
             body = @session.input[:Body]
             log "received name from customer: #{body}"
 
