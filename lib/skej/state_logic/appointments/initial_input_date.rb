@@ -64,7 +64,6 @@ class Skej::StateLogic::Appointments::InitialInputDate < Skej::StateLogic::BaseL
     # Apply a datetime offset shift, if the time_zone is available
     daterized = Skej::Warp.zone(daterized, time_zone_offset) if time_zone
 
-    binding.pry
     # Stash this datetime object as a string on the Appointment state
     @apt.store! :appointment_input_date, daterized.to_s
     clear_input!

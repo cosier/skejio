@@ -4,18 +4,16 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
 
   let(:business) { 
     create(:business).settings({ 
-      service_selection: 'service_ask_and_assume',
-      office_selection: 'office_ask_and_assume',
-      user_selection: 'user_selection_full_control'
+      service_selection: 'service_ask',
+      office_selection:  'office_ask',
+      user_selection:    'user_selection_full_control'
     })
   }
 
   describe '/sms/unregistered' do
     # let(:business) { create(:business) }
     it 'unregistered users' do
-      Customer.destroy_all
       sms 'hello!'
-      binding.pry
 
       # Expect that the initial response is the Welcome message.
       expect(message.include? 'welcome').to be true
@@ -24,7 +22,7 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
     end
   end
 
-  describe '/sms/registered without appointments' do
+  describe '/sms/registered without time schedules' do
 
     # Ensure each run has the customer registered
     before(:each) { scheduler_register_customer! }
@@ -36,14 +34,36 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
 
     it 'accepts dictation' do
       sms 'tomorrow'
+      # Should be no results as we have not setup any time schedules
       expect(message.include? 'sorry, we did not find any').to be true
     end 
   end
 
-  describe '/sms/registered with appointments' do
-    before(:each) {
-
+  describe '/sms/registered with time schedules' do
+    let(:engine) {
+      create_engine(
+        # Make sure we pass in the existing business to avoid biz duplication.
+        business: business, 
+        service_duration: 60, # 60 minute blocks
+        services: [60, 120],
+        time_entries: [{ start_hour: 9, end_hour: 15, day: :tomorrow }],
+        break_entries: [{ start_hour: 12, end_hour: 13, day: :tomorrow }])
     }
+
+    before(:each) { engine.preload and scheduler_register_customer! }
+
+    it 'should ask for service selection' do
+      sms :tomorrow
+      expect(message.include? 'please select a service').to be true
+    end
+
+    it 'should show available appointments' do
+      sms :tomorrow
+      sms 1 # Choose service
+
+      # Interrogate appointment results
+      expect(message.include? 'showing available appointments').to be true
+    end
   end
 
 end

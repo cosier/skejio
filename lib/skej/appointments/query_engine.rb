@@ -8,6 +8,11 @@ module Skej
         @session = sesh
       end
 
+      # Preload hook
+      def preload(opts = {})
+        opts
+      end
+
       # Main method for getting all Available TimeBlock(s) for a given date.
       #
       # +:base_time: - DateTime used for determining the base scan date range.
@@ -150,7 +155,6 @@ module Skej
                               .strftime('%A')
                               .downcase
                               .to_sym
-
         TimeEntry.where(build_query_params).with_day(target_day).map do |entry|
           entry.session = session and entry
         end

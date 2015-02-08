@@ -20,7 +20,8 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
       # Prefix with any error message — if exists
       message << @error if @error.present?
 
-      start = options[:appointments].first.start
+      start = options[:appointments].first.start_time
+
       # Start with the header
       message << generate_appointment_header
 
@@ -47,8 +48,7 @@ class Skej::Twiml::Appointments::Summary < Skej::Twiml::BaseTwiml
   def generate_appointment_header
     ap = options[:appointments].first
 
-    provider_text = session.chosen_provider and " with #{session.chosen_provider.display_name}"
-
+    provider_text = "with #{session.chosen_provider.display_name}" rescue false
     details = "Showing available appointments for #{session.chosen_service.display_name} "
     details << provider_text if provider_text
     details << "at #{session.chosen_office.display_name}.\n"
