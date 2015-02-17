@@ -1,15 +1,18 @@
 class ScheduleRulesController < BusinessesController
 
   before_filter :set_sidebar
+  before_filter :load_business, only: [:create]
+
+  load_and_authorize_resource :schedule_rule
 
   before_filter :provide_create_with_schedule_rule, only: [:create]
   before_filter :provide_business_basics, only: [:new, :edit, :show]
   before_filter :validate_requirements, only: [:new, :edit, :show]
-  skip_load_resource only: [:create]
 
   include EntryHelper
   helper :entry
   sidebar :schedule_rules
+
 
   def index
     @schedule_rules = ScheduleRule.where(business_id: @business.id)
@@ -43,7 +46,10 @@ class ScheduleRulesController < BusinessesController
 
         # Create TimeSheetServices if any services were specified
         sheet[:services].each do |service|
-            ss = TimeSheetService.create!(service_id: service, business_id: @bid, time_sheet_id: time_sheet.id)
+            TimeSheetService.create!(
+              service_id: service,
+              business_id: @bid,
+              time_sheet_id: time_sheet.id)
         end if sheet[:services].present?
 
         # Create Time Sheet Entries
@@ -85,7 +91,6 @@ class ScheduleRulesController < BusinessesController
     end
 
     flash[:success] = "Schedule Rule saved"
-
     respond_with(@business, @schedule_rule) do |format|
       format.js { render json: @schedule_rule }
     end

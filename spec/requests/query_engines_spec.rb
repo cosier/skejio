@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature "QueryEngine", :type => :feature do
+describe Skej::Appointments::QueryEngine, :type => :request do
 
   #############################################################################
   # SCENARIO: 1

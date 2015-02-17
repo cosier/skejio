@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
 
-
   devise_for :users, controllers: {
     registrations: 'registrations'
   }
@@ -49,7 +48,11 @@ Rails.application.routes.draw do
     resources :settings
     resources :time_sheets
     resources :time_entries
-    resources :schedule_rules
+    resources :schedule_rules do
+      collection do
+        post '/', as: :create, to: :create
+      end
+    end
     resources :break_shifts
     resources :services
     resources :offices

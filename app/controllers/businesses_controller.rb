@@ -1,7 +1,10 @@
 class BusinessesController < SecureController
 
   load_and_authorize_resource :business,
-    :id_param => :business_id
+    :id_param => :business_id,
+    except: [:create]
+
+  #before_filter :load_business, only: [:create]
 
   before_action :validate_business
   before_action :set_current_sidebar
@@ -20,6 +23,14 @@ class BusinessesController < SecureController
   def pending
     @current_sidebar = :pending
     redirect_to business_path(@business) if @business.is_active?
+  end
+
+  private
+
+  def load_business
+    if params[:business_id].present?
+      @business = Business.find(params[:business_id])
+    end
   end
 
 end

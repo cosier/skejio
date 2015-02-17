@@ -4,12 +4,11 @@ module QEExampleGroup
   extend ::BaseExampleGroup
 
   RSpec.configure do |config|
-    config.include self,
-      :type => :request,
-      :file_path => %r(spec/requests)
+    config.include self
+    #config.include Devise::TestHelpers
+    config.include Capybara::DSL
+    config.include Capybara::RSpecMatchers
   end
 
   include ::QEEngineGroupMixin
-
-
 end

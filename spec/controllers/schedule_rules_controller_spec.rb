@@ -2,16 +2,13 @@ require 'rails_helper'
 
 describe ScheduleRulesController, :type => :controller do
 
-  before :each do
-  end
-
   context '#create' do
 
-    before do
-      @user = create(:admin)
-      sign_in(@user)
+    before(:each) do
+      @user = login_admin
 
       @post_data = {
+        format: 'json',
         business_id: @user.business.id,
         schedule_rule: {
           service_provider_id: @user.id,
@@ -27,31 +24,37 @@ describe ScheduleRulesController, :type => :controller do
         }
       }
 
-      post :create, @post_data
+      url = create_business_schedule_rules_path(@user.business)
+      go :post, url, @post_data
     end
+
+    let(:schedule_rule) {
+      ScheduleRule.last
+    }
 
 
     it 'does not blow up' do
-      expect(response.status).to eq(200)
+      # We should have a successful HTTP CREATE (201) status code.
+      expect(session.response.status).to eq(201)
     end
 
     it 'saves 15 BreakShifts onto the ScheduleRule' do
-      expect(assigns(:schedule_rule).break_shifts.length).to eq(15)
-      expect(assigns(:schedule_rule).break_shifts.select(&:persisted?).length).to eq(15)
+      expect(schedule_rule.break_shifts.length).to eq(15)
+      expect(schedule_rule.break_shifts.select(&:persisted?).length).to eq(15)
     end
 
     it 'saves 15 TimeEntries onto the ScheduleRule' do
-      expect(assigns(:schedule_rule).time_entries.length).to eq(15)
-      expect(assigns(:schedule_rule).time_entries.select(&:persisted?).length).to eq(15)
+      expect(schedule_rule.time_entries.length).to eq(15)
+      expect(schedule_rule.time_entries.select(&:persisted?).length).to eq(15)
     end
 
     it 'doesn\'t set validity dates when using natural text' do
-      expect(assigns(:schedule_rule).time_sheets.first.valid_from_at).to eq(nil)
-      expect(assigns(:schedule_rule).time_sheets.first.valid_until_at).to eq(nil)
+      expect(schedule_rule.time_sheets.first.valid_from_at).to eq(nil)
+      expect(schedule_rule.time_sheets.first.valid_until_at).to eq(nil)
     end
 
     it 'saves the ScheduleRule' do
-      expect(assigns(:schedule_rule)).to be_persisted
+      expect(schedule_rule).to be_persisted
     end
 
   end #create

@@ -1,7 +1,36 @@
 module SchedulerGroupMixin
+
+
+  def login_admin(opts = {})
+    @user = opts[:user] || create(:admin, password: '12345678')
+    @request = go :post,
+                  new_user_session_path,
+                  user: { email: @user.email, password: '12345678' }
+    #@session.follow_redirect!
+    @user
+  end
+
+  def go(type, path, params = {})
+    params = ActionController::Parameters.new(params)
+    @request_logs ||= []
+    @request_logs << {  type: type, path: path, params: params }
+    @session ||= ActionDispatch::Integration::Session.new(Rails.application)
+    @request = @session.request
+
+    @session.send "#{type}_via_redirect", path, params.permit!
+  end
+
+  def rlogs
+    @request_logs
+  end
+
+  def session
+    @session
+  end
+
   def sms(opts = {})
     opts = { Body: opts.to_s } unless opts.kind_of? Hash
-      
+
     opts[:Body] = opts[:msg] unless opts[:Body].present?
     opts.delete(:msg)
     opts.reverse_merge! scheduler_request(opts)
@@ -52,5 +81,22 @@ module SchedulerGroupMixin
 
   def ensure_session_loaded!(opts = {})
     @session ||= create_scheduler_session(opts)
+  end
+
+  def gen_entries(opts = {})
+    opts.reverse_merge! count: 10, office_id: nil
+
+    opts[:count].times.map do
+      {
+        day: "monday",
+        start_hour: Random.rand(1..10),
+        start_minute: Random.rand(1..59),
+        start_meridian: "AM",
+        end_hour: Random.rand(1..11),
+        end_minute: Random.rand(0..59),
+        end_meridian: "PM",
+        office_id: opts[:office_id]
+      }
+    end
   end
 end

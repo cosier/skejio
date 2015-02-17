@@ -8,6 +8,7 @@ class Ability
     # Super Admin Rules
     can :manage, Business if user.roles? :super_business_editor
     can :read,   Business if user.roles? :super_business_viewer
+    binding.pry
 
     if user.roles? :super_admin
       can :manage, :all

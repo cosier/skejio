@@ -27,18 +27,20 @@ require 'devise/test_helpers'
 # Zeus does not preload RSpec, but running `rspec spec` does
 require 'rspec/core' unless defined? RSpec.configure
 
+require 'capybara'
+require 'capybara/dsl'
+require 'capybara/rspec/matchers'
+require 'capybara/rspec/features'
+
 RSpec.configure do |config|
 
-  require_relative 'support/helpers/schedule_rules_spec_helper'
-  #require_relative 'support/twilio_support'
-  require_relative 'support/appointment_support'
-  require_relative 'support/scheduler_support'
   require_relative 'support/devise_macros'
   require_relative 'support/factory_macros'
 
   require_relative 'support/factory_girl'
-  #require_relative 'support/twilio_test_toolkit_patch.rb'
 
+  config.infer_spec_type_from_file_location!
+  config.infer_base_class_for_anonymous_controllers = false
 
   # Abort immediately upon first failure
   config.fail_fast = true
@@ -53,27 +55,29 @@ RSpec.configure do |config|
   config.include ScheduleRulesSpecHelper
   #config.include TwilioTestToolkit::DSL
 
-  config.extend  FactoryGirl::Syntax::Methods, :type => :feature
+  config.extend  FactoryGirl::Syntax::Methods
   config.include FactoryGirl::Syntax::Methods
 
-  config.include FactoryMacros, :type => :model
+  config.include FactoryMacros
+  config.extend FactoryMacros
 
-  config.include Devise::TestHelpers, :type => :controller
+  #config.extend Devise::TestHelpers
+  #config.include Devise::TestHelpers, type: :controller
 
-  config.extend  ControllerMacros, :type => :controller
+  #config.extend  DeviseMacros
   config.include ActiveSupport::Testing::TimeHelpers
 
   config.before(:suite) do
    DatabaseCleaner.strategy = :transaction
-   DatabaseCleaner.clean_with(:truncation)
+   DatabaseCleaner.clean_with(:transaction)
    # Don't lint, due to twilio rest issues
    #FactoryGirl.lint
   end
 
   config.around(:each) do |example|
-   DatabaseCleaner.cleaning do
-    example.run
-   end
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
   # rspec-expectations config goes here. You can use an alternate

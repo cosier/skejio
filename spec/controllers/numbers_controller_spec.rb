@@ -30,11 +30,11 @@ describe NumbersController, :type => :controller do
     #it 'does not blow up' do
       #expect(response.status).to eq(200)
     #end
-    
+
     #it "was successful" do
       #expect( JSON.parse(response.body)["success"] ).to_be true
     #end
-    
+
     #it "created a number with an ID" do
       #expect( JSON.parse(response.body)["number"]["id"] ).to be > 0
     #end

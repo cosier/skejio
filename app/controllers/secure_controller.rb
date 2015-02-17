@@ -24,7 +24,7 @@ class SecureController < ApplicationController
 
   def validate_business
     # Check for invalid businesses
-    if @business.nil?
+    if @business.nil? and not load_business
       return redirect_to "/", alert: "Business not found"
     end
 

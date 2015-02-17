@@ -29,19 +29,19 @@ describe 'business permissions', :type => :model do
 
     let(:user){ create_user }
 
-    it{ should     be_able_to :read, user.business }
-    it{ should_not be_able_to :edit, user.business }
-    it{ should_not be_able_to :read, create(:business)  }
+    it{ is_expected.to     be_able_to :read, user.business }
+    it{ is_expected.not_to be_able_to :edit, user.business }
+    it{ is_expected.not_to be_able_to :read, create(:business)  }
   end
 
   context "when admin interacts with business" do
 
     let(:user){ create_user roles: [:admin] }
     # The admin can manage their own business
-    it{ should     be_able_to :manage, user.business }
+    it{ is_expected.to     be_able_to :manage, user.business }
 
     # The admin cannot read anothers Business
-    it{ should_not be_able_to :read, create(:business)  }
+    it{ is_expected.not_to be_able_to :read, create(:business)  }
   end
 
   context "when super_admin interacts with business" do
@@ -49,8 +49,8 @@ describe 'business permissions', :type => :model do
     let(:user){ create_user roles: [:super_admin] }
 
     # The super_admin do anything with a business
-    it{ should be_able_to :read,  create(:business)  }
-    it{ should be_able_to :edit,  create(:business)  }
+    it{ is_expected.to be_able_to :read,  create(:business)  }
+    it{ is_expected.to be_able_to :edit,  create(:business)  }
   end
 
   context "when super_business_editor interacts with business" do
@@ -58,8 +58,8 @@ describe 'business permissions', :type => :model do
     let(:user){ create_user roles: [:super_business_editor] }
 
     # The super_business_editor do anything with a business
-    it{ should be_able_to :read,  create(:business)  }
-    it{ should be_able_to :edit,  create(:business)  }
+    it{ is_expected.to be_able_to :read,  create(:business)  }
+    it{ is_expected.to be_able_to :edit,  create(:business)  }
   end
 
   context "when super_business_viewer interacts with business" do
@@ -67,8 +67,8 @@ describe 'business permissions', :type => :model do
     let(:user){ create_user roles: [:super_business_viewer] }
 
     # The super_business_viewer can only read a business
-    it{ should be_able_to :read,  create(:business)  }
-    it{ should_not be_able_to :edit,  create(:business)  }
+    it{ is_expected.to be_able_to :read,  create(:business)  }
+    it{ is_expected.not_to be_able_to :edit,  create(:business)  }
   end
 
   context "when super_business_editor interacts with business" do
@@ -76,16 +76,16 @@ describe 'business permissions', :type => :model do
     let(:user){ create_user roles: [:super_business_editor] }
 
     # Only super_business_editor(s) can modify *any* business
-    it{ should be_able_to :read,  create(:business)  }
-    it{ should be_able_to :edit,  create(:business)  }
+    it{ is_expected.to be_able_to :read,  create(:business)  }
+    it{ is_expected.to be_able_to :edit,  create(:business)  }
   end
 
   context "when super_business_viewer interacts with business" do
     let(:user){ create_user roles: [:super_business_viewer] }
 
     # Only super_business_view(s) can view *any* business
-    it{ should be_able_to :read,  create(:business)  }
-    it{ should_not be_able_to :edit,  create(:business)  }
+    it{ is_expected.to be_able_to :read,  create(:business)  }
+    it{ is_expected.not_to be_able_to :edit,  create(:business)  }
   end
 
 end

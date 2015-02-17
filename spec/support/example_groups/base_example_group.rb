@@ -6,6 +6,6 @@ module BaseExampleGroup
   extend ::RSpec::ExampleGroups
 
   # Method includes
-  include ::Devise::TestHelpers
+  #include ::Devise::TestHelpers
   include ::Rack::Test::Methods
 end

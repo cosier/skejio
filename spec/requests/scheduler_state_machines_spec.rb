@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'SchedulerStateMachines', :type => :request do
 
-  let(:business) { 
-    create(:business).settings({ 
+  let(:business) {
+    create(:business).settings({
       service_selection: 'service_ask',
       office_selection:  'office_ask',
       user_selection:    'user_selection_full_control'
@@ -36,14 +36,14 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
       sms 'tomorrow'
       # Should be no results as we have not setup any time schedules
       expect(message.include? 'sorry, we did not find any').to be true
-    end 
+    end
   end
 
   describe '/sms/registered with time schedules' do
     let(:engine) {
       create_engine(
         # Make sure we pass in the existing business to avoid biz duplication.
-        business: business, 
+        business: business,
         service_duration: 60, # 60 minute blocks
         services: [60, 120],
         time_entries: [{ start_hour: 9, end_hour: 15, day: :tomorrow }],

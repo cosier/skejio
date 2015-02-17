@@ -36,7 +36,7 @@ FactoryGirl.define do
     last_name Faker::Name.last_name
 
     # override this in your builder
-    sequence(:email) { |n| "person#{n}@example.com" }
+    sequence(:email) { |n| "person#{n}-#{Random.rand(10000..999999)}@example.com" }
 
     password '12345678'
 

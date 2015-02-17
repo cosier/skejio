@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.3'
+ruby '2.2.0'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -53,7 +53,8 @@ gem "font-awesome-rails"
 gem 'figaro'
 
 # User roles and authorizations
-gem 'cancan'
+#gem 'cancan'
+gem 'cancancan', '~> 1.10'
 gem 'devise'
 
 # Bitmasks for arbritrary activerecord fields
