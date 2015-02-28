@@ -30,5 +30,11 @@ build:
                 echo -p "gem list: $(gem list)"
 
         - script:
+            name: install application configuration
+            code: |
+              cp config/application.yml.sample config/application.yml
+
+
+        - script:
                name: rspec
                code: bundle exec rspec spec/requests

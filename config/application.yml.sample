@@ -29,8 +29,8 @@ AWS_SECRET: ""
 S3_BUCKET: ""
 
 # Twilio Account Tokens
-TWILIO_ACCOUNT_SID: ""
-TWILIO_AUTH_TOKEN: ""
+TWILIO_ACCOUNT_SID: "AC1b13934c974393f8b1f7390a5379c6f0"
+TWILIO_AUTH_TOKEN: "ff69f8f9e5edc10ebbeacc5e7fe63248"
 
 
 # Set this to whatever your host is for your environment.
