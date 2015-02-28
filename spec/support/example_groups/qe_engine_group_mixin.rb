@@ -1,4 +1,8 @@
+require_relative './qe_engine/auto_settings'
+
 module QEEngineGroupMixin
+  include ::QEEngine::AutoSettings
+
   def create_customer(opts = {})
     @customer = create(:customer, opts)
   end
@@ -13,17 +17,12 @@ module QEEngineGroupMixin
 
       @business = @session.business
 
-      @office   = opts[:office] || @business.offices.first
-      @service  = opts[:service] || @business.services.first
-      @provider = opts[:provider] || @business.service_providers.first
-
-      @session.store! :chosen_office_id, @office.id
-      @session.store! :chosen_service_id, @service.id
-      @session.store! :chosen_provider_id, @provider.id
+      process_assumptions(opts[:assume] || default_assumptions)
+      available_provider = @provider || @business.service_providers.first
 
       create_schedule_rule(
         business_id: @business.id,
-        service_provider_id: @provider.id)
+        service_provider_id: available_provider.id)
 
       @session
   end
@@ -44,9 +43,10 @@ module QEEngineGroupMixin
 
     # Allow customisation of the Service duration,
     # and consequently the size of all TimeBlock(s) calculations.
-    if duration.present?
-      session.chosen_service.update!(duration: duration)
-    end
+    #
+    # For varying service durations per service, refer to customisation during
+    # individual service creation.
+    @business.services.map {|s| s.update!(duration: duration) } if duration
 
     # Add additional services based on provided service durations
     opts[:services].map { |mins|
@@ -76,8 +76,8 @@ module QEEngineGroupMixin
         provider_id = (entry.key? :provider_id) ? entry[:provider_id] : session.chosen_provider.id
       end
 
-      office_id   = (entry.key? :office_id)  ? entry[:office_id]  : session.chosen_office.id
-      service_id  = (entry.key? :service_id) ? entry[:service_id] : session.chosen_service.id
+      office_id   = (entry.key? :office_id)  ? entry[:office_id]  : (session.chosen_office.id rescue nil)
+      service_id  = (entry.key? :service_id) ? entry[:service_id] : (session.chosen_service.id rescue nil)
 
       day_target = entry[:day] || :midnight
       day = Skej::NLP.parse(session, day_target.to_s)
@@ -196,8 +196,8 @@ module QEEngineGroupMixin
       end_hour   = (entry[:end_hour]   || time_start + Random.rand(1..10)).to_i
       enabled    = entry.key?(:is_enabled) ? entry[:is_enabled] : true
 
-      provider_id = entry.key?(:provider_id) ? entry[:provider_id] : session.chosen_provider.id
-      office_id   = entry.key?(:office_id)  ? entry[:office_id]   : session.chosen_office.id
+      provider_id = entry.key?(:provider_id) ? entry[:provider_id] : (session.chosen_provider.id rescue nil)
+      office_id   = entry.key?(:office_id)  ? entry[:office_id]   : (session.chosen_office.id rescue nil)
 
       float = entry[:float] || 0
       entry.delete :float

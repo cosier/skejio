@@ -26,7 +26,14 @@ class Setting < ActiveRecord::Base
   scope :business, ->(business) { where business_id: business.id }
   scope :key, ->(key) { where key: key }
 
-  # Constants for various option names
+  # Constant KEYS
+  PRIORITY                = 'priority'
+  USER_SELECTION          = 'user_selection'
+  USER_SELECTION_PRIORITY = 'user_selection_priority'
+  SERVICE_SELECTION       = 'service_selection'
+  OFFICE_SELECTION        = 'office_selection'
+
+  # Constant VALUES
   OFFICE_SELECTION_ASK             = 'office_ask'
   OFFICE_SELECTION_ASK_AND_ASSUME  = 'office_ask_and_assume'
   OFFICE_SELECTION_ASSUME          = 'office_assume'
@@ -43,13 +50,6 @@ class Setting < ActiveRecord::Base
   USER_SELECTION_PRIORITY_RANDOM    = 'user_selection_priority_random'
   USER_SELECTION_PRIORITY_AUTOMATIC = 'user_selection_priority_automatic'
 
-  # Constants for key lookup
-  PRIORITY                = 'priority'
-  USER_SELECTION          = 'user_selection'
-  USER_SELECTION_PRIORITY = 'user_selection_priority'
-  SERVICE_SELECTION       = 'service_selection'
-  OFFICE_SELECTION        = 'office_selection'
-
   class << self
     def get_or_create(key, opts = {})
       existing = Setting.where(key: key, business_id: opts[:business_id]).first
@@ -58,7 +58,20 @@ class Setting < ActiveRecord::Base
       raise "business_id is required for first time generation" if opts[:business_id].nil?
       raise "value is required for first time generation" if opts[:value].nil? and opts[:default_value].nil?
 
-      Setting.create(key: key, value: opts[:value] || opts[:default_value], business_id: opts[:business_id])
+      install_key! key, opts
+    end
+
+    def install_key!(key, opts)
+      # Translate any instances into foreign keys
+      if opts[:business].present? and opts[:business].kind_of? Business
+        opts[:business_id] = opts[:business].id
+      end
+
+      raise 'A business must be specified via :business or :business_id' unless opts[:business_id].present?
+
+      create(key: key,
+             value: (opts[:value] || opts[:default_value]),
+             business_id: opts[:business_id])
     end
   end
 

@@ -56,7 +56,6 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
         break_entries: [{ start_hour: 12, end_hour: 13, day: :tomorrow }])
     }
 
-
     it 'should ask for service selection' do
       sms :tomorrow
       expect(message.include? 'please select a service').to be true
