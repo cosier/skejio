@@ -1,4 +1,5 @@
 require_relative './base_example_group'
+require_relative './qe_engine_group_mixin'
 
 module QEExampleGroup
   extend ::BaseExampleGroup
