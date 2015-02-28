@@ -306,7 +306,7 @@ module Skej
       # The size of a TimeBlock.
       # Based on the minute duration of the chosen Service.
       def block_size
-        session.chosen_service.duration
+        session.chosen_service.duration rescue session.business.services.first.duration
       end
 
       def generate_appointment(opts = {})
@@ -322,8 +322,6 @@ module Skej
         # if not already provided.
         opts.reverse_merge! start_time: random_range_start
         opts.reverse_merge! end_time:   random_range_end(opts[:start_time])
-
-
 
         # Instantiate an Appointment model with all the
         # right properties.

@@ -53,7 +53,7 @@ class TimeBlock < ActiveRecord::Base
   end
 
   def service_provider
-    time_entry.provider || session.chosen_provider
+    time_entry.provider || session.chosen_provider || session.business.available_providers.first
   end
 
   # Get an identical TimeBlock, but with the time ranges

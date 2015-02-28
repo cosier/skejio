@@ -64,10 +64,12 @@ module Skej
         def params
           data = {
             business_id: session.business_id,
-            office_id:   [session.chosen_office.id, nil],
-            service_id:  [session.chosen_service.id, nil],
+            office_id:   [(session.chosen_office.id rescue nil), nil],
+            service_id:  [(session.chosen_service.id rescue nil), nil],
           }
 
+          # Todo: take into consideration the possibility of :defferred
+          # for session provider assignment.
           if session.chosen_provider.present?
             data[:provider_id] = [session.chosen_provider.id, nil]
           end

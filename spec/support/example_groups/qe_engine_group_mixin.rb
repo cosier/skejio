@@ -155,13 +155,17 @@ module QEEngineGroupMixin
   end
 
   def create_appointment_option(opts)
+    office = @office || @business.offices.first
+    provider = @provider || @business.service_providers.first
+    service = @service || @business.services.first
+
     appointment = {
       business_id: @session.business_id,
-      office_id: @office.id,
-      customer_id: @customer.id,
-      service_id: @service.id,
-      service_provider_id: @provider.id,
+      office_id: office.id,
+      service_id: service.id,
+      service_provider_id: provider.id,
       created_by_session_id: @session.id,
+      customer_id: @customer.id,
       start_time: appointment_time( opts[:start_hour],
                                     opts[:start_minute],
                                     opts[:day]),
@@ -198,6 +202,9 @@ module QEEngineGroupMixin
 
       provider_id = entry.key?(:provider_id) ? entry[:provider_id] : (session.chosen_provider.id rescue nil)
       office_id   = entry.key?(:office_id)  ? entry[:office_id]   : (session.chosen_office.id rescue nil)
+
+      # Always ensure no matter what that we lock onto a service provider (User)
+      provider_id = session.business.service_providers.first.id if provider_id.nil?
 
       float = entry[:float] || 0
       entry.delete :float

@@ -76,7 +76,7 @@ class TimeEntry < ActiveRecord::Base
   end
 
   def offset
-    session.chosen_office.time_zone if session
+    office.time_zone if office
   end
 
   def now

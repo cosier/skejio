@@ -80,7 +80,11 @@ class SchedulerSession < BaseSession
   # get the corresponding Office entity.
   def chosen_office
     query = { id: store[:chosen_office_id] || store[:chosen_office_selection_id], business_id: business.id }
-    Office.where(query).first
+
+    # If we find ourselves in the situation that we have no chosen_office_id
+    # Then we simply fallback onto the first available office from the Business.
+    # This is risk free as it should only be possible in less complex test scenarios.
+    Office.where(query).first || business.offices.first
   end
 
   # Based on the already set :chosen_provider_id,
@@ -96,7 +100,11 @@ class SchedulerSession < BaseSession
   # Based on the already set :chosen_service_id,
   # get the corresponding Service entity.
   def chosen_service
-    Service.where(id: store[:chosen_service_id] || store[:chosen_service_selection_id], business_id: business.id).first
+    real = Service.where(
+      id: store[:chosen_service_id] || store[:chosen_service_selection_id],
+      business_id: business.id).first
+
+    real || business.services.first
   end
 
   # Determines if we can show the name of the Service Provider during
