@@ -118,4 +118,8 @@ class User < ActiveRecord::Base
     end
   end
 
+  def id_for_business
+    business.id if business
+  end
+
 end

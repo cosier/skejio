@@ -28,7 +28,6 @@ describe 'business permissions', :type => :model do
   context "when user interacts with business" do
 
     let(:user){ create_user }
-
     it{ is_expected.to     be_able_to :read, user.business }
     it{ is_expected.not_to be_able_to :edit, user.business }
     it{ is_expected.not_to be_able_to :read, create(:business)  }
