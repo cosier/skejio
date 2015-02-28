@@ -19,6 +19,9 @@ class Skej::StateLogic::Appointments::Handshake < Skej::StateLogic::BaseLogic
     if input.present?
       log "Customer initial date input <strong>found:</strong><br/><pre>[:appointment_input_date => #{input.to_s}]</pre>"
 
+      # Todo: apply logic for ask_selections settings
+      #binding.pry
+
       # Here we are routing only SMS to the specialized single summary page.
       if can_silently_assume?
         @apt.transition_to! :summary

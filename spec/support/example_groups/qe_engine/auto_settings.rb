@@ -5,9 +5,9 @@ module QEEngine
     # Ie. ask for everything by default.
     def default_assumptions
       {
-        office:   { val: Setting::OFFICE_SELECTION_ASK },
-        service:  { val: Setting::SERVICE_SELECTION_ASK },
-        provider: { val: Setting::USER_SELECTION_FULL_CONTROL },
+        office:   { val: Setting::OFFICE_SELECTION_ASSUME, id: :any },
+        service:  { val: Setting::SERVICE_SELECTION_ASSUME, id: :any },
+        provider: { val: Setting::USER_SELECTION_FULL_CONTROL, id: :any},
         priority: { val: Setting::USER_SELECTION_PRIORITY_RANDOM }
       }
     end
@@ -18,7 +18,11 @@ module QEEngine
 
         # Conditionally set an instance variable based on the Klass#find record
         if v[:id].present?
-          model = k.to_s.classify.find(v[:id])
+          if v[:id] == :any
+            model = k.to_s.classify.constantize.where(business_id: @business.id).first
+          else
+            model = k.to_s.classify.constantize.find(v[:id])
+          end
           instance_variable_set("@#{k}", model)
           @session.store! "chosen_#{k}_id", model.id
         end

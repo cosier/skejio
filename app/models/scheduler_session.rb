@@ -84,7 +84,7 @@ class SchedulerSession < BaseSession
     # If we find ourselves in the situation that we have no chosen_office_id
     # Then we simply fallback onto the first available office from the Business.
     # This is risk free as it should only be possible in less complex test scenarios.
-    Office.where(query).first || business.offices.first
+    Office.where(query).first
   end
 
   # Based on the already set :chosen_provider_id,
@@ -104,7 +104,8 @@ class SchedulerSession < BaseSession
       id: store[:chosen_service_id] || store[:chosen_service_selection_id],
       business_id: business.id).first
 
-    real || business.services.first
+    # Explicit return for debug hook
+    real
   end
 
   # Determines if we can show the name of the Service Provider during

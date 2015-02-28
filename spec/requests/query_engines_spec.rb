@@ -9,10 +9,10 @@ describe Skej::Appointments::QueryEngine, :type => :request do
 
     let(:engine) {
       create_engine(
-        service_duration: 60, # 60 minute blocks
-        services: [60, 120],
         time_entries: [{ start_hour: 9, end_hour: 15, day: :now }],
-        break_entries: [{ start_hour: 12, end_hour: 13, day: :now }])
+        break_entries: [{ start_hour: 12, end_hour: 13, day: :now }],
+        service_duration: 60, # 60 minute blocks
+        services: [60, 120])
     }
 
     describe '#available_on' do

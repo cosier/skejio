@@ -30,6 +30,8 @@ module Skej
           return advance!
         end
 
+        binding.pry
+
         if can_assume?
           process_assumptions
         else
