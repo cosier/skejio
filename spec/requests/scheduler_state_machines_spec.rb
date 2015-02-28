@@ -2,13 +2,15 @@ require 'rails_helper'
 
 RSpec.describe 'SchedulerStateMachines', :type => :request do
 
-  let(:business) {
-    create(:business).settings({
+  before(:all) {
+    @business = create(:business).settings({
       service_selection: 'service_ask',
       office_selection:  'office_ask',
       user_selection:    'user_selection_full_control'
     })
   }
+
+  let(:business) { @business }
 
   describe '/sms/unregistered' do
     # let(:business) { create(:business) }
@@ -40,17 +42,20 @@ RSpec.describe 'SchedulerStateMachines', :type => :request do
   end
 
   describe '/sms/registered with time schedules' do
-    let(:engine) {
-      create_engine(
+
+    before(:each) { scheduler_register_customer! }
+
+    # Bootstrap the Scheduler Engine and it's dependencies.
+    before(:all) {
+      bootstrap(
         # Make sure we pass in the existing business to avoid biz duplication.
-        business: business,
+        business: @business,
         service_duration: 60, # 60 minute blocks
         services: [60, 120],
         time_entries: [{ start_hour: 9, end_hour: 15, day: :tomorrow }],
         break_entries: [{ start_hour: 12, end_hour: 13, day: :tomorrow }])
     }
 
-    before(:each) { engine.preload and scheduler_register_customer! }
 
     it 'should ask for service selection' do
       sms :tomorrow

@@ -62,6 +62,8 @@ module QEEngineGroupMixin
     Skej::Appointments::QueryEngine.new(session)
   end
 
+  alias_method :bootstrap, :create_engine
+
 
   def create_time_entries(provider, entries)
 
