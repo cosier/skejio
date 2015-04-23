@@ -51,8 +51,6 @@ class User < ActiveRecord::Base
 
   after_create :update_ordering
 
-  attr_accessor :can_schedule, :business_id, :phone
-
   # Check the roles bitmask like this:
   # user.roles?(:admin)
   #
@@ -101,11 +99,7 @@ class User < ActiveRecord::Base
   end
 
   def available_for_scheduling?
-    if schedule_rule.present?
-      self.can_schedule = false
-    else
-      self.can_schedule = true
-    end
+    schedule_rule.present?
   end
 
   def not_available_for_scheduling

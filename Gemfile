@@ -103,7 +103,7 @@ gem 'wannabe_bool'
 gem 'json-compare'
 
 # Use evented thin server
-#gem 'thin'
+gem 'thin'
 gem 'request_store'
 
 group :development, :test do

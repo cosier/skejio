@@ -23,9 +23,13 @@ class UsersController < BusinessesController
   def create
     authorize! :create, User
 
-    @user = User.new(user_params)
-    @user.save
-    respond_with(@business, @user)
+    user = User.new(user_params)
+    user.business = @business
+    user.phone = user_params[:phone]
+    binding.pry
+    user.save!
+
+    respond_with(@business, user)
   end
 
   def update
@@ -53,6 +57,8 @@ class UsersController < BusinessesController
   private
 
   def user_params
-    params[:user].permit!
+    p = params[:user].dup
+    p[:business_id] = @business.id
+    p.permit!
   end
 end
