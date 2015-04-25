@@ -66,7 +66,7 @@ class Ability
     end
 
     # Users can all read their own Business
-    can :read, Business, { id: user.business.id }
+    can :read, Business, { id: user.business.id } if user.business.present?
 
   end
 end
