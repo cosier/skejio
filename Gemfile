@@ -7,7 +7,7 @@ ruby '2.2.0'
 gem 'rails', '4.1.6'
 gem 'rails_12factor', group: :production
 # Error reporting
-gem 'rollbar', group: :production
+gem 'rollbar'
 gem 'dalli'
 
 gem 'TimezoneParser'

@@ -26,6 +26,10 @@ class Setting < ActiveRecord::Base
   scope :business, ->(business) { where business_id: business.id }
   scope :key, ->(key) { where key: key }
 
+  # Todo: refactor these constants into enums?
+  # But.. we need direct access to these throughout the system,
+  # so this appears to be the path to least friction.
+
   # Constant KEYS
   PRIORITY                = 'priority'
   USER_SELECTION          = 'user_selection'
@@ -33,24 +37,67 @@ class Setting < ActiveRecord::Base
   SERVICE_SELECTION       = 'service_selection'
   OFFICE_SELECTION        = 'office_selection'
 
-  # Constant VALUES
+  # Constant VALUES for OFFICE_SELECTION
   OFFICE_SELECTION_ASK             = 'office_ask'
   OFFICE_SELECTION_ASK_AND_ASSUME  = 'office_ask_and_assume'
   OFFICE_SELECTION_ASSUME          = 'office_assume'
 
+  # Constant VALUES for SERVICE_SELECTION
   SERVICE_SELECTION_ASK            = 'service_ask'
   SERVICE_SELECTION_ASK_AND_ASSUME = 'service_ask_and_assume'
   SERVICE_SELECTION_ASSUME         = 'service_assume'
 
+  # Constant VALUES for USER_SELECTION
   USER_SELECTION_FULL_CONTROL = 'user_selection_full_control'
   USER_SELECTION_EXPRESS_I    = 'user_selection_express_1'
   USER_SELECTION_EXPRESS_II   = 'user_selection_express_2'
   USER_SELECTION_EXPRESS_III  = 'user_selection_express_3'
 
+  # Constant VALUES for USER_SELECTION_PRIORITY
   USER_SELECTION_PRIORITY_RANDOM    = 'user_selection_priority_random'
   USER_SELECTION_PRIORITY_AUTOMATIC = 'user_selection_priority_automatic'
 
+
+  SELECTION_KEYS = [ PRIORITY,
+                     USER_SELECTION,
+                     USER_SELECTION_PRIORITY,
+                     SERVICE_SELECTION,
+                     OFFICE_SELECTION ]
+
+  PRIORITY_VALUES = []
+
+  USER_SELECTION_VALUES = [ USER_SELECTION_FULL_CONTROL,
+                            USER_SELECTION_EXPRESS_I,
+                            USER_SELECTION_EXPRESS_II,
+                            USER_SELECTION_EXPRESS_III ]
+
+  USER_SELECTION_PRIORITY_VALUES = [ USER_SELECTION_PRIORITY_RANDOM,
+                                     USER_SELECTION_PRIORITY_AUTOMATIC ]
+
+  SERVICE_SELECTION_VALUES = [ SERVICE_SELECTION_ASK,
+                               SERVICE_SELECTION_ASK_AND_ASSUME,
+                               SERVICE_SELECTION_ASSUME ]
+
+  OFFICE_SELECTION_VALUES = [ OFFICE_SELECTION_ASK,
+                              OFFICE_SELECTION_ASK_AND_ASSUME,
+                              OFFICE_SELECTION_ASSUME ]
+
   class << self
+
+    def create_default(opts = {})
+      create({ key: opts[:key],
+               value: default_value_for(opts[:key]),
+               business_id: opts[:business].id })
+    end
+
+    def default_value_for(key)
+      ("Setting::#{key.upcase}_VALUES".constantize).first
+    end
+
+    def valid_key? (key)
+      SELECTION_KEYS.map{ |k| ("Setting::" + k.to_s.upcase).constantize }.include? key.to_s.downcase
+    end
+
     def get_or_create(key, opts = {})
       existing = Setting.where(key: key, business_id: opts[:business_id]).first
       return existing if existing

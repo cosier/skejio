@@ -112,8 +112,7 @@ class BaseSession < ActiveRecord::Base
       return @setting_cache[key] if @setting_cache[key].present?
 
       log "looking up business setting: <strong>#{key}</strong>"
-      setting = Setting.business(business).key(key).first
-      raise "Unknown Setting key:#{key}" if setting.nil?
+      setting = business.setting(key)
 
       @setting_cache[key] = setting
       setting

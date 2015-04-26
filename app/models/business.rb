@@ -105,6 +105,15 @@ class Business < ActiveRecord::Base
     self
   end
 
+  def setting(key)
+    result = Setting.business(self).key(key)
+    return result if result.present?
+
+    raise "Unknown Setting Key: #{key}" unless Setting.valid_key? key
+
+    Setting.create_default(key: key, business: self)
+  end
+
   private
 
   def check_for_approval_processing
