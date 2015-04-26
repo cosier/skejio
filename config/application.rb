@@ -24,7 +24,7 @@ module Scplanner
         :password       => ENV['MAILGUN_SMTP_PASSWORD']
     }
 
-    config.autoload_paths << Rails.root.join('lib', 'itt')
+    config.autoload_paths << Rails.root.join('lib', 'skej')
     config.autoload_paths << Rails.root.join('app', 'machines')
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += Dir["#{config.root}/app/machines/**/"]

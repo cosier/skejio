@@ -12,16 +12,25 @@ module Skej
         end
 
         # Automatic pass, not enough offices to choose from.
-        if @session.business.available_offices.length < 2
+        availability_count = @session.business.available_offices.length
+
+        if availability_count < 2 and availability_count.present?
           log "Available Offices < 2 <br/><strong>Skipping Customer Selection of Offices</strong>"
           mark_state_complete!
 
           office = @session.business.available_offices.first
-          @session.store! :chosen_office_id, office.id
+          @session.store! :chosen_office_id, office.id if office
 
           # ADVANCE
           return advance!
+
+        elsif availability_count == 0
+          # If no offices exist at all, well we gotta do something.
+          # Send the customer to the next stage.
+          mark_state_complete!
+          return advance!
         end
+
 
         # Early bail out if already completed
         if marked_as_complete? and get[:chosen_office_id].present?
@@ -29,8 +38,6 @@ module Skej
           # ADVANCE
           return advance!
         end
-
-        binding.pry
 
         if can_assume?
           process_assumptions
