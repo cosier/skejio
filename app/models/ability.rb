@@ -65,8 +65,11 @@ class Ability
     if user.roles? :appointment_viewer or user.roles? :admin
     end
 
-    # Users can all read their own Business
-    can :read, Business, { id: user.business.id } if user.business.present?
+    if user.business.present?
+      # Users can all read their own Business
+      can :read, Business, { id: user.business.id }
+      can :pending, Business, { id: user.business.id }
+    end
 
   end
 end
